@@ -1,0 +1,22 @@
+<!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+    {% for item in site.header %} {% if item.path == page.url %}
+    <a
+      class="active"
+      href="{{item.path | prepend: site.baseurl}}"
+      class="active"
+      >{{item.name}}</a
+    >
+    {% else %}
+    <a href="{{item.path | prepend: site.baseurl}}">{{item.name}}</a>
+    {% endif %} {% endfor %}
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="{{ "/assets/js/theme-toggle.js" | prepend: site.baseurl "}}"></script>
+</header>

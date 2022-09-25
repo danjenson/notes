@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    GFlowNet Foundations
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/papers/gflownet-foundations.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group"><h1>GFlowNet Foundations</h1>
+<p class="subtitle"></p>
+
+<ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#prelude">Prelude</a></li>
+<li class="toc-entry toc-h2"><a href="#terminology">Terminology</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#terms">Terms</a></li>
+<li class="toc-entry toc-h3"><a href="#notation">Notation</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#introduction">Introduction</a></li>
+<li class="toc-entry toc-h2"><a href="#flow-networks-and-markovian-flows">Flow Networks and Markovian Flows</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#trajectories-and-flows">Trajectories and Flows</a></li>
+<li class="toc-entry toc-h3"><a href="#flow-induced-probability-measures">Flow Induced Probability Measures</a></li>
+<li class="toc-entry toc-h3"><a href="#markovian-flows">Markovian Flows</a></li>
+<li class="toc-entry toc-h3"><a href="#flow-matching-conditions">Flow Matching Conditions</a></li>
+<li class="toc-entry toc-h3"><a href="#backwards-transitions-can-be-chosen-freely">Backwards Transitions can be Chosen Freely</a></li>
+<li class="toc-entry toc-h3"><a href="#equivalence-between-flows">Equivalence Between Flows</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#gflownets-learning-a-flow">GFlowNets: Learning a Flow</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#gflownets-as-an-alternative-to-mcmc-sampling">GFlowNets as an Alternative to MCMC Sampling</a></li>
+<li class="toc-entry toc-h3"><a href="#gflownets-and-flow-matching-losses">GFlowNets and flow-matching losses</a>
+<ul>
+<li class="toc-entry toc-h4"><a href="#edge-flow-parameterization-mathcalo_edgepi_edgemathcalh_edge">Edge-flow Parameterization: $(\mathcal{O}_{edge},\Pi_{edge},\mathcal{H}_{edge})$</a></li>
+<li class="toc-entry toc-h4"><a href="#forward-transition-probability-parameterization-mathcalo_pfpi_pfmathcalh_pf">Forward Transition Probability Parameterization: $(\mathcal{O}_{PF},\Pi_{PF},\mathcal{H}_{PF})$</a></li>
+<li class="toc-entry toc-h4"><a href="#transition-probabilities-parameterization-mathcalo_pfbpi_pfbmathcalh_pfb">Transition Probabilities Parameterization: $(\mathcal{O}_{PFB},\Pi_{PFB},\mathcal{H}_{PFB})$</a></li>
+<li class="toc-entry toc-h4"><a href="#trajectory-balance-parameterization-mathcalo_tbpi_tbmathcalh_tb">Trajectory Balance Parameterization: $(\mathcal{O}_{TB},\Pi_{TB},\mathcal{H}_{TB})$</a></li>
+<li class="toc-entry toc-h4"><a href="#gflownet-grmathcalopimathcalh">GFlowNet: $(G,R,\mathcal{O},\Pi,\mathcal{H})$</a></li>
+<li class="toc-entry toc-h4"><a href="#flow-matching-losses">Flow-matching Losses</a>
+<ul>
+<li class="toc-entry toc-h5"><a href="#edge-flow-paramterization-state-decomposable-loss">Edge-flow Paramterization, State-decomposable Loss</a></li>
+<li class="toc-entry toc-h5"><a href="#transitions-parameterization-edge-decomposable-loss-detailed-balance">Transitions Parameterization, Edge-decomposable Loss (Detailed Balance)</a></li>
+<li class="toc-entry toc-h5"><a href="#trajectory-balance-parameterization-trajectory-decomposable-loss">Trajectory Balance Parameterization, Trajectory-decomposable Loss</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h4"><a href="#training-by-stochastic-gradient-descent">Training by Stochastic Gradient Descent</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h3"><a href="#extensions">Extensions</a></li>
+<li class="toc-entry toc-h3"><a href="#exploiting-data-as-known-terminating-states">Exploiting Data as Known Terminating States</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#conditional-flows-and-free-energies">Conditional Flows and Free Energies</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#conditional-flow-networks">Conditional flow networks</a></li>
+<li class="toc-entry toc-h3"><a href="#reward-conditional-flow-networks-rsmid-x">Reward-conditional flow networks: $R(s\mid x)$</a></li>
+<li class="toc-entry toc-h3"><a href="#state-conditional-flow-networks">State-conditional flow networks</a></li>
+</ul>
+</li>
+</ul><h2 id="prelude">
+<a class="anchor" href="#prelude" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prelude</h2>
+
+<p><strong>Question</strong>: What classes of problem do GFlowNets address?</p>
+
+<p><strong>Answer</strong>: They calculate free energies, i.e. partition functions, and
+associated distributions, including conditional and marginal distributions.</p>
+
+<h2 id="terminology">
+<a class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h2>
+
+<h3 id="terms">
+<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h3>
+
+<ul>
+  <li>
+<strong>GFN</strong>: Generative Flow Network.</li>
+  <li>
+<strong>MCMC</strong>: Markov Chain Monte Carlo.</li>
+  <li>
+<strong>PPO</strong>: Proximal Policy Optimization.</li>
+  <li>
+<strong>RL</strong>: Reinforcement Learning.</li>
+  <li>
+<strong>TD</strong>: Temporal Difference.</li>
+  <li>
+<strong>Proxy</strong>: A function that approximates an oracle, i.e. $R(x)$, trained using
+$(x,y)$ pairs, which can incorporate (Bayesian) uncertainty.</li>
+  <li>
+<strong>Active learning</strong>: A context in which “student” and “teacher” interact during training.</li>
+  <li>
+<strong>Flow matching</strong>: The total flow going into a state must match the total
+flow leaving the state, except for the source, $s_0$, and sink(s), $s_f$ or
+$s_T$.</li>
+  <li>
+<strong>DAG</strong>: Directed Acyclic Graph, $G=(\mathcal{S},\mathbb{A})$, i.e. a
+directed graph in which no trajectory $\tau=(s_1,\ldots,s_n)$ such that
+$s_1=s_n$</li>
+  <li>
+<strong>Pointed DAG</strong>: A DAG $G=(\mathcal{S},\mathbb{A})$ such that there exist two
+states $s_0,s_f\in\mathcal{S}$ that satisfy $\forall s\in\mathcal{S}\setminus
+\{s_0\}\ s_0 &lt; s \text{ and }\forall
+s\in\mathcal{S}\setminus\{s_f\}\ s &lt; s_f$, i.e. there are source, $s_0$,
+and sink (or final), $s_f$, states.</li>
+  <li>
+<strong>Complete trajectory</strong>: A trajectory in a pointed DAG that starts at $s_0$
+and ends in $s_f$, i.e. $\tau=(s_0,s_1,\ldots,s_n,s_{n+1}=s_f)$.</li>
+  <li>
+<strong>Terminating state</strong>: Any state that is a parent of the sink state, $s_f$,
+i.e. $\{s : s\to s_f\in\mathbb{A}\}$; a terminating state may have
+other children from the sink state</li>
+  <li>
+<strong>Terminating edge</strong>: Any edge between a terminating state an the sink, i.e.
+$s\to s_f$.</li>
+  <li>
+<strong>Markovian flow</strong>: A flow is Markovian if $P(s\to
+s’\mid\tau)=P(s\to s’\mid s)=P_F(s’\mid s)$ for any $s\neq s_0$,
+outgoing edge $s\to s’$, and trajectory
+$\tau=(s_0,s_1,\ldots,s_n=s)\in\mathcal{T}^{partial}$. A flow is
+non-Markovian if the flow can remember past history.</li>
+  <li>
+<strong>Energy function</strong>: Maps a state to a real value, $\mathcal{E}:\mathcal{S}\to \mathbb{R}$.</li>
+  <li>
+<strong>Free energy</strong>: $\mathcal{F}(s)$ such that
+$e^{-\mathcal{F}(s)}:=\sum_{s^{\prime}: s^{\prime} \geq
+s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
+</ul>
+
+<h3 id="notation">
+<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h3>
+
+<ul>
+  <li>$\mathcal{S}$: The set of states, i.e. the state space.</li>
+  <li>$\mathbb{A}$: The subset of $\mathcal{S}\times\mathcal{S}$ representing edges
+or transitions, i.e. $s\to s’$.</li>
+  <li>$\tau$: A trajectory $\tau=(s_1,\ldots,s_n)$ of elements of $\mathcal{S}$
+such that every transition $s_t\to s_{t+1}\in\mathbb{A}$ and $n&gt;1$.
+Also represented as $\tau=\to\ldots\to s_n$.</li>
+  <li>$s\in\tau$: State $s$ is in trajectory $\tau$, i.e. $\exists t\in\{1,\ldots,
+n\}\;s_t=s$.</li>
+  <li>$s\to s’\in\tau$ means $\exists t\in \{1,\ldots,n-1\}\;
+s_t=s,s_{t+1}=s’$.</li>
+  <li>$\lvert\tau\rvert$: The length of a trajectory is the number of edges.</li>
+  <li>$s &lt; s’$: Strict partial order (irreflexive, asymmetric, and transitive)
+where $s$ comes before $s’$ in a trajectory.</li>
+  <li>$s \le s’$: Partial order (reflexive, antisymmetric, and transitive) where
+$s$ comes before $s’$ in a trajectory.</li>
+  <li>$s \lessgtr s’$: No order relation between $s$ and $s’$.</li>
+  <li>$\operatorname{Par}(s)$: The parent set: $\{s’\in\mathcal{S} : s’\to s\in
+\mathbb{A}\}$ given a DAG $G=(\mathcal{S},\mathbb{A})$.</li>
+  <li>$\operatorname{Child}(s)$: The child set: $\{s’\in\mathcal{S} : s\to s’\in
+\mathbb{A}\}$ given a DAG $G=(\mathcal{S},\mathbb{A})$.</li>
+  <li>$\mathcal{T}$: The set of complete trajectories in a pointed DAG.</li>
+  <li>$\mathcal{T}^{partial}$: The set of (possibly incomplete) trajectories in a
+pointed DAG.</li>
+  <li>$\mathcal{T}_{s,f}\subseteq\mathcal{T}^{partial}$: The set of trajectories
+starting in $s$ and ending in $s_f$ where
+$s\in\mathcal{S}\setminus\{s_f\}$.</li>
+  <li>$\mathcal{T}_{0,s}\subseteq\mathcal{T}^{partial}$: The set of trajectories
+starting in $s_0$ and ending in $s$ where
+$s\in\mathcal{S}\setminus\{s_0\}$.</li>
+  <li>$\mathcal{T}_{s\to s’,s_f}$: The set of trajectories starting with
+$s\to s’$ and ending in $s_f$.</li>
+  <li>$\mathcal{T}_{0,s\to s’f}$: The set of trajectories starting with
+in $s_0$ and ending with $s\to s’$.</li>
+  <li>$d_{s,f}$: The maximum trajectory length in $\mathcal{T}_{s,f}$.</li>
+  <li>$d_{0,s’}$: The maximum trajectory length in $\mathcal{T}_{0,s}$.</li>
+  <li>$\mathbb{A}^{-f}$: $\left\{s \to s^{\prime} \in \mathbb{A},
+s^{\prime} \neq s_f\right\}$, the set of non-terminating edges in $G$</li>
+  <li>$\mathbb{A}^f$: $\left\{s \to s^{\prime} \in \mathbb{A},
+s^{\prime}=s_f\right\}=\mathbb{A} \backslash \mathbb{A}^{-f}$, the set of
+terminating edges in $G$,</li>
+  <li>$\mathcal{S}^f$: $\left\{s \in \mathcal{S}, s \to s_f \in
+\mathbb{A}^f\right\}=\operatorname{Par}\left(s_f\right)$, the set of
+terminating states in $G$.</li>
+  <li>$F(\tau)$: A non-negative function $F:\mathcal{T}\mapsto\mathbb{R}^+$ defined
+on the set of <strong>complete</strong> trajectories $\mathcal{T}$. $F$ induces a measure
+over the $\sigma$-algebra $\Sigma=2^\mathcal{T}$, the power set on the set of
+complete trajectories $\mathcal{T}$.</li>
+  <li>$(\mathcal{T}, 2^\mathcal{T}, F)$: A measure space where $F$ denotes both a
+function of complete trajectories and its corresponding measure over
+$(\mathcal{T},2^\mathcal{T})$.</li>
+  <li>$(G,F)$: A flow network where $G$ is a pointed DAG and $F$ is a trajectory
+flow.</li>
+  <li>$F(s)\coloneqq
+F(\{\tau\in\mathcal{T}:s\in\tau\})=\sum_{\tau\in\mathcal{T}:s\in\tau}F(\tau)$ :
+The flow through a state $F:\mathcal{S}\mapsto\mathbb{R}^+$ is the measure of
+the set of complete trajectories going through that state.</li>
+  <li>$F(s\to s’)\coloneqq F(\{\tau\in\mathcal{T}: s\to
+s’\in\tau\})=\sum_{\tau\in\mathcal{T}:s\to s’\in\tau}F(\tau)$: The
+flow through an edge $F:\mathbb{A}\mapsto\mathbb{R}^+$ is the measure of the
+set of complete trajectories going through a particular edge.</li>
+  <li>$F(s\to s_f)$: A terminating flow.</li>
+  <li>$\mathcal{F}(G)$: the set of flows on pointed DAG $G$, i.e. the set of
+functions from $\mathcal{T}$, the set of complete trajectories in $G$, to
+$\mathbb{R}^+$.</li>
+  <li>$\mathcal{F}_{Markov}(G)$: the set of flows in $\mathcal{F}(G)$ that are
+Markovian for pointed DAG $G$.</li>
+  <li>$Z\coloneqq F(\mathcal{T})=\sum_{\tau\in\mathcal{T}}F(\tau)$: The total flow,
+i.e. the sum of the flows of all complete trajectories.</li>
+  <li>$P(A)\coloneqq\frac{F(A)}{F(\mathcal{T})}=\frac{F(A)}{Z}$: The flow
+probability is the measure $P$ over the measurable space
+$(\mathcal{T},2^\mathcal{T})$ associated with $F$ where $\forall
+A\subseteq\mathcal{T}$.</li>
+  <li>$P(A\mid B)\coloneqq\frac{F(A\cap B)}{F(B)}$ where $\forall
+A,B\subseteq\mathcal{T}$.</li>
+  <li>$P(s)\coloneqq\frac{F(s)}{Z}$: The probability of going through a state. This
+does not correspond to a distribution over states; namely,
+$\sum_{s\in\mathcal{S}}P(s)\neq 1$.</li>
+  <li>$P(s\to s’)\coloneqq\frac{F(s\to s’)}{Z}=P_B(s\mid
+s’)P(s’)=P_F(s’\mid s)P(s)$: The probability of going through an edge.</li>
+  <li>$P(\tau)\coloneqq\frac{F(\tau)}{Z}$: The probability of a trajectory.</li>
+  <li>$P_T(s)\coloneqq P(s\to s_f)=\frac{F(s\to s_f)}{Z}$:
+Terminating state probability. Unlike $P(s)$, $P_T(s)$ is well-defined; i.e.
+$P_T(s)\ge 0\;\forall s\in \mathcal{S}^f$ and $\sum_{s\in\mathcal{S}^f}P_T(s)=1$.</li>
+  <li>$P_F(s’\mid s)\coloneqq P(s\to s’\mid s)=\frac{F(s\to
+s’)}{F(s)}$: The forward transition probability; it satisfies $\forall
+s\in\mathcal{S}\setminus\{s_f\},\; \sum_{s’\in
+\operatorname{Child}(s)}P_F(s’\mid s)=1$</li>
+  <li>$P_B(s\mid s’)\coloneqq P(s\to s’\mid s’)=\frac{F(s\to
+s’)}{F(s’)}$: The backward probability function defined on $\mathbb{A}$; it
+satisfies $\forall s\in\mathcal{S}\setminus\{s_0\},\; \sum_{s’\in
+\operatorname{Par}(s)}P_B(s’\mid s)=1$.</li>
+  <li>$o\in\mathcal{O}$: A (learned) parameter configuration for a GFN.</li>
+  <li>$\Pi(o)\in\Delta(\mathcal{T})$: Probability measure over trajectories.</li>
+  <li>$\pi_o$: The training distribution.</li>
+  <li>$\mathcal{H}$: Maps a Markovian flow $F$ to its parameterization $o$.</li>
+  <li>$(\mathcal{O}, \Pi, \mathcal{H})$: A flow paramterization for pointed DAG
+$G=(\mathcal{S}, \mathbb{A})$.</li>
+  <li>$(G,R,\mathcal{O}, \Pi, \mathcal{H})$: A GFlowNet specification.</li>
+  <li>$\mathcal{E}:\mathcal{S}\to \mathbb{R}$: An energy function mapping states to
+real values.</li>
+  <li>$\mathcal{F}(s)$: free energy such that
+$e^{-\mathcal{F}(s)}:=\sum_{s^{\prime}: s^{\prime} \geq
+s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
+  <li>$\mathcal{X}$: A set of conditioning variables.</li>
+  <li>$G_x=(\mathcal{S}_x,\mathcal{A}_x)$: A DAG indexed by $x\in\mathcal{X}$.</li>
+</ul>
+
+<h2 id="introduction">
+<a class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<ul>
+  <li>GFNs sample a composite object $s$ such that $P_T(s)\propto R(s)$</li>
+  <li>GFNs trade training complexity for sampling complexity, i.e. for MCMC
+methods, sampling can be expensive and the mixing time can be very high; if
+the modes share common structure, GFNs can learn that and sample them more
+efficiently</li>
+  <li>GFNs (1) can be trained in an offline manner from one different from the GFN
+or target distribution, provided it has sufficient support and (2) they match
+the reward function in probability rather than finding a policy that
+maximizes reward.</li>
+  <li>GFNs and TD methods rely on local coherence, e.g. detailed balance or flow
+matching conditions, between components and a training
+objective that estimates a global quantity of interest when those components
+cohere.</li>
+</ul>
+
+<h2 id="flow-networks-and-markovian-flows">
+<a class="anchor" href="#flow-networks-and-markovian-flows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flow Networks and Markovian Flows</h2>
+
+<h3 id="trajectories-and-flows">
+<a class="anchor" href="#trajectories-and-flows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trajectories and Flows</h3>
+
+<ul>
+  <li>
+<strong>Lemma 5</strong> (proof on p.6): The sum of the forward probabilities of all trajectories
+starting at a state and ending in the sink is 1. Similarly, the sum of the
+backward probabilities of all trajectories starting at a state and ending in
+the source is 1.</li>
+</ul>
+
+\[\begin{aligned}
+\forall \tau=\left(s_1, \ldots, s_n\right) \in \mathcal{T}^{\text {partial }}
+&amp; \hat{P}_F(\tau) := \prod_{t=1}^{n-1} \hat{P}_F\left(s_{t+1} \mid s_t\right) \\
+\forall \tau=\left(s_1, \ldots, s_n\right) \in \mathcal{T}^{\text {partial }}
+&amp; \hat{P}_B(\tau) := \prod_{t=1}^{n-1} \hat{P}_B\left(s_t \mid s_{t+1}\right) \\
+\forall s \in \mathcal{S} \backslash\left\{s_f\right\} \quad \sum_{\tau \in
+\mathcal{T}_{s, f}}
+&amp; \hat{P}_F(\tau)=1 \\
+\forall s^{\prime} \in \mathcal{S} \backslash\left\{s_0\right\} \quad
+\sum_{\tau \in \mathcal{T}_{0, s^{\prime}}}
+&amp; \hat{P}_B(\tau)=1
+\end{aligned}\]
+
+<ul>
+  <li>For every subset $A\subseteq\mathcal{T}$: $F(A)=\sum_{\tau\in A}F(\tau)$</li>
+  <li>
+<strong>Proposition 8</strong>: Given a flow network $(G, F)$, the flow through a state is
+equal to both the total flow into the state and the total flow out of the
+state.</li>
+</ul>
+
+\[\begin{aligned}
+&amp;\forall s \in \mathcal{S} \backslash\left\{s_f\right\} \quad
+F(s)=\sum_{s^{\prime} \in \operatorname{Child}(s)} F\left(s \to
+s^{\prime}\right) \\
+&amp;\forall s^{\prime} \in \mathcal{S} \backslash\left\{s_0\right\} \quad
+F\left(s^{\prime}\right)=\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)}
+F\left(s \to s^{\prime}\right)
+\end{aligned}\]
+
+<h3 id="flow-induced-probability-measures">
+<a class="anchor" href="#flow-induced-probability-measures" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flow Induced Probability Measures</h3>
+
+<ul>
+  <li>
+<strong>Proposition 10</strong>: $F(s_0)=F(s_f)=\sum_{\tau\in\mathcal{T}}=Z$. The
+normalizing constant $Z$ can turn the measure space $(\mathcal{T},
+2^\mathcal{T},F)$ into the probability space $(\mathcal{T},2^\mathcal{T},P)$.</li>
+</ul>
+
+<h3 id="markovian-flows">
+<a class="anchor" href="#markovian-flows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Markovian Flows</h3>
+
+<ul>
+  <li>Normally, defining a flow requires defining $\lvert\mathcal{T}\rvert$
+non-negative flows, but Markovian flows can be reduced by factorizing common
+paths according to $G$.</li>
+  <li>A flow is Markovian if $P(s\to s’\mid\tau)=P(s\to s’\mid
+s)=P_F(s’\mid s)$ for any $s\neq s_0$, outgoing edge $s\to s’$, and
+trajectory $\tau=(s_0,s_1,\ldots,s_n=s)\in\mathcal{T}^{partial}$.</li>
+  <li>
+    <p><strong>Proposition 16</strong> (proofs on p.10-13): If a flow factorizes forward or backward and each
+transition only depends on the current state, the flow is Markovian.
+Conversely, if the flow is Markovian, it factorizes forwards and backwards
+and each transition depends on only the current state. More formally, the
+following statements are equivalent:</p>
+
+    <ol>
+      <li>$F$ is a Markovian flow.</li>
+      <li>
+        <p>There exists a unique probability function $\hat{P}_F$ consistent with
+$G$ such that for all complete trajectories
+$\tau=(s_0,\ldots,s_{n+1}=sf)$:</p>
+
+\[P(\tau)=\prod_{t=1}^{n+1}\hat{P}_F(s_t\mid s_{t-1})\]
+
+        <p>Where $\hat{P}_F=P_F$.</p>
+      </li>
+      <li>
+        <p>There exists a unique probability function $\hat{P}_B$ consistent with
+$G$ such that for all complete trajectories
+$\tau=(s_0,\ldots,s_{n+1}=sf)$:</p>
+
+\[P(\tau)=\prod_{t=1}^{n+1}\hat{P}_B(s_{t-1}\mid s_t)\]
+
+        <p>Where $\hat{P}_B=P_B$.</p>
+      </li>
+    </ol>
+  </li>
+  <li>
+<strong>Corollary 17</strong> (proof p.14): In a Markovian flow network, $(G, F)$,
+$P_T(s_n)=P_F(s_1\mid s_0)\cdots P_F(s_n\mid s_{n-1})$.</li>
+  <li>
+<strong>Proposition 18</strong> (proofs on p.14-15): Given a pointed DAG
+$G=(\mathcal{S},\mathbb{A})$, a Markovian flow on $G$ is <em>completely</em> and
+<em>uniquely</em> specified by one of the following:
+    <ol>
+      <li>The combination of the total flow $\hat{Z}$ and the forward transition
+probabilities $\hat{P}_F(s’\mid s)$ for all edges $s\to
+s’\in\mathbb{A}$.</li>
+      <li>The combination of the total flow $\hat{Z}$ and the backward transition
+probabilities $\hat{P}_B(s\mid s’)$ for all edges $s\to
+s’\in\mathbb{A}$.</li>
+      <li>The combination of the terminating flows $\hat{F}(s\to s_f)$ for
+all terminating edges $s\to s_f\in\mathbb{A}^f$ and the backwards
+transition probabilities $\hat{P}_B(s\mid s’)$ for all non-terminating
+edges $s\to s’\in\mathbb{A}^{-f}$.</li>
+    </ol>
+  </li>
+</ul>
+
+<h3 id="flow-matching-conditions">
+<a class="anchor" href="#flow-matching-conditions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flow Matching Conditions</h3>
+
+<ul>
+  <li>
+<strong>Proposition 19</strong> (proofs on p.16-17): Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ and a non-negative function $\hat{F}$, which takes in put $s\in\mathcal{S}$ or a transition $s\to s’\in\mathbb{A}$, then $\hat{F}$ corresponds to a flow <em>if and only if</em> the <strong>flow matching conditions</strong> are satisfied:</li>
+</ul>
+
+\[\begin{aligned}
+\forall s^{\prime} &gt; s_0, \quad \hat{F}\left(s^{\prime}\right)
+&amp;=\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s
+\to s^{\prime}\right) \\
+\forall s^{\prime} &lt; s_f, \quad \hat{F}\left(s^{\prime}\right)
+&amp;=\sum_{s^{\prime \prime} \in \operatorname{Child}\left(s^{\prime}\right)}
+\hat{F}\left(s^{\prime} \to s^{\prime \prime}\right) \\
+\text{Then, given:}&amp; \\
+\hat{Z}&amp;=\hat{F}(s_0) \\
+\hat{P}_F\left(s^{\prime} \mid s\right)
+&amp;\coloneqq\frac{\hat{F}\left(s \to s^{\prime}\right)}{\hat{F}(s)} \\
+\hat{F}\text{ uniquely defines a flow $F$:}&amp; \\
+F(\tau)=\hat{Z} \prod_{t=1}^{n+1} \hat{P}_F\left(s_t \mid s_{t-1}\right)
+&amp;=\frac{\prod_{t=1}^{n+1} \hat{F}\left(s_{t-1} \to
+s_t\right)}{\prod_{t=1}^n \hat{F}\left(s_t\right)}
+\end{aligned}\]
+
+<ul>
+  <li>$\hat{P}_F$ and $\hat{P}_B$ are <strong>compatible</strong> if there exists a flow
+function $\hat{F}:\mathbb{A}\to\mathbb{R}^+$ such that</li>
+</ul>
+
+\[\hat{P}_F\left(s^{\prime}
+\mid s\right)=\frac{\hat{F}\left(s \to
+s^{\prime}\right)}{\sum_{s^{\prime} \in \operatorname{Child}(s)} \hat{F}\left(s
+\to s^{\prime}\right)}, \quad \hat{P}_B\left(s \mid
+s^{\prime}\right)=\frac{\hat{F}\left(s \to
+s^{\prime}\right)}{\sum_{s^{\prime \prime} \in
+\operatorname{Par}\left(s^{\prime}\right)} \hat{F}\left(s^{\prime \prime}
+\to s^{\prime}\right)}\]
+
+<ul>
+  <li>
+<strong>Proposition 21</strong>: $\hat{F}$, $\hat{P}_B$, $\hat{P}_F$ jointly correspond to
+a flow <em>if and only if</em> <strong>detailed balance</strong> holds:</li>
+</ul>
+
+\[\forall s \to s^{\prime} \in \mathbb{A} \quad \hat{F}(s)
+\hat{P}_F\left(s^{\prime} \mid s\right)=\hat{F}\left(s^{\prime}\right)
+\hat{P}_B\left(s \mid s^{\prime}\right)\]
+
+<h3 id="backwards-transitions-can-be-chosen-freely">
+<a class="anchor" href="#backwards-transitions-can-be-chosen-freely" aria-hidden="true"><span class="octicon octicon-link"></span></a>Backwards Transitions can be Chosen Freely</h3>
+
+<ul>
+  <li>Backward transitions can be chosen to achieve certain goals or to simplify
+other calculations. Some examples:
+    <ul>
+      <li>Goal of simplicity: make all parents of a node have equal weight.</li>
+      <li>Goal of shortest paths: more weight to shortest paths.</li>
+      <li>Goal of learning $P_F$ or $F$ easier: let a learner discover $P_B$.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="equivalence-between-flows">
+<a class="anchor" href="#equivalence-between-flows" aria-hidden="true"><span class="octicon octicon-link"></span></a>Equivalence Between Flows</h3>
+
+<ul>
+  <li>Two flows,$F_1,F_2\in\mathcal{F}(G)$, are equivalent if</li>
+</ul>
+
+\[\forall s\to s'\in\mathbb{A}\quad F_1(s\to s')=F_2(s\to s')\]
+
+<ul>
+  <li>Example:</li>
+</ul>
+
+<p><label for="figure-3" class="margin-toggle">⊕</label><input type="checkbox" id="figure-3" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/papers/figures/gflownet-foundations/figure-3.png"><br>Figure 3</span></p>
+
+\[\begin{array}{ccccc}
+\hline \tau &amp; F_1(\tau) &amp; F_2(\tau) &amp; F_3(\tau) &amp; F_4(\tau) \\
+\hline s_0, s_2, s_f &amp; 1 &amp; 4 / 5 &amp; 1 &amp; 6 / 5 \\
+s_0, s_1, s_2, s_f &amp; 1 &amp; 6 / 5 &amp; 1 &amp; 4 / 5 \\
+s_0, s_2, s_3, s_f &amp; 1 &amp; 6 / 5 &amp; 2 &amp; 9 / 5 \\
+s_0, s_1, s_2, s_3, s_f &amp; 2 &amp; 9 / 5 &amp; 1 &amp; 6 / 5 \\
+\hline
+\end{array}\]
+
+<ul>
+  <li>Given the preceding table and Figure 3, flows $F_1$ and $F_2$ are
+equivalent. $F_3$ and $F_4$ are equivalent, but not equivalent to $F_1$
+and $F_2$. Equivalence can be tested by summing up all trajectories that
+contain a particular edge and comparing that value between flows for
+every edge.</li>
+  <li>
+    <p>$F_2$ and $F_4$ are Markovian. $F_1$ and $F_3$ are not Markovian.
+Intuitively, a flow cannot be Markovian if the probability of an edge $s\to
+s’$ changes depending on the partial trajectory from $s_0\to s$, i.e. the
+flow “remembers” more than the previous state. For example, take edge $s_2\to
+s_3$ in $F_2$. There are two partial trajectories leading to this edge,
+$s_0\to s_2$ and $s_0\to s_1\to s_2$. The probability of transitioning
+through this edge for each partial trajectory must be equal to one another
+and to $P_F(s’\mid s)$.</p>
+
+\[\begin{aligned}
+P(s_2\to s_3\mid s_0\to s_2)
+&amp;= \frac{F(s_0\to s_2\to s_3)}{F(s_0\to s_2)} \\
+&amp;= \frac{F(s_0\to s_2\to s_3\to s_f)}{F(s_0\to s_2\to s_3\to s_f)+F(s_0\to s_2\to s_f)} \\
+&amp;= \frac{6/5}{6/5 + 4/5} \\
+&amp;= \boxed{\frac{3}{5}} \\
+P(s_2\to s_3\mid s_0\to s_1\to s_2)
+&amp;= \frac{F(s_0\to s_1\to s_2\to s_3)}{F(s_0\to s_1\to s_2)} \\
+&amp;= \frac{F(s_0\to s_1\to s_2\to s_3\to s_f)}{F(s_0\to s_1\to s_2\to s_3\to s_f)
++ F(s_0\to s_1\to s_2\to s_f)} \\
+&amp;= \frac{9/5}{9/5 + 6/5} \\
+&amp;= \boxed{\frac{3}{5}} \\
+P_F(s_3\mid s_2)
+&amp;= \frac{P(s_2\to s_3)}{P(s_2)} \\
+&amp;= \frac{F(s_2\to s_3)}{F(s_2)} \\
+&amp;= \frac{F(s_0\to s_1\to s_2\to s_3\to s_f) + F(s_0\to s_2\to s_3\to s_f)}
+{F(s_0\to s_2\to s_f)+ F(s_0\to s_1\to s_2\to s_f) + F(s_0\to s_2\to s_3\to s_f) + F(s_0\to s_1\to s_2\to s_3\to s_f)} \\
+&amp;= \boxed{\frac{3}{5}} \\
+\end{aligned}\]
+  </li>
+  <li>
+    <p>$F_1$, $F_2$, $F_3$, and $F_4$ coincide on the terminating flows, i.e. at
+$s_2\to s_f$ and $s_3\to s_f$.</p>
+  </li>
+  <li>
+<strong>Proposition 23</strong> (proof on p.20): If two flow functions
+$F_1,F_2\in\mathcal{F}_{Markov}(G)$ for a pointed DAG $G$ are equivalent,
+then they are equal. Furthermore, for <em>any</em> flow function
+$F’\in\mathcal{F}(G)$, there exists a unique Markovian flow function
+$F\in\mathcal{F}_{Markov}(G)$ such that $F$ and $F’$ are equivalent. There
+are two important consequences of this:
+    <ol>
+      <li>
+<strong>Efficiency</strong>: You only need to focus on Markovian flows, which decreases
+the requirements from specifying $F(\tau)$ for all trajectories to $F(s\to
+s’)$ for all edges. Generally, this is exponentially smaller than $\lvert
+T\rvert$.</li>
+      <li>
+<strong>Simplicity</strong>: In order to approximate or learn a Markovian flow, you
+need only learn the edge flow function, which is a much smaller object
+than the actual flow function.</li>
+    </ol>
+  </li>
+</ul>
+
+<h2 id="gflownets-learning-a-flow">
+<a class="anchor" href="#gflownets-learning-a-flow" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets: Learning a Flow</h2>
+
+<ul>
+  <li>The goal is to find functions such as $F(s)$ or $P(s\to s’\mid s)$ using
+estimators $\hat{F}(s)$ and $\hat{P}(s\to s’\mid s)$, which may not
+correspond to a proper flow.</li>
+  <li>These learning machines are called <strong>GFlowNets</strong>.</li>
+  <li>Given a reward function $R:\mathcal{S}^f\to \mathbb{R}^+$, GFNs attempt to estimate:</li>
+</ul>
+
+\[\forall s\in \mathcal{S}\quad F(s\to s')=R(s)\]
+
+<ul>
+  <li>Because of equivalences, without loss of generality, it’s prudent to have
+GFNs approximate Markovian flows only:</li>
+</ul>
+
+\[\mathcal{F}_{Markov}(G,R)=\\{F\in\mathcal{F}_{Markov}(G),\;\forall
+s\in\mathcal{S}^f\quad F(s\to s^f)=R(s)\\}\]
+
+<h3 id="gflownets-as-an-alternative-to-mcmc-sampling">
+<a class="anchor" href="#gflownets-as-an-alternative-to-mcmc-sampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets as an Alternative to MCMC Sampling</h3>
+
+<ul>
+  <li>MCMC suffers from mode-mixing, and GFNs replace long MCMC chains with a
+single learned configuration.</li>
+  <li>GFNs benefit where there is common structure shared between modes of a
+distribution, i.e. where traditional ML could generalize about the structure
+of rewards.</li>
+</ul>
+
+<h3 id="gflownets-and-flow-matching-losses">
+<a class="anchor" href="#gflownets-and-flow-matching-losses" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets and flow-matching losses</h3>
+
+<ul>
+  <li>Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ with $s_0$, $s_f$, and $R: \mathcal{S}^f\to \mathbb{R}^+$, we say that $(\mathcal{O},\Pi,\mathcal{H})$ is a <strong>flow parameritization</strong> of $(G,R)$ if:
+    <ol>
+      <li>$\mathcal{O}$ is a non-empty set.</li>
+      <li>$\Pi$ is a function mapping each object $o\in \mathcal{O}$ to an element
+$\Pi(o)\in\Delta(\mathcal{T})$, the set of probability distributions on
+$\mathcal{T}$.</li>
+      <li>$\mathcal{H}$ is an injective functional from $\mathcal{F}_{Markov}(G,R)$ to $\mathcal{O}$.</li>
+      <li>For any $F\in\mathcal{F}_{Markov}(G,R)$, $\Pi(\mathcal{H}(F))$ is the
+probability measure associated with the flow $F$.</li>
+    </ol>
+  </li>
+  <li>Each object $o\in \mathcal{O}$ implicitly defines a <strong>terminating state probability</strong> measure:</li>
+</ul>
+
+\[\forall s\in \mathcal{S}^f\quad P_T(s)\coloneqq \sum_{\tau\in \mathcal{T}:s\to
+s_f\in\tau}\Pi(o)(\tau)\]
+
+<ul>
+  <li>Only some parameterizations, $o=\mathcal{H}(F)$ for
+$F\in\mathcal{F}_{Markov}(G,R)$, satisfy $P_T(s)\propto R(s)\quad\forall
+s\in\mathcal{S}^f$.</li>
+  <li>GFNs provide a solution to the (generally intractable) problem of sampling
+from a target reward function $R$ or its associated <strong>energy function</strong>:
+$\mathcal{E}(s)\coloneqq -\log R(s)\;\forall s\in\mathcal{S}^f$.</li>
+  <li>Searching for an object $o\in
+\mathcal{H}(\mathcal{F}_{Markov}(G,R))\subseteq\mathcal{O}$ is often simpler
+then directly approximating flows $F\in\mathcal{F}_{Markov}(G,R)$.</li>
+</ul>
+
+<h4 id="edge-flow-parameterization-mathcalo_edgepi_edgemathcalh_edge">
+<a class="anchor" href="#edge-flow-parameterization-mathcalo_edgepi_edgemathcalh_edge" aria-hidden="true"><span class="octicon octicon-link"></span></a>Edge-flow Parameterization: $(\mathcal{O}_{edge},\Pi_{edge},\mathcal{H}_{edge})$</h4>
+
+<ul>
+  <li>$\mathcal{O}_{edge}=\mathcal{F}(\mathbb{A}^{-f},\mathbb{R}^+)$, the set of
+functions from $\mathbb{A}^{-f}$ to $\mathbb{R}^+$.</li>
+  <li>$\mathcal{H}_{edge}:\mathcal{F}_{Markov}(G,R)\to\mathcal{O}_{edge}$, a
+function that takes a flow and returns a parameterization. Namely,
+$\mathcal{H}_{edge}(F): (s\to s’)\in \mathbb{A}^{-f}\mapsto F(s\to s’)$.</li>
+  <li>$\Pi_{edge}:\mathcal{O}_{edge}\to\Delta(\mathcal{T})$, a function that takes
+a parameterization and returns a distribution over trajectories, i.e.</li>
+  <li>$\hat{F}\in\mathcal{O}_{edge}$</li>
+</ul>
+
+\[\begin{aligned}
+\Pi_{edge}(\hat{F})(\tau)&amp;\propto\prod_{t=1}^n P_{\hat{F}}(s_t\mid
+s_{t-1})\quad\forall\tau=(s_0,\ldots,s_n=s_f)\in\mathcal{T} \\
+P_{\hat{F}}\left(s^{\prime} \mid s\right)&amp;= \begin{cases}\frac{\hat{F}\left(s
+\rightarrow s^{\prime}\right)}{\sum_{s^{\prime \prime} \neq s_f}
+\hat{F}\left(s \rightarrow s^{\prime \prime}\right)+R(s)} &amp; \text { if }
+s^{\prime} \neq s_f \\ \frac{R(s)}{\sum_{s^{\prime \prime} \neq s_f}
+\hat{F}\left(s \rightarrow s^{\prime \prime}\right)+R(s)} &amp; \text { if }
+s^{\prime}=s_f\end{cases}
+\end{aligned}\]
+
+<h4 id="forward-transition-probability-parameterization-mathcalo_pfpi_pfmathcalh_pf">
+<a class="anchor" href="#forward-transition-probability-parameterization-mathcalo_pfpi_pfmathcalh_pf" aria-hidden="true"><span class="octicon octicon-link"></span></a>Forward Transition Probability Parameterization: $(\mathcal{O}_{PF},\Pi_{PF},\mathcal{H}_{PF})$</h4>
+
+<ul>
+  <li>$\mathcal{O}_{PF}=\mathcal{O}_1\times \mathcal{O}_2$.</li>
+  <li>$\mathcal{O}_1=\mathcal{F}(\mathcal{S}\setminus\{s_f\}, \mathbb{R}^+)$ is
+the set of functions from all non-sink states to $\mathbb{R}^+$.</li>
+  <li>$\mathcal{O}_2$ is the set of forward probability functions $\hat{P}_F$
+consistent with $G$.</li>
+  <li>$\mathcal{H}_{PF}:\mathcal{F}_{Markov}(G, R)\to\mathcal{O}_{PF}$.</li>
+  <li>$\Pi_{PF}:\mathcal{O}_{PF}\to\Delta(\mathcal{T})$.</li>
+</ul>
+
+\[\begin{aligned}
+\mathcal{H}_{PF}(F)=\left(s\in\mathcal{S}\setminus\{s_f\}\mapsto F(s),
+(s\to s')\in\mathbb{A}\mapsto P_F(s'\mid s)\right) \\
+\forall\tau=(s_0,\ldots,s_n=s_f)\in\mathcal{T}\quad\Pi_{PF}(\hat{F},\hat{P}_F)(\tau)\propto\prod_{t=1}^n \hat{P}_F(s_t\mid s_{t-1})
+\end{aligned}\]
+
+<h4 id="transition-probabilities-parameterization-mathcalo_pfbpi_pfbmathcalh_pfb">
+<a class="anchor" href="#transition-probabilities-parameterization-mathcalo_pfbpi_pfbmathcalh_pfb" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transition Probabilities Parameterization: $(\mathcal{O}_{PFB},\Pi_{PFB},\mathcal{H}_{PFB})$</h4>
+
+<ul>
+  <li>$\mathcal{O}_{PFB}=\mathcal{O}_1\times
+\mathcal{O}_2\times\mathcal{O}_3=\mathcal{O}_{PF}\times\mathcal{O}_3$</li>
+  <li>$\mathcal{O}_1=\mathcal{F}(\mathcal{S}\setminus\{s_f\}, \mathbb{R}^+)$ is
+the set of functions from all non-sink states to $\mathbb{R}^+$.</li>
+  <li>$\mathcal{O}_2$ is the set of forward probability functions $\hat{P}_F$
+consistent with $G$.</li>
+  <li>$\mathcal{O}_3$ is the set of backward probability functions $\hat{P}_B$
+consistent with $G$.</li>
+  <li>$\mathcal{H}_{PFB}:\mathcal{F}_{Markov}(G, R)\to\mathcal{O}_{PFB}$.</li>
+  <li>$\Pi_{PFB}:\mathcal{O}_{PFB}\to\Delta(\mathcal{T})$.</li>
+</ul>
+
+\[\begin{aligned}
+\mathcal{H}_{PFB}(F)=\left(\mathcal{H}_{PF}(F)),
+(s\to s')\in\mathbb{A}^{-f}\mapsto P_B(s\mid s')\right) \\
+\forall\tau=(s_0,\ldots,s_n=s_f)\in\mathcal{T}\quad\Pi_{PFB}(\hat{F},\hat{P}_F,\hat{P}_B)(\tau)\propto\prod_{t=1}^n \hat{P}_F(s_t\mid s_{t-1})
+\end{aligned}\]
+
+<h4 id="trajectory-balance-parameterization-mathcalo_tbpi_tbmathcalh_tb">
+<a class="anchor" href="#trajectory-balance-parameterization-mathcalo_tbpi_tbmathcalh_tb" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trajectory Balance Parameterization: $(\mathcal{O}_{TB},\Pi_{TB},\mathcal{H}_{TB})$</h4>
+
+<ul>
+  <li>$\mathcal{O}_{TB}=\mathcal{O}_1\times\mathcal{O}_2\times\mathcal{O}_3$</li>
+  <li>$\mathcal{O}_1=\mathbb{R}^+$ parameterizes the partition function $\hat{Z}$.</li>
+  <li>$\mathcal{O}_2$ is the set of forward probability functions $\hat{P}_F$
+consistent with $G$.</li>
+  <li>$\mathcal{O}_3$ is the set of backward probability functions $\hat{P}_B$
+consistent with $G$.</li>
+  <li>$\mathcal{H}_{TB}:\mathcal{F}_{Markov}(G, R)\to\mathcal{O}_{TB}$.</li>
+  <li>$\Pi_{TB}:\mathcal{O}_{TB}\to\Delta(\mathcal{T})$.</li>
+</ul>
+
+<h4 id="gflownet-grmathcalopimathcalh">
+<a class="anchor" href="#gflownet-grmathcalopimathcalh" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNet: $(G,R,\mathcal{O},\Pi,\mathcal{H})$</h4>
+
+<ul>
+  <li>$G=(\mathcal{S},\mathbb{A})$ is a pointed DAG with initial state $s_0$ and
+sink state $s_f$.</li>
+  <li>$R:\mathcal{S}^f\to \mathbb{R}^+$: a target reward function.</li>
+  <li>$(\mathcal{O},\Pi,\mathcal{H})$ a flow parameterization of $(G,R)$.</li>
+  <li>GFlowNet can refer to both a configuration $o\in\mathcal{O}$ and the full
+specification $(G,R,\mathcal{O},\Pi,\mathcal{H})$</li>
+  <li>If $o\in\mathcal{H}(\mathcal{F}_{Markov}(G,R))$, then $P_T(s)\propto R(s)$</li>
+  <li>To find a useful parameterization, you need to define a loss function
+$\mathcal{L}$ on $\mathcal{O}$ that equals 0 when
+$o\in\mathcal{H}(\mathcal{F}_{Markov}(G,R))$ .</li>
+</ul>
+
+<h4 id="flow-matching-losses">
+<a class="anchor" href="#flow-matching-losses" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flow-matching Losses</h4>
+
+<ul>
+  <li>Let $(G,R,\mathcal{O},\Pi,\mathcal{H})$ be a GFlowNet</li>
+  <li>A <strong>flow-matching loss</strong> is any function $\mathcal{L}:\mathcal{O}\to \mathbb{R}^+$ such that</li>
+</ul>
+
+\[\forall o\in \mathcal{O}\quad \mathcal{L}(o)=0\Leftrightarrow
+\exists F\in\mathcal{F}_{Markov}(G,R)\quad o=\mathcal{H}(F)\]
+
+<ul>
+  <li>$\mathcal{L}$ is <strong>edge-decomposable</strong> if there exists a function
+$L:\mathcal{O}\times \mathbb{A}\to \mathbb{R}^+$ such that:</li>
+</ul>
+
+\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=\sum_{s \rightarrow s^{\prime} \in \mathbb{A}} L\left(o, s \rightarrow s^{\prime}\right)\]
+
+<ul>
+  <li>$\mathcal{L}$ is <strong>state-decomposable</strong>, if there exists a function
+$L:\mathcal{O}\times \mathcal{S}\to \mathbb{R}^+$ such that:</li>
+</ul>
+
+\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=\sum_{s \in \mathcal{S}} L(o, s),\]
+
+<ul>
+  <li>$\mathcal{L}$ is <strong>trajectory-decomposable</strong>, if there exists a function
+$L:\mathcal{O}\times \mathcal{T}\to \mathbb{R}^+$ such that:</li>
+</ul>
+
+\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=\sum_{\tau \in \mathcal{T}} L(o, \tau)\]
+
+<ul>
+  <li>The objective is $\min_{o\in\mathcal{O}}\mathcal{L}(o)$; and for
+edge-decomposable loss, this would be
+$\min_{o\in\mathcal{O}}\mathbb{E}_{(s\to s’)\sim\pi_T}\left[L(o,s\to
+s’)\right]$ where $\pi_T$ is any full support probability distribution on
+$\mathbb{A}$. <label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): why doesn’t $\pi_T\propto R(s)$ </span>
+</li>
+</ul>
+
+<h5 id="edge-flow-paramterization-state-decomposable-loss">
+<a class="anchor" href="#edge-flow-paramterization-state-decomposable-loss" aria-hidden="true"><span class="octicon octicon-link"></span></a>Edge-flow Paramterization, State-decomposable Loss</h5>
+
+<ul>
+  <li>Given $(\mathcal{O}_{edge},\Pi_{edge}, \mathcal{H}_{edge})$ and
+$L_{FM}:\mathcal{O}\times \mathcal{S}\to \mathbb{R}^+$ defined for each
+$\hat{F}\in\mathcal{O}_{edge}$ and $s’\in\mathcal{S}$ where</li>
+</ul>
+
+\[L_{F M}\left(\hat{F}, s^{\prime}\right)=\left\{\begin{array}{l} \left(\log
+\left(\frac{\delta+\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)}
+\hat{F}\left(s \rightarrow
+s^{\prime}\right)}{\delta+R\left(s^{\prime}\right)+\sum_{s^{\prime \prime} \in
+\operatorname{Child}\left(s^{\prime}\right) \backslash\left\{s_f\right\}}
+\hat{F}\left(s^{\prime} \rightarrow s^{\prime \prime}\right)}\right)\right)^2
+\quad \text { if } s^{\prime} \neq s_f, \\ 0 \quad \text { otherwise }
+\end{array}\right.\]
+
+<ul>
+  <li>$\delta\ge 0$ is a hyper-parameter determining the sensitivity to small flows.</li>
+  <li>$\mathcal{L}_{FM}$ maps each $\hat{F}\in\mathcal{O}_{edge}$ to</li>
+</ul>
+
+\[\mathcal{L}_{F M}(\hat{F})=\sum_{s \in \mathcal{S}} L_{F M}(\hat{F}, s)\]
+
+<h5 id="transitions-parameterization-edge-decomposable-loss-detailed-balance">
+<a class="anchor" href="#transitions-parameterization-edge-decomposable-loss-detailed-balance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Transitions Parameterization, Edge-decomposable Loss (Detailed Balance)</h5>
+
+<ul>
+  <li>Given $(\mathcal{O}_{PFB},\Pi_{PFB}, \mathcal{H}_{PFB})$ and
+$L_{DB}:\mathcal{O}_{PFB}\times \mathbb{A}\to \mathbb{R}^+$ defined for each
+$(\hat{F},\hat{P}_F,\hat{P}_B)\in\mathcal{O}_{PFB}$ and $s\to s’\in \mathbb{A}$
+where</li>
+</ul>
+
+\[L_{D B}\left(\hat{F}, \hat{P}_F, \hat{P}_B, s \rightarrow s^{\prime}\right)=
+\begin{cases}\left(\log \left(\frac{\delta+\hat{F}(s) \hat{P}_F\left(s^{\prime}
+\mid s\right)}{\delta+\hat{F}\left(s^{\prime}\right) \hat{P}_B\left(s \mid
+s^{\prime}\right)}\right)\right)^2 &amp; \text { if } s^{\prime} \neq s_f, \\
+\left(\log \left(\frac{\delta+\hat{F}(s) \hat{P}_F\left(s^{\prime} \mid
+s\right)}{\delta+R(s)}\right)\right)^2 &amp; \text { otherwise },\end{cases}\]
+
+<ul>
+  <li>Again, $\delta\ge 0$ is a hyper-parameter.</li>
+  <li>$\mathcal{L}_{DB}$ maps each
+$(\hat{F},\hat{P}_F,\hat{P}_B))\in\mathcal{O}_{PFB}$ to</li>
+</ul>
+
+\[\left.\mathcal{L}_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B\right)\right)=\sum_{s \rightarrow s^{\prime} \in \mathbb{A}} L_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B, s \rightarrow s^{\prime}\right)\]
+
+<ul>
+  <li>Because the reward function does not completely specify the flow, this loss
+can be used with the $(\mathcal{O}_{PF},\Pi_{PF},\mathcal{H}_{PF})$
+parameterization, using any function $\hat{P}_B\in\mathcal{O}_3$ as input.</li>
+</ul>
+
+<h5 id="trajectory-balance-parameterization-trajectory-decomposable-loss">
+<a class="anchor" href="#trajectory-balance-parameterization-trajectory-decomposable-loss" aria-hidden="true"><span class="octicon octicon-link"></span></a>Trajectory Balance Parameterization, Trajectory-decomposable Loss</h5>
+
+<ul>
+  <li>Given $(\mathcal{O}_{TB},\Pi_{TB}, \mathcal{H}_{TB})$ and
+$L_{TB}:\mathcal{O}_{TB}\times \mathcal{T}\to \mathbb{R}^+$ defined for each
+$(\hat{Z},\hat{P}_F,\hat{P}_B)\in\mathcal{O}_{PFB}$ and $\tau\in\mathcal{T}$ where</li>
+</ul>
+
+\[\quad L_{T B}\left(\hat{Z}, \hat{P}_F, \hat{P}_B, \tau\right)=\left(\log
+\frac{\hat{Z} \prod_{t=1}^{n+1} \hat{P}_F\left(s_t \mid
+s_{t-1}\right)}{R\left(s_n\right) \prod_{t=1}^n \hat{P}_B\left(s_{t-1} \mid
+s_t\right)}\right)^2\]
+
+<ul>
+  <li>$\mathcal{L}_{TB}$ maps each $(\hat{Z},\hat{P}_F,\hat{P}_B)\in\mathcal{O}_{TB}$ to</li>
+</ul>
+
+\[\mathcal{L}_{TB}\left(\hat{Z}, \hat{P}_F, \hat{P}_B\right)=\sum_{\tau \in
+\mathcal{T}} L_{T B}\left(\hat{Z}, \hat{P}_F, \hat{P}_B, \tau\right)\]
+
+<h4 id="training-by-stochastic-gradient-descent">
+<a class="anchor" href="#training-by-stochastic-gradient-descent" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training by Stochastic Gradient Descent</h4>
+
+<ul>
+  <li>Evaluating $\mathcal{L}(o)$ is generally intractable (same with it’s
+minimization) since only a subset of edges can be visited in finite time.</li>
+  <li>For this reason, GFlowNets typically use stochastic gradient descent.</li>
+  <li>For edge-decomposable losses:</li>
+</ul>
+
+\[\nabla_o L\left(o, s \rightarrow s^{\prime}\right), \quad s \rightarrow
+s^{\prime} \sim \pi_o\]
+
+<ul>
+  <li>For trajectory-decomposable losses:</li>
+</ul>
+
+\[\nabla_o L(o, \tau), \quad \tau \sim \pi_o\]
+
+<ul>
+  <li>Here, $\pi_o$ is the training distribution.</li>
+</ul>
+
+<h3 id="extensions">
+<a class="anchor" href="#extensions" aria-hidden="true"><span class="octicon octicon-link"></span></a>Extensions</h3>
+
+<ul>
+  <li>Time stamps to allow cycles (p.27).</li>
+  <li>Stochastic rewards (p.28).</li>
+  <li>Offline Training (p.28).
+    <ul>
+      <li>$\pi_T$ should be adaptive and could even be another GFN with a different
+reward function.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="exploiting-data-as-known-terminating-states">
+<a class="anchor" href="#exploiting-data-as-known-terminating-states" aria-hidden="true"><span class="octicon octicon-link"></span></a>Exploiting Data as Known Terminating States</h3>
+
+<ul>
+  <li>How can you use $(s,R(s))$ pairs for training?
+    <ul>
+      <li>If parameterizing $P_B$, sample $\tau$’s from $s$ and use those
+trajectories to update the flows and forward transition probabilities. The
+problem with this is that the trajectories do not have full support (p.29).</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="conditional-flows-and-free-energies">
+<a class="anchor" href="#conditional-flows-and-free-energies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conditional Flows and Free Energies</h2>
+
+<ul>
+  <li>GFNs can recover $Z=F(s_0)$, but what about for arbitrary $s$? Are there
+conditional marginalization partition values? In general, no, because
+siblings may contribute to the flow of states downstream from $s$:</li>
+</ul>
+
+<figure class="fullwidth"><img src="https://media.githubusercontent.com/media/danjenson/notes/main/papers/figures/gflownet-foundations/figure-4.png"><figcaption></figcaption></figure>
+
+<ul>
+  <li>Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$, the partial order denoted $\ge$, and a function $\mathcal{E}: \mathcal{S}\to \mathbb{R}$, called the <strong>energy function</strong>, we define the <strong>free energy</strong> $\mathcal{F}(s)$ of a state $s$ as:</li>
+</ul>
+
+\[e^{-\mathcal{F}(s)}:=\sum_{s^{\prime}: s^{\prime} \geq s}
+e^{-\mathcal{E}\left(s^{\prime}\right)}\]
+
+<h3 id="conditional-flow-networks">
+<a class="anchor" href="#conditional-flow-networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conditional flow networks</h3>
+
+<ul>
+  <li>
+<strong>Conditional flow network</strong>: A specification of the following:
+    <ul>
+      <li>$\mathcal{X}$: A set of conditioning variables.</li>
+      <li>$\{G_x=(\mathcal{S}_x,\mathcal{A}_x)\}$ indexed by $x\in\mathcal{X}$.
+        <ul>
+          <li>For each DAG $G_x$, $\mathcal{T}_x$ is the set of complete trajectories in
+$G_x$ where $\mathcal{T}=\bigcup_{x\in\mathcal{X}}\mathcal{T}_x$.</li>
+          <li>$(s_0\mid x)\in\mathcal{S}_x$ and $(s_f\mid x)\in\mathcal{S}_x$.</li>
+        </ul>
+      </li>
+      <li>$F:\mathcal{X}\times\mathcal{T}\to \mathbb{R}^+$ such that $F(x,\tau)=0$
+when $\tau\notin\mathcal{T}_x$
+        <ul>
+          <li>$F_x$: The function mapping each $\tau\in\mathcal{T}_x$ to $F(x,\tau)$.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>These are the same as regular GFNs and carry all the same properties, only
+now they are conditioned on $x$.</li>
+</ul>
+
+<h3 id="reward-conditional-flow-networks-rsmid-x">
+<a class="anchor" href="#reward-conditional-flow-networks-rsmid-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reward-conditional flow networks: $R(s\mid x)$</h3>
+
+<h3 id="state-conditional-flow-networks">
+<a class="anchor" href="#state-conditional-flow-networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>State-conditional flow networks</h3>
+
+</article>
+    <span class="print-footer"
+  >GFlowNet Foundations - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

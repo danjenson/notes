@@ -1,0 +1,60 @@
+title: Daniel Jenson
+author: Daniel Jenson
+email: daniel.a.jenson@gmail.com
+description: >- # this means to ignore newlines until "baseurl:"
+  A collection of work and research by Daniel jenson.
+baseurl: "/notes" # the subpath of your site, e.g. /blog
+lfs: "https://media.githubusercontent.com/media/danjenson/notes/main"
+url: "https://danjenson.github.io" # the base hostname & protocol for your site, e.g. http://example.com
+header:
+  - name: "books"
+    path: "/books"
+  - name: "papers"
+    path: "/papers"
+  - name: "courses"
+    path: "/courses"
+  - name: "mindmaps"
+    path: "/mindmaps"
+footer:
+  - link: https://www.linkedin.com/in/daniel-jenson-7a002a30/
+    icon: icon-linkedin
+  - link: https://github.com/danjenson
+    icon: icon-github
+defaults:
+  - scope:
+      path: "" # an empty string here means all files in the project
+    values:
+      layout: "page"
+
+# Build settings
+destination: docs
+remote_theme: danjenson/et
+plugins:
+  - jekyll-remote-theme
+
+# Exclude from processing.
+# The following items will not be processed, by default.
+# Any item listed under the `exclude:` key here will be automatically added to
+# the internal "default list".
+#
+# Excluded items can be processed by explicitly listing the directories or
+# their entries' file path in the `include:` list.
+#
+exclude:
+  - README.md
+  - hooks
+  - serve.sh
+  - setup_dev.sh
+  - papers/figures/
+  - books/figures/
+  - courses/figures/
+#   - .sass-cache/
+#   - .jekyll-cache/
+#   - gemfiles/
+#   - Gemfile
+#   - Gemfile.lock
+#   - node_modules/
+#   - vendor/bundle/
+#   - vendor/cache/
+#   - vendor/gems/
+#   - vendor/ruby/
