@@ -132,6 +132,8 @@
 <li class="toc-entry toc-h3"><a href="#conditional-flow-networks">Conditional flow networks</a></li>
 <li class="toc-entry toc-h3"><a href="#reward-conditional-flow-networks-rsmid-x">Reward-conditional flow networks: $R(s\mid x)$</a></li>
 <li class="toc-entry toc-h3"><a href="#state-conditional-flow-networks-g_s">State-conditional flow networks: $G_s$</a></li>
+<li class="toc-entry toc-h3"><a href="#conditional-gflownets-mathcalxmathcalgmathcalrmathcalopimathcalh">Conditional GFlowNets: $(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$</a></li>
+<li class="toc-entry toc-h3"><a href="#training-energy-based-models-with-a-gflownet">Training Energy-Based Models with a GFlowNet</a></li>
 </ul>
 </li>
 </ul><h2 id="prelude">
@@ -199,7 +201,7 @@ non-Markovian if the flow can remember past history.</li>
   <li>
 <strong>Free energy</strong>: $\mathcal{F}(s)$ such that
 $e^{-\mathcal{F}(s)}:=\sum_{s^{\prime}: s^{\prime} \geq
-s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
+s}e^{-\mathcal{E}\left(s^{\prime}\right)}$.</li>
 </ul>
 
 <h3 id="notation">
@@ -312,6 +314,8 @@ s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
   <li>$\mathcal{X}$: A set of conditioning variables.</li>
   <li>$G_x=(\mathcal{S}_x,\mathcal{A}_x)$: A DAG indexed by $x\in\mathcal{X}$.</li>
   <li>$R_x(s)=R(s\mid x)$: A conditional reward function.</li>
+  <li>$(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$: A
+conditional GFlowNet.</li>
 </ul>
 
 <h2 id="introduction">
@@ -679,10 +683,10 @@ a parameterization and returns a distribution over trajectories, i.e.</li>
 \Pi_{edge}(\hat{F})(\tau)&amp;\propto\prod_{t=1}^n P_{\hat{F}}(s_t\mid
 s_{t-1})\quad\forall\tau=(s_0,\ldots,s_n=s_f)\in\mathcal{T} \\
 P_{\hat{F}}\left(s^{\prime} \mid s\right)&amp;= \begin{cases}\frac{\hat{F}\left(s
-\rightarrow s^{\prime}\right)}{\sum_{s^{\prime \prime} \neq s_f}
-\hat{F}\left(s \rightarrow s^{\prime \prime}\right)+R(s)} &amp; \text { if }
+\to s^{\prime}\right)}{\sum_{s^{\prime \prime} \neq s_f}
+\hat{F}\left(s \to s^{\prime \prime}\right)+R(s)} &amp; \text { if }
 s^{\prime} \neq s_f \\ \frac{R(s)}{\sum_{s^{\prime \prime} \neq s_f}
-\hat{F}\left(s \rightarrow s^{\prime \prime}\right)+R(s)} &amp; \text { if }
+\hat{F}\left(s \to s^{\prime \prime}\right)+R(s)} &amp; \text { if }
 s^{\prime}=s_f\end{cases}
 \end{aligned}\]
 
@@ -773,7 +777,8 @@ $o\in\mathcal{H}(\mathcal{F}_{Markov}(G,R))$ .</li>
 $L:\mathcal{O}\times \mathbb{A}\to \mathbb{R}^+$ such that:</li>
 </ul>
 
-\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=\sum_{s \rightarrow s^{\prime} \in \mathbb{A}} L\left(o, s \rightarrow s^{\prime}\right)\]
+\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=\sum_{s \to s^{\prime} \in
+\mathbb{A}} L\left(o, s \to s^{\prime}\right)\]
 
 <ul>
   <li>$\mathcal{L}$ is <strong>state-decomposable</strong>, if there exists a function
@@ -809,10 +814,10 @@ $\hat{F}\in\mathcal{O}_{edge}$ and $s’\in\mathcal{S}$ where</li>
 
 \[L_{F M}\left(\hat{F}, s^{\prime}\right)=\left\{\begin{array}{l} \left(\log
 \left(\frac{\delta+\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)}
-\hat{F}\left(s \rightarrow
+\hat{F}\left(s \to
 s^{\prime}\right)}{\delta+R\left(s^{\prime}\right)+\sum_{s^{\prime \prime} \in
 \operatorname{Child}\left(s^{\prime}\right) \backslash\left\{s_f\right\}}
-\hat{F}\left(s^{\prime} \rightarrow s^{\prime \prime}\right)}\right)\right)^2
+\hat{F}\left(s^{\prime} \to s^{\prime \prime}\right)}\right)\right)^2
 \quad \text { if } s^{\prime} \neq s_f, \\ 0 \quad \text { otherwise }
 \end{array}\right.\]
 
@@ -833,7 +838,7 @@ $(\hat{F},\hat{P}_F,\hat{P}_B)\in\mathcal{O}_{PFB}$ and $s\to s’\in \mathbb{A}
 where</li>
 </ul>
 
-\[L_{D B}\left(\hat{F}, \hat{P}_F, \hat{P}_B, s \rightarrow s^{\prime}\right)=
+\[L_{D B}\left(\hat{F}, \hat{P}_F, \hat{P}_B, s \to s^{\prime}\right)=
 \begin{cases}\left(\log \left(\frac{\delta+\hat{F}(s) \hat{P}_F\left(s^{\prime}
 \mid s\right)}{\delta+\hat{F}\left(s^{\prime}\right) \hat{P}_B\left(s \mid
 s^{\prime}\right)}\right)\right)^2 &amp; \text { if } s^{\prime} \neq s_f, \\
@@ -846,7 +851,7 @@ s\right)}{\delta+R(s)}\right)\right)^2 &amp; \text { otherwise },\end{cases}\]
 $(\hat{F},\hat{P}_F,\hat{P}_B))\in\mathcal{O}_{PFB}$ to</li>
 </ul>
 
-\[\left.\mathcal{L}_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B\right)\right)=\sum_{s \rightarrow s^{\prime} \in \mathbb{A}} L_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B, s \rightarrow s^{\prime}\right)\]
+\[\left.\mathcal{L}_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B\right)\right)=\sum_{s \to s^{\prime} \in \mathbb{A}} L_{D B}\left(\hat{F}, \hat{P}, \hat{P}_B, s \to s^{\prime}\right)\]
 
 <ul>
   <li>Because the reward function does not completely specify the flow, this loss
@@ -885,7 +890,7 @@ minimization) since only a subset of edges can be visited in finite time.</li>
   <li>For edge-decomposable losses:</li>
 </ul>
 
-\[\nabla_o L\left(o, s \rightarrow s^{\prime}\right), \quad s \rightarrow
+\[\nabla_o L\left(o, s \to s^{\prime}\right), \quad s \to
 s^{\prime} \sim \pi_o\]
 
 <ul>
@@ -1005,8 +1010,144 @@ scenario where sibling contribute to total terminal flow.</li>
   <li>
 <strong>Proposition 31</strong> (proof on p.32): For any pointed DAG
 $G=(\mathcal{S},\mathbb{A})$ and flow $F$, we can define a state-conditional
-flow network.</li>
+flow network. One solution is that for a given terminal state $s’$, you
+divide the flow from trajectories outside of $G_s$ that contribute to the
+flow through $s’$ among the existing flows in $G_s$ that terminate in $s’$.
+<label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): is this valid? </span>
+</li>
+  <li>
+<strong>Proposition 32</strong> (proof on p.33): Given a state-conditional flow network,
+the initial flow corresponds to the marginalization constant.</li>
 </ul>
+
+\[F_s(s)=\sum_{s^{\prime}: s^{\prime} \geq s}
+F\left(s^{\prime} \to s_f\right)=\sum_{s':s'\ge s}\exp(\log F(s'\to
+s_f))=\sum_{s':s'\ge s}\exp(-\mathcal{E}(s'))=\exp (-\mathcal{F}(s))\]
+
+<ul>
+  <li>
+<strong>Corollary 33</strong>: Given a state-conditional flow network, $F_s$ induces a
+probability distribution over terminal states $s’\in\mathcal{S}^f$:</li>
+</ul>
+
+\[P_T(s'\mid s)=\mathbb{1}_{s'\ge
+s}\frac{e^{-\mathcal{E}(s')}}{e^{-\mathcal{F}(s)}}=\mathbb{1}_{s'\ge
+s}e^{-\mathcal{E}(s')+\mathcal{F}(s)}\]
+
+<h3 id="conditional-gflownets-mathcalxmathcalgmathcalrmathcalopimathcalh">
+<a class="anchor" href="#conditional-gflownets-mathcalxmathcalgmathcalrmathcalopimathcalh" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conditional GFlowNets: $(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$</h3>
+
+<ul>
+  <li>Set of conditioning information: $\mathcal{X}$</li>
+  <li>Family of conditional graphs: $\mathcal{G}=\{G_x=(\mathcal{S}_x,\mathbb{A}_x),x\in\mathcal{X}\}$.</li>
+  <li>Family of conditional rewards: $\mathcal{R}=\{R_x:\mathcal{S}_x^f\to \mathbb{R}^+,x\in\mathcal{X}\}$.</li>
+  <li>Family of parameterizations: $(\mathcal{O}_x,\Pi_x,\mathcal{H}_x)$ of
+$(G_x,R_x)$ for every $x\in\mathcal{X}$.
+    <ul>
+      <li>$\mathcal{O}:x\in\mathcal{X}\mapsto \mathcal{O}_x$</li>
+      <li>$\Pi:x\in\mathcal{X}\mapsto \Pi_x$</li>
+      <li>$\mathcal{H}:x\in\mathcal{X}\mapsto \mathcal{H}_x$</li>
+    </ul>
+  </li>
+  <li>$(\mathcal{O},\Pi,\mathcal{H})$ form a <strong>conditional flow parameterization</strong>
+of $(\mathcal{X},\mathcal{G},\mathcal{R})$.</li>
+  <li>$o_x=o(x)\in\mathcal{O}$ represent conditional paramterizations.</li>
+  <li>$\pi_x\coloneqq\Pi_x(o_x)$ is a distribution over $\mathcal{T}_x$, the set oc
+complete trajectories in $G_x$, which implicitly defines a terminating state
+probability measure in $G_x$:</li>
+</ul>
+
+\[\forall x \in \mathcal{X} \quad \forall s \in \mathcal{S}_x^f \quad P_T(s \mid
+x):=\sum_{\tau \in \mathcal{T}_x: s \to s_f \mid x \in \tau} \pi_x(\tau)\]
+
+<ul>
+  <li>Conditional GFNs cast the problem of sampling from a target reward function
+to a search problem: searching for objects $o\in\mathcal{O}$ such that
+$o_x\in\mathcal{H}_x(\mathcal{F}_{Markov}(G_x,R_x))\subseteq\mathcal{O}_x$. For these objects,</li>
+</ul>
+
+\[\forall x \in \mathcal{X} \quad \forall s \in \mathcal{S}_x^f \quad P_T(s \mid
+x) \propto R_x(s)\]
+
+<ul>
+  <li>Given a conditional GFN, a <strong>conditional flow-matching loss</strong> is any function $\mathcal{L}:\mathcal{O}\to \mathbb{R}^+$ such that:</li>
+</ul>
+
+\[\forall o \in \mathcal{O} \quad \mathcal{L}(o)=0 \Leftrightarrow \forall x \in
+\mathcal{X}\; \exists F_x \in \mathcal{F}_{\text {Markov }}\left(G_x, R_x\right)
+\quad o_x=\mathcal{H}_x\left(F_x\right)\]
+
+<ul>
+  <li>$\mathcal{L}$ is <strong>condition-decomposable</strong> if there are functions
+$\mathcal{L}_x:\mathcal{O}_x\to \mathbb{R}^+$ such that</li>
+</ul>
+
+\[\forall o\in \mathcal{O}\quad \mathcal{L}(o)=\sum_{x\in \mathcal{X}}\mathcal{L}_x(o_x)\]
+
+<ul>
+  <li>Each of $L_x$ could be further decomposable to {state,edge,trajectory}-decomposable. If it were state-decomposable, for example, the minimization problem would be:</li>
+</ul>
+
+\[\min_{o\in\mathcal{O}}\mathbb{E}_{(x,s)\sim\pi_T}\left[L_x(o_x,s)\right]\]
+
+<ul>
+  <li>$\pi_T$ is any <strong>conditional full support distribution</strong> on $\mathcal{X}\times\bigcup_{x\in \mathcal{X}}\mathcal{S}_x$, i.e. a probability distribution that satisfies:</li>
+</ul>
+
+\[\forall x \in \mathcal{X} \quad \forall s \in \bigcup_{x \in \mathcal{X}}
+\mathcal{S}_x \quad \pi_T(x, s)&gt;0 \Leftrightarrow s \in \mathcal{S}_x\]
+
+<ul>
+  <li>This conditional full support distribution can be obtained by using
+$pi_\mathcal{X}$ with full support on $\mathcal{X}$ and $\pi_x$ with full
+support on $\mathcal{S}_x$ for any $x\in \mathcal{X}$:</li>
+</ul>
+
+\[\pi_T(x, s)= \begin{cases}\pi_{\mathcal{X}}(x) \pi_x(s) \quad \text { if } s
+\in \mathcal{S}_x \\ 0 \quad \text { otherwise }\end{cases}\]
+
+<ul>
+  <li>
+    <p>Example:</p>
+
+    <ul>
+      <li>
+        <p>$\mathcal{O}$ maps $x\in \mathcal{X}$ to $F_x\in \mathcal{O}_{edge,x}$:</p>
+
+\[\mathcal{O}=\left\{\hat{F}: \mathcal{X} \times \bigcup_{x \in \mathcal{X}}
+\mathbb{A}_x^{-f} \to \mathbb{R}^{+}, \quad \hat{F}\left(s \to s^{\prime} \mid
+x\right)=0 \quad \text { if } s \rightarrow s^{\prime} \notin
+\mathbb{A}_x\right\}\]
+      </li>
+      <li>For each $x\in \mathcal{X}$, $\hat{F}_x\coloneqq\hat{F}(\cdot\mid x)$ is an
+element of $\mathcal{O}_{edge,x}$, i.e. it is a mapping from
+$\mathbb{A}_x^{-f}$ to $\mathbb{R}^+$.</li>
+      <li>$\mathcal{H}: x\in \mathcal{X}\to \mathcal{H}_{edge,x}$</li>
+      <li>$\Pi: x\in \mathcal{X}\to\Pi_{edge,x}$</li>
+      <li>Using ML, we can learn both conditions and edges simultaneously.</li>
+      <li>Given the following conditional loss function and hyperparameter $\delta\ge
+0$, you can see that $\mathcal{L}$ is condition and state decomposable:</li>
+    </ul>
+  </li>
+</ul>
+
+\[L_x\left(\hat{F}_x, s^{\prime}\right)=\left\{\begin{array}{l} \left(\log
+\left(\frac{\delta+\sum_{s \in \operatorname{Par}\left(s^{\prime}\right)}
+\hat{F}\left(s \to s^{\prime} \mid x\right)}{\delta+R\left(s^{\prime}
+\mid x\right)+\sum_{s^{\prime \prime} \in
+\operatorname{Child}\left(s^{\prime}\right) \backslash\left\{s_f \mid
+x\right\}} \hat{F}\left(s^{\prime} \to s^{\prime \prime} \mid
+x\right)}\right)\right)^2 \quad \text { if } s^{\prime} \neq s_f, \\ 0 \quad
+\text { otherwise }
+\end{array}\right.\]
+
+\[\mathcal{L}(\hat{F})=\sum_{x \in \mathcal{X}} \sum_{s \in \mathcal{S}_x}
+L_x\left(\hat{F}_x, s^{\prime}\right)\]
+
+<h3 id="training-energy-based-models-with-a-gflownet">
+<a class="anchor" href="#training-energy-based-models-with-a-gflownet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training Energy-Based Models with a GFlowNet</h3>
+
+<p>-</p>
 
 </article>
     <span class="print-footer"
