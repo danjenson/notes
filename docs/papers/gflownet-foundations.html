@@ -138,6 +138,21 @@
 <li class="toc-entry toc-h3"><a href="#estimating-entropies-conditional-entropies-and-mutual-information">Estimating Entropies, Conditional Entropies and Mutual Information</a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h2"><a href="#gflownets-on-sets-grahs-and-to-marginalize-joint-distributions">GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#set-gflownets">Set GFlowNets</a></li>
+<li class="toc-entry toc-h3"><a href="#gflownet-on-graphs">GFLowNet on Graphs</a></li>
+<li class="toc-entry toc-h3"><a href="#marginalizing-over-missing-variables">Marginalizing over Missing Variables</a></li>
+<li class="toc-entry toc-h3"><a href="#modular-energy-function-decomposition">Modular Energy Function Decomposition</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#continuous-or-hybrid-actions-and-states">Continuous or Hybrid Actions and States</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#integral-normalization-constants">Integral Normalization Constants</a></li>
+<li class="toc-entry toc-h3"><a href="#gflownets-in-gflownets">GFlowNets in GFlowNets</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#related-work">Related Work</a></li>
 </ul><h2 id="prelude">
 <a class="anchor" href="#prelude" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prelude</h2>
 
@@ -1205,11 +1220,199 @@ $R(s)$.</li>
       <li>$F(s_0)$ in GFN 2 can be used as an estimate of entropy.</li>
       <li>The same can be done for conditional entropy, from which you can calculate
 mutual information.</li>
+      <li>Note that $R(s)&lt;1$ in order for $R’(s)&gt;0$.</li>
     </ul>
   </li>
   <li>
-<strong>Proposition 37</strong>:</li>
+<strong>Proposition 37</strong> (proof on p.38): Given a flow network $(G,F)$ such that the terminating
+flows match the reward function $R$, where $R(s)&lt;1\forall s\in
+\mathcal{S}^f$, and a second flow network $(G,F’)$ with the same pointed DAG
+but a flow matching $R’$, then the entropy $H[S]$ associated with the
+terminating state random variable $S\in\mathcal{S}^f$ with distribution
+$P_T(S=s)=R(s)/Z$ is:</li>
 </ul>
+
+\[H[S]:=-\sum_s P_T(s) \log P_T(s)=\frac{F^{\prime}\left(s_0\right)}{F\left(s_0\right)}+\log F\left(s_0\right)\]
+
+<ul>
+  <li>
+<strong>Proposition 38</strong> (proof on p.39): Given a set of conditioning variables
+$\mathcal{X}$, a conditional flow network defined by a conditional flow
+function $F$, and a reward function family $\mathcal{R}$ such that $R_x(s)&lt;1$
+for all $s$, and a second conditional flow network defined by conditional
+flow function $F’$, which match the entropic rewards $R’_x$, then the
+conditional entropy $H[S\mid x]$ of random terminating states
+$S\in\mathcal{S}^f$ consistent with $x$ is:</li>
+</ul>
+
+\[H[S \mid x]=\frac{F^{\prime}\left(s_0 \mid x\right)}{F\left(s_0 \mid
+x\right)}+\log F\left(s_0 \mid x\right)\]
+
+<ul>
+  <li>Furthermore, if this is a state-conditional GFN:</li>
+</ul>
+
+\[H[S \mid s]=\frac{F^{\prime}(s \mid s)}{F(s \mid s)}+\log F(s \mid s) .\]
+
+<ul>
+  <li>The mutual information, $\operatorname{MI}(S;X)$ between the random draw of a terminating state $S=s$ according to $P_T(s\mid x)$ according to the random variable $X$ is:</li>
+</ul>
+
+\[\operatorname{MI}(S ; X)=H[S]-E_X[H[S \mid
+X]]=\frac{F^{\prime}\left(s_0\right)}{F\left(s_0\right)}+\log
+F\left(s_0\right)-E_X\left[\frac{F^{\prime}\left(s_0 \mid X\right)}{F\left(s_0
+\mid X\right)}+\log F\left(s_0 \mid X\right)\right]\]
+
+<ul>
+  <li>This can be approximated by Monte-Carlo averaging with draws from $P(X)$, if
+a sampling mechanism exists.</li>
+</ul>
+
+<h2 id="gflownets-on-sets-grahs-and-to-marginalize-joint-distributions">
+<a class="anchor" href="#gflownets-on-sets-grahs-and-to-marginalize-joint-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions</h2>
+
+<h3 id="set-gflownets">
+<a class="anchor" href="#set-gflownets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set GFlowNets</h3>
+
+<ul>
+  <li>A set flow network is a network on the graph $G$ where:
+    <ul>
+      <li>$\mathcal{U}$: A universe set.</li>
+      <li>$G(\mathcal{S},\mathbb{A})$ where $S\coloneqq 2^\mathcal{U}$ is the set of
+all subsets of $\mathcal{U}$ with terminal state $s_f$ and initial state
+$s_0=\{\}$, the empty set.</li>
+      <li>For any two subsets $s,s’\in\mathcal{U}$, $s\to s’\in
+\mathbb{A}\Leftrightarrow\exists a\in\mathcal{U}\setminus s,s’=s\cup\{a\}$.
+This means that each transition in the DAG corresponds to adding one element
+of $\mathcal{U}$ to the current subset.</li>
+      <li>All subsets are connected to $s_f$, i.e. $\forall s\in \mathcal{S}$, $s\to
+s_f\in \mathbb{A}$.</li>
+    </ul>
+  </li>
+  <li>A <strong>set GFlowNet</strong> is an estimator of such a network.</li>
+  <li>The target terminal reward function $R:s\mapsto F(s\to s_f)$ satisfies:</li>
+</ul>
+
+\[Z=\sum_{s\in 2^\mathcal{U}}R(s)&lt;\infty\]
+
+<ul>
+  <li>$P_T$ where $\mathcal{E}=-\log R$ is defined as:</li>
+</ul>
+
+\[P_T(s)=e^{-\mathcal{E}(s)+\mathcal{F}\left(s_0\right)}=\frac{F\left(s
+\rightarrow s_f\right)}{F\left(s_0\right)}\]
+
+<ul>
+  <li>Corollary 33 also provides the conditional probability of a superset:</li>
+</ul>
+
+\[P_T\left(s^{\prime} \mid s^{\prime} \supseteq
+s\right):=e^{-\mathcal{E}\left(s^{\prime}\right)+\mathcal{F}(s)}=\frac{F\left(s^{\prime}
+\to s_f\right)}{F(s \mid s)}\]
+
+<ul>
+  <li>Because it is not guaranteed that $\hat{F}(s)=R(s)\;\forall s\in \mathcal{S}\setminus\{s_f\}$, probabilities can be estimated with either:</li>
+</ul>
+
+\[\hat{P}_T(s)=\frac{\hat{F}(s\to s_f)}{\hat{F}(s_0)}
+\quad\text{ or }\quad\hat{P}_T(s)=\frac{R(s)}{\hat{F}(s_0)}\]
+
+<ul>
+  <li>Similarly, conditional supersets can be estimated with:</li>
+</ul>
+
+\[\hat{P}_T\left(s^{\prime} \mid s^{\prime} \supseteq
+s\right)=\frac{R\left(s^{\prime}\right)}{\hat{F}(s \mid s)}\]
+
+<ul>
+  <li>
+<strong>Proposition 40</strong> (proof on p.41): Given $\mathfrak{S}(s)=\{s’\supseteq
+s\}$, the supersets of set $s$, the probability of drawing any element from
+$\mathfrak{S}(s)$ given a set flow network is:</li>
+</ul>
+
+\[P_T(\mathfrak{S}(s))=\sum_{s^{\prime} \supseteq s} P_T\left(s^{\prime}\right)=\frac{e^{-\mathcal{F}(s)}}{Z}=\frac{F(s \mid s)}{F\left(s_0\right)} .\]
+
+<h3 id="gflownet-on-graphs">
+<a class="anchor" href="#gflownet-on-graphs" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFLowNet on Graphs</h3>
+
+<ul>
+  <li>Since graphs are sets, all GFN operations on sets can be applied on graphs.</li>
+</ul>
+
+<h3 id="marginalizing-over-missing-variables">
+<a class="anchor" href="#marginalizing-over-missing-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Marginalizing over Missing Variables</h3>
+
+<ul>
+  <li>Since GFNs can be applied to sets, they can be used to model joint
+distributions and calculate marginal probabilities.
+<label for="q-3" class="margin-toggle"> ⊕</label><input type="checkbox" id="q-3" class="margin-toggle"><span class="marginnote">TODO(danj): composite RV as set? p.41 bottom </span>
+</li>
+</ul>
+
+<h3 id="modular-energy-function-decomposition">
+<a class="anchor" href="#modular-energy-function-decomposition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modular Energy Function Decomposition</h3>
+
+<ul>
+  <li>A GFN can be applied to a factor graph with reusable factors, which yields a
+distribution $P_T(g)$ over graphs $g$, each of which is associated with an
+energy function value $\mathcal{E}(g)$ and reward $R(g)$.</li>
+  <li>The objective here is to have a shared set of factors $\mathbb{F}$ be
+reusable across many factor graphs $g$.</li>
+  <li>Let $\mathcal{V}$ be a set of random variables and graph
+$g=\{(F^i,v^i)\}$ be written as a set of pieces $(F^i,v^i)$ where
+$F_i\in\mathbb{F}$, the index of a factor with energy function term
+$\mathcal{E}_{F^i}$, selected from a pool $\mathbb{F}$ of possible factors.</li>
+  <li>Let $v_i=(v_1,v_2,\ldots)$ be a list of realizations of the random variables
+$V_j\leftarrow v_j$ where $V_j\in\mathcal{V}$ is a node in the factor graph.
+This list defines the edges of the factor graph connecting variable $V_j$
+with the $j$-th argument of $\mathcal{E}_{F^i}$.</li>
+  <li>Let $\mathcal{E}_{F^i}(v^i)$ denote the value of the energy function term
+$\mathcal{E}_{F^i}$ applied to $v^i$, the total energy function of the graph
+can thus be decomposed as $\mathcal{E}(g)=\sum_i\mathcal{E}_{F^i}(v^i)$.
+<label for="q-4" class="margin-toggle"> ⊕</label><input type="checkbox" id="q-4" class="margin-toggle"><span class="marginnote">TODO(danj): how is this like attention? p.43 </span>
+</li>
+</ul>
+
+<h2 id="continuous-or-hybrid-actions-and-states">
+<a class="anchor" href="#continuous-or-hybrid-actions-and-states" aria-hidden="true"><span class="octicon octicon-link"></span></a>Continuous or Hybrid Actions and States</h2>
+
+<h3 id="integral-normalization-constants">
+<a class="anchor" href="#integral-normalization-constants" aria-hidden="true"><span class="octicon octicon-link"></span></a>Integral Normalization Constants</h3>
+
+<ul>
+  <li>If we can handle a continuous state, then we can handle a hybrid state,
+$s=(s^i,s^x)$ where $s^i$ is discrete and $s^x$ is continuous by decomposing
+the transition as follows, which is equivalent to taking a discrete and then
+continuous action:</li>
+</ul>
+
+\[P_F\left(s_{t+1} \mid s_t\right)=P\left(s_{t+1}^x \mid s_{t+1}^i, s_t\right)
+P\left(s_{t+1}^i \mid s_t\right)\]
+
+<ul>
+  <li>Options for continuous conditional:
+    <ul>
+      <li>Use a distribution with a known normalization constant, i.e. Gaussian; this
+may limit capacity.</li>
+      <li>Use mixture components, i.e. use a mix of Gaussians to approximate a target
+network.</li>
+      <li>Use an autoregressive or normalizing flow model.</li>
+      <li>Use multiple resampling steps as in diffusion models.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="gflownets-in-gflownets">
+<a class="anchor" href="#gflownets-in-gflownets" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets in GFlowNets</h3>
+
+<ul>
+  <li>Using $\langle \text{GFN,energy function}\rangle$ at the lower level, you can
+represent edge flow involving continuous variables.</li>
+</ul>
+
+<h2 id="related-work">
+<a class="anchor" href="#related-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Related Work</h2>
 
 </article>
     <span class="print-footer"

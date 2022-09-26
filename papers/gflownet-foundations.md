@@ -924,4 +924,163 @@ $$
   - $F(s_0)$ in GFN 2 can be used as an estimate of entropy.
   - The same can be done for conditional entropy, from which you can calculate
     mutual information.
-- **Proposition 37**:
+  - Note that $R(s)<1$ in order for $R'(s)>0$.
+- **Proposition 37** (proof on p.38): Given a flow network $(G,F)$ such that the terminating
+  flows match the reward function $R$, where $R(s)<1\forall s\in
+  \mathcal{S}^f$, and a second flow network $(G,F')$ with the same pointed DAG
+  but a flow matching $R'$, then the entropy $H[S]$ associated with the
+  terminating state random variable $S\in\mathcal{S}^f$ with distribution
+  $P_T(S=s)=R(s)/Z$ is:
+
+$$
+H[S]:=-\sum_s P_T(s) \log P_T(s)=\frac{F^{\prime}\left(s_0\right)}{F\left(s_0\right)}+\log F\left(s_0\right)
+$$
+
+- **Proposition 38** (proof on p.39): Given a set of conditioning variables
+  $\mathcal{X}$, a conditional flow network defined by a conditional flow
+  function $F$, and a reward function family $\mathcal{R}$ such that $R_x(s)<1$
+  for all $s$, and a second conditional flow network defined by conditional
+  flow function $F'$, which match the entropic rewards $R'_x$, then the
+  conditional entropy $H[S\mid x]$ of random terminating states
+  $S\in\mathcal{S}^f$ consistent with $x$ is:
+
+$$
+H[S \mid x]=\frac{F^{\prime}\left(s_0 \mid x\right)}{F\left(s_0 \mid
+x\right)}+\log F\left(s_0 \mid x\right)
+$$
+
+- Furthermore, if this is a state-conditional GFN:
+
+$$
+H[S \mid s]=\frac{F^{\prime}(s \mid s)}{F(s \mid s)}+\log F(s \mid s) .
+$$
+
+- The mutual information, $\operatorname{MI}(S;X)$ between the random draw of a terminating state $S=s$ according to $P_T(s\mid x)$ according to the random variable $X$ is:
+
+$$
+\operatorname{MI}(S ; X)=H[S]-E_X[H[S \mid
+X]]=\frac{F^{\prime}\left(s_0\right)}{F\left(s_0\right)}+\log
+F\left(s_0\right)-E_X\left[\frac{F^{\prime}\left(s_0 \mid X\right)}{F\left(s_0
+\mid X\right)}+\log F\left(s_0 \mid X\right)\right]
+$$
+
+- This can be approximated by Monte-Carlo averaging with draws from $P(X)$, if
+  a sampling mechanism exists.
+
+## GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions
+
+### Set GFlowNets
+
+- A set flow network is a network on the graph $G$ where:
+  - $\mathcal{U}$: A universe set.
+  - $G(\mathcal{S},\mathbb{A})$ where $S\coloneqq 2^\mathcal{U}$ is the set of
+    all subsets of $\mathcal{U}$ with terminal state $s_f$ and initial state
+    $s_0=\\{\\}$, the empty set.
+  - For any two subsets $s,s'\in\mathcal{U}$, $s\to s'\in
+  \mathbb{A}\Leftrightarrow\exists a\in\mathcal{U}\setminus s,s'=s\cup\\{a\\}$.
+    This means that each transition in the DAG corresponds to adding one element
+    of $\mathcal{U}$ to the current subset.
+  - All subsets are connected to $s_f$, i.e. $\forall s\in \mathcal{S}$, $s\to
+    s_f\in \mathbb{A}$.
+- A **set GFlowNet** is an estimator of such a network.
+- The target terminal reward function $R:s\mapsto F(s\to s_f)$ satisfies:
+
+$$
+Z=\sum_{s\in 2^\mathcal{U}}R(s)<\infty
+$$
+
+- $P_T$ where $\mathcal{E}=-\log R$ is defined as:
+
+$$
+P_T(s)=e^{-\mathcal{E}(s)+\mathcal{F}\left(s_0\right)}=\frac{F\left(s
+\rightarrow s_f\right)}{F\left(s_0\right)}
+$$
+
+- Corollary 33 also provides the conditional probability of a superset:
+
+$$
+P_T\left(s^{\prime} \mid s^{\prime} \supseteq
+s\right):=e^{-\mathcal{E}\left(s^{\prime}\right)+\mathcal{F}(s)}=\frac{F\left(s^{\prime}
+\to s_f\right)}{F(s \mid s)}
+$$
+
+- Because it is not guaranteed that $\hat{F}(s)=R(s)\;\forall s\in \mathcal{S}\setminus\\{s_f\\}$, probabilities can be estimated with either:
+
+$$
+\hat{P}_T(s)=\frac{\hat{F}(s\to s_f)}{\hat{F}(s_0)}
+\quad\text{ or }\quad\hat{P}_T(s)=\frac{R(s)}{\hat{F}(s_0)}
+$$
+
+- Similarly, conditional supersets can be estimated with:
+
+$$
+\hat{P}_T\left(s^{\prime} \mid s^{\prime} \supseteq
+s\right)=\frac{R\left(s^{\prime}\right)}{\hat{F}(s \mid s)}
+$$
+
+- **Proposition 40** (proof on p.41): Given $\mathfrak{S}(s)=\\{s'\supseteq
+  s\\}$, the supersets of set $s$, the probability of drawing any element from
+  $\mathfrak{S}(s)$ given a set flow network is:
+
+$$
+P_T(\mathfrak{S}(s))=\sum_{s^{\prime} \supseteq s} P_T\left(s^{\prime}\right)=\frac{e^{-\mathcal{F}(s)}}{Z}=\frac{F(s \mid s)}{F\left(s_0\right)} .
+$$
+
+### GFLowNet on Graphs
+
+- Since graphs are sets, all GFN operations on sets can be applied on graphs.
+
+### Marginalizing over Missing Variables
+
+- Since GFNs can be applied to sets, they can be used to model joint
+  distributions and calculate marginal probabilities.
+  {% marginnote 'q-3' 'TODO(danj): composite RV as set? p.41 bottom' %}
+
+### Modular Energy Function Decomposition
+
+- A GFN can be applied to a factor graph with reusable factors, which yields a
+  distribution $P_T(g)$ over graphs $g$, each of which is associated with an
+  energy function value $\mathcal{E}(g)$ and reward $R(g)$.
+- The objective here is to have a shared set of factors $\mathbb{F}$ be
+  reusable across many factor graphs $g$.
+- Let $\mathcal{V}$ be a set of random variables and graph
+  $g=\\{(F^i,v^i)\\}$ be written as a set of pieces $(F^i,v^i)$ where
+  $F_i\in\mathbb{F}$, the index of a factor with energy function term
+  $\mathcal{E}\_{F^i}$, selected from a pool $\mathbb{F}$ of possible factors.
+- Let $v_i=(v_1,v_2,\ldots)$ be a list of realizations of the random variables
+  $V_j\leftarrow v_j$ where $V_j\in\mathcal{V}$ is a node in the factor graph.
+  This list defines the edges of the factor graph connecting variable $V_j$
+  with the $j$-th argument of $\mathcal{E}_{F^i}$.
+- Let $\mathcal{E}\_{F^i}(v^i)$ denote the value of the energy function term
+  $\mathcal{E}\_{F^i}$ applied to $v^i$, the total energy function of the graph
+  can thus be decomposed as $\mathcal{E}(g)=\sum_i\mathcal{E}\_{F^i}(v^i)$.
+  {% marginnote 'q-4' 'TODO(danj): how is this like attention? p.43' %}
+
+## Continuous or Hybrid Actions and States
+
+### Integral Normalization Constants
+
+- If we can handle a continuous state, then we can handle a hybrid state,
+  $s=(s^i,s^x)$ where $s^i$ is discrete and $s^x$ is continuous by decomposing
+  the transition as follows, which is equivalent to taking a discrete and then
+  continuous action:
+
+$$
+P_F\left(s_{t+1} \mid s_t\right)=P\left(s_{t+1}^x \mid s_{t+1}^i, s_t\right)
+P\left(s_{t+1}^i \mid s_t\right)
+$$
+
+- Options for continuous conditional:
+  - Use a distribution with a known normalization constant, i.e. Gaussian; this
+    may limit capacity.
+  - Use mixture components, i.e. use a mix of Gaussians to approximate a target
+    network.
+  - Use an autoregressive or normalizing flow model.
+  - Use multiple resampling steps as in diffusion models.
+
+### GFlowNets in GFlowNets
+
+- Using $\langle \text{GFN,energy function}\rangle$ at the lower level, you can
+  represent edge flow involving continuous variables.
+
+## Related Work
