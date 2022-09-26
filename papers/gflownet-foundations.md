@@ -160,6 +160,11 @@ associated distributions, including conditional and marginal distributions.
 - $R_x(s)=R(s\mid x)$: A conditional reward function.
 - $(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$: A
   conditional GFlowNet.
+- $P_\theta(s)=\frac{\exp(-\mathcal{E}\_\theta(s))}{Z(\theta)}$: A probability
+  distribution parameterized by $\theta$ associated with energy function
+  $\mathcal{E}_\theta(s)$.
+- $R'(s)=-R(s)\log R(s)$ given $0\le R(s)< 1\forall s$: An entropic reward
+  function.
 
 ## Introduction
 
@@ -582,7 +587,7 @@ $$
   edge-decomposable loss, this would be
   $\min_{o\in\mathcal{O}}\mathbb{E}_{(s\to s')\sim\pi_T}\left[L(o,s\to
   s')\right]$ where $\pi_T$ is any full support probability distribution on
-  $\mathbb{A}$. {% marginnote 'q' "TODO(danj): why doesn't $\pi_T\propto R(s)$" %}
+  $\mathbb{A}$. {% marginnote 'q' 'TODO(danj): why doesnt $\pi_T\propto R(s)$' %}
 
 ##### Edge-flow Paramterization, State-decomposable Loss
 
@@ -880,4 +885,43 @@ $$
 
 ### Training Energy-Based Models with a GFlowNet
 
--
+- Given $P_\theta(s)=\frac{\exp(-\mathcal{E}(s))}{Z}$, a GFN could draw samples
+  according to $\hat{P}\_T$, an estimator for the true $P_\theta$
+- Using stochastic gradient descent on the negative log-likelihood and sampling
+  from the GFN, $s\sim \hat{P}_T$, for the estimate of the second term on right:
+
+$$
+\frac{\partial-\log P_\theta(x)}{\partial \theta}=\frac{\partial
+\mathcal{E}_\theta(x)}{\partial \theta}-\sum_s P_\theta(s) \frac{\partial
+\mathcal{E}_\theta(s)}{\partial \theta}
+$$
+
+- One could jointly train an energy function $\mathcal{E}\_\theta$ and a GFN by
+  alternative updates to $\theta$ and the GFN using that energy function.
+- If you fix $\hat{F}(s\to s_f)=R(s)$, i.e. the reward function is
+  deterministic, then you can parameterize the energy function with the same
+  neural network that computes the flow, since $\mathcal{E}(s)=-\log
+  R(s)=-\log\hat{F}(s\to s_f)$.
+  - This could be further generalized to conditional distributions using
+    conditional GFNs (p.36-37). {% marginnote 'q-1' 'TODO(danj): inner vs. outer loop' %}
+
+### Active Learning with a GFlowNet
+
+- Outer loop trains a proxy $\hat{f}$, which approximates a true oracle $f$.
+- Inner loop trains a GFN to approximate $\hat{f}$.
+- GFN generates samples which are used to train $\hat{f}$.
+- Quantifying uncertainty $u(x, f)$ or evaluating a measure of novelty can
+  control how the GFN explores the state space.
+
+### Estimating Entropies, Conditional Entropies and Mutual Information
+
+- $R'(s)=-R(s)\log R(s)$ given $0\le R(s)< 1\;\forall s$ is an **entropic reward
+  function**.
+- You can estimate entropies by training two GFNs:
+  - GFN 1 estimates flows as usual for a target terminal reward function
+    $R(s)$.
+  - GFN 2 estimates flows for the entropic reward function.
+  - $F(s_0)$ in GFN 2 can be used as an estimate of entropy.
+  - The same can be done for conditional entropy, from which you can calculate
+    mutual information.
+- **Proposition 37**:

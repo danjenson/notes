@@ -134,6 +134,8 @@
 <li class="toc-entry toc-h3"><a href="#state-conditional-flow-networks-g_s">State-conditional flow networks: $G_s$</a></li>
 <li class="toc-entry toc-h3"><a href="#conditional-gflownets-mathcalxmathcalgmathcalrmathcalopimathcalh">Conditional GFlowNets: $(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$</a></li>
 <li class="toc-entry toc-h3"><a href="#training-energy-based-models-with-a-gflownet">Training Energy-Based Models with a GFlowNet</a></li>
+<li class="toc-entry toc-h3"><a href="#active-learning-with-a-gflownet">Active Learning with a GFlowNet</a></li>
+<li class="toc-entry toc-h3"><a href="#estimating-entropies-conditional-entropies-and-mutual-information">Estimating Entropies, Conditional Entropies and Mutual Information</a></li>
 </ul>
 </li>
 </ul><h2 id="prelude">
@@ -316,6 +318,11 @@ s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
   <li>$R_x(s)=R(s\mid x)$: A conditional reward function.</li>
   <li>$(\mathcal{X},\mathcal{G},\mathcal{R},\mathcal{O},\Pi,\mathcal{H})$: A
 conditional GFlowNet.</li>
+  <li>$P_\theta(s)=\frac{\exp(-\mathcal{E}_\theta(s))}{Z(\theta)}$: A probability
+distribution parameterized by $\theta$ associated with energy function
+$\mathcal{E}_\theta(s)$.</li>
+  <li>$R’(s)=-R(s)\log R(s)$ given $0\le R(s)&lt; 1\forall s$: An entropic reward
+function.</li>
 </ul>
 
 <h2 id="introduction">
@@ -799,7 +806,7 @@ $L:\mathcal{O}\times \mathcal{T}\to \mathbb{R}^+$ such that:</li>
 edge-decomposable loss, this would be
 $\min_{o\in\mathcal{O}}\mathbb{E}_{(s\to s’)\sim\pi_T}\left[L(o,s\to
 s’)\right]$ where $\pi_T$ is any full support probability distribution on
-$\mathbb{A}$. <label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): why doesn’t $\pi_T\propto R(s)$ </span>
+$\mathbb{A}$. <label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): why doesnt $\pi_T\propto R(s)$ </span>
 </li>
 </ul>
 
@@ -1147,7 +1154,62 @@ L_x\left(\hat{F}_x, s^{\prime}\right)\]
 <h3 id="training-energy-based-models-with-a-gflownet">
 <a class="anchor" href="#training-energy-based-models-with-a-gflownet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Training Energy-Based Models with a GFlowNet</h3>
 
-<p>-</p>
+<ul>
+  <li>Given $P_\theta(s)=\frac{\exp(-\mathcal{E}(s))}{Z}$, a GFN could draw samples
+according to $\hat{P}_T$, an estimator for the true $P_\theta$</li>
+  <li>Using stochastic gradient descent on the negative log-likelihood and sampling
+from the GFN, $s\sim \hat{P}_T$, for the estimate of the second term on right:</li>
+</ul>
+
+\[\frac{\partial-\log P_\theta(x)}{\partial \theta}=\frac{\partial
+\mathcal{E}_\theta(x)}{\partial \theta}-\sum_s P_\theta(s) \frac{\partial
+\mathcal{E}_\theta(s)}{\partial \theta}\]
+
+<ul>
+  <li>One could jointly train an energy function $\mathcal{E}_\theta$ and a GFN by
+alternative updates to $\theta$ and the GFN using that energy function.</li>
+  <li>If you fix $\hat{F}(s\to s_f)=R(s)$, i.e. the reward function is
+deterministic, then you can parameterize the energy function with the same
+neural network that computes the flow, since $\mathcal{E}(s)=-\log
+R(s)=-\log\hat{F}(s\to s_f)$.
+    <ul>
+      <li>This could be further generalized to conditional distributions using
+conditional GFNs (p.36-37). <label for="q-1" class="margin-toggle"> ⊕</label><input type="checkbox" id="q-1" class="margin-toggle"><span class="marginnote">TODO(danj): inner vs. outer loop </span>
+</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="active-learning-with-a-gflownet">
+<a class="anchor" href="#active-learning-with-a-gflownet" aria-hidden="true"><span class="octicon octicon-link"></span></a>Active Learning with a GFlowNet</h3>
+
+<ul>
+  <li>Outer loop trains a proxy $\hat{f}$, which approximates a true oracle $f$.</li>
+  <li>Inner loop trains a GFN to approximate $\hat{f}$.</li>
+  <li>GFN generates samples which are used to train $\hat{f}$.</li>
+  <li>Quantifying uncertainty $u(x, f)$ or evaluating a measure of novelty can
+control how the GFN explores the state space.</li>
+</ul>
+
+<h3 id="estimating-entropies-conditional-entropies-and-mutual-information">
+<a class="anchor" href="#estimating-entropies-conditional-entropies-and-mutual-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>Estimating Entropies, Conditional Entropies and Mutual Information</h3>
+
+<ul>
+  <li>$R’(s)=-R(s)\log R(s)$ given $0\le R(s)&lt; 1\;\forall s$ is an <strong>entropic reward
+function</strong>.</li>
+  <li>You can estimate entropies by training two GFNs:
+    <ul>
+      <li>GFN 1 estimates flows as usual for a target terminal reward function
+$R(s)$.</li>
+      <li>GFN 2 estimates flows for the entropic reward function.</li>
+      <li>$F(s_0)$ in GFN 2 can be used as an estimate of entropy.</li>
+      <li>The same can be done for conditional entropy, from which you can calculate
+mutual information.</li>
+    </ul>
+  </li>
+  <li>
+<strong>Proposition 37</strong>:</li>
+</ul>
 
 </article>
     <span class="print-footer"
