@@ -157,6 +157,7 @@ associated distributions, including conditional and marginal distributions.
   s}e^{-\mathcal{E}\left(s^{\prime}\right)}$
 - $\mathcal{X}$: A set of conditioning variables.
 - $G_x=(\mathcal{S}\_x,\mathcal{A}_x)$: A DAG indexed by $x\in\mathcal{X}$.
+- $R_x(s)=R(s\mid x)$: A conditional reward function.
 
 ## Introduction
 
@@ -718,4 +719,33 @@ $$
 
 ### Reward-conditional flow networks: $R(s\mid x)$
 
-### State-conditional flow networks
+- This flow network uses the same graph, i.e. $G_x=G$ for every
+  $x\in\mathcal{X}$ where $G=(\mathcal{S},\mathbb{A})$ is a pointed DAG, but
+  there is a family $\mathcal{R}$ of reward functions over the terminal states
+  conditional on $x\in\mathcal{X}$:
+
+$$
+\begin{aligned}
+\mathcal{S}: \{R_x: \mathcal{S}^f&\to \mathbb{R}^+,x\in\mathcal{X}\} \\
+\forall x\in\mathcal{X}\quad\forall s\in\mathcal{S}^f\quad &F_x(s\to s_f)=R_x(s)
+\end{aligned}
+$$
+
+- As an example, set $R(s\mid \theta)=\exp(-\mathcal{E}_\theta(s))$ in the following energy-based model:
+
+$$
+P_\theta(s)=\frac{\exp(-\mathcal{E}_\theta(s))}{Z(\theta)}
+$$
+
+### State-conditional flow networks: $G_s$
+
+- This flow network uses a subgraph $\\{G_s,s\in\mathcal{S}\\}$ anchored at $s$
+  , i.e. $(s_0\mid s)=s$, and consisting of states $s'\ge s$ along with a
+  conditional flow function $F:\mathcal{S}\times\mathcal{T}\to\mathbb{R}^+$
+  where $\mathcal{T}=\bigcup_{s\in\mathcal{S}}\mathcal{T}_s$ and
+  $\mathcal{T}_s$ is the set of complete trajectories in $G_s$ that satisfies
+  $F_s(s'\to s_f)=F(s'\to s_f)$. Note that this means you cannot have a
+  scenario where sibling contribute to total terminal flow.
+- **Proposition 31** (proof on p.32): For any pointed DAG
+  $G=(\mathcal{S},\mathbb{A})$ and flow $F$, we can define a state-conditional
+  flow network.

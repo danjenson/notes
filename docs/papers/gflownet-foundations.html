@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="https://danjenson.github.io/notes/papers/gflownet-foundations.html"
+    href="http://localhost:4000/notes/papers/gflownet-foundations.html"
   />
 </head>
 
@@ -131,7 +131,7 @@
 <ul>
 <li class="toc-entry toc-h3"><a href="#conditional-flow-networks">Conditional flow networks</a></li>
 <li class="toc-entry toc-h3"><a href="#reward-conditional-flow-networks-rsmid-x">Reward-conditional flow networks: $R(s\mid x)$</a></li>
-<li class="toc-entry toc-h3"><a href="#state-conditional-flow-networks">State-conditional flow networks</a></li>
+<li class="toc-entry toc-h3"><a href="#state-conditional-flow-networks-g_s">State-conditional flow networks: $G_s$</a></li>
 </ul>
 </li>
 </ul><h2 id="prelude">
@@ -311,6 +311,7 @@ $e^{-\mathcal{F}(s)}:=\sum_{s^{\prime}: s^{\prime} \geq
 s}e^{-\mathcal{E}\left(s^{\prime}\right)}$</li>
   <li>$\mathcal{X}$: A set of conditioning variables.</li>
   <li>$G_x=(\mathcal{S}_x,\mathcal{A}_x)$: A DAG indexed by $x\in\mathcal{X}$.</li>
+  <li>$R_x(s)=R(s\mid x)$: A conditional reward function.</li>
 </ul>
 
 <h2 id="introduction">
@@ -972,8 +973,40 @@ now they are conditioned on $x$.</li>
 <h3 id="reward-conditional-flow-networks-rsmid-x">
 <a class="anchor" href="#reward-conditional-flow-networks-rsmid-x" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reward-conditional flow networks: $R(s\mid x)$</h3>
 
-<h3 id="state-conditional-flow-networks">
-<a class="anchor" href="#state-conditional-flow-networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>State-conditional flow networks</h3>
+<ul>
+  <li>This flow network uses the same graph, i.e. $G_x=G$ for every
+$x\in\mathcal{X}$ where $G=(\mathcal{S},\mathbb{A})$ is a pointed DAG, but
+there is a family $\mathcal{R}$ of reward functions over the terminal states
+conditional on $x\in\mathcal{X}$:</li>
+</ul>
+
+\[\begin{aligned}
+\mathcal{S}: \{R_x: \mathcal{S}^f&amp;\to \mathbb{R}^+,x\in\mathcal{X}\} \\
+\forall x\in\mathcal{X}\quad\forall s\in\mathcal{S}^f\quad &amp;F_x(s\to s_f)=R_x(s)
+\end{aligned}\]
+
+<ul>
+  <li>As an example, set $R(s\mid \theta)=\exp(-\mathcal{E}_\theta(s))$ in the following energy-based model:</li>
+</ul>
+
+\[P_\theta(s)=\frac{\exp(-\mathcal{E}_\theta(s))}{Z(\theta)}\]
+
+<h3 id="state-conditional-flow-networks-g_s">
+<a class="anchor" href="#state-conditional-flow-networks-g_s" aria-hidden="true"><span class="octicon octicon-link"></span></a>State-conditional flow networks: $G_s$</h3>
+
+<ul>
+  <li>This flow network uses a subgraph $\{G_s,s\in\mathcal{S}\}$ anchored at $s$
+, i.e. $(s_0\mid s)=s$, and consisting of states $s’\ge s$ along with a
+conditional flow function $F:\mathcal{S}\times\mathcal{T}\to\mathbb{R}^+$
+where $\mathcal{T}=\bigcup_{s\in\mathcal{S}}\mathcal{T}_s$ and
+$\mathcal{T}_s$ is the set of complete trajectories in $G_s$ that satisfies
+$F_s(s’\to s_f)=F(s’\to s_f)$. Note that this means you cannot have a
+scenario where sibling contribute to total terminal flow.</li>
+  <li>
+<strong>Proposition 31</strong> (proof on p.32): For any pointed DAG
+$G=(\mathcal{S},\mathbb{A})$ and flow $F$, we can define a state-conditional
+flow network.</li>
+</ul>
 
 </article>
     <span class="print-footer"
