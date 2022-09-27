@@ -1,5 +1,6 @@
 ---
 title: How to Read a Paper
+title_url: https://archive.org/details/1562574866-185
 ---
 
 ## Prelude

@@ -1,5 +1,7 @@
 ---
 title: Flow Network based Generative Models for Non-Iterative Diverse Candidate Generation
+title_url: https://arxiv.org/abs/2106.04399
+toc: true
 ---
 
 # Prelude

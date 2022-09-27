@@ -1,5 +1,6 @@
 ---
 title: Speed Reading
+title_url: https://www.amazon.com/Speed-Reading-Learn-Read-Page-ebook/dp/B07HQM9G1R/
 ---
 
 **tl;dr**: most of this is [debunked](https://www.wired.com/2017/01/make-resolution-read-speed-reading-wont-help/), but combining with content from [_How to Read a Book_](how-to-read-a-book) and [_How to Read a Paper_](../papers/how-to-read-a-paper), one might identify the following themes:

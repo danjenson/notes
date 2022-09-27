@@ -81,10 +81,32 @@
   <script src="/notes/assets/js/theme-toggle.js"></script>
 </header>
 
-    <article class="group"><h1>Flow Network based Generative Models for Non-Iterative Diverse Candidate Generation</h1>
+    <article class="group">
+<h1><a href="https://arxiv.org/abs/2106.04399" target="_blank">Flow Network based Generative Models for Non-Iterative Diverse Candidate Generation</a></h1>
+
 <p class="subtitle"></p>
 
-<h1 id="prelude">Prelude</h1>
+<ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#prelude">Prelude</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#terminology">Terminology</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#terms">Terms</a></li>
+<li class="toc-entry toc-h3"><a href="#notation">Notation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#generative-flow-networks">Generative Flow Networks</a></li>
+<li class="toc-entry toc-h1"><a href="#empirical-results">Empirical Results</a></li>
+<li class="toc-entry toc-h1"><a href="#comparisons">Comparisons</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#gfns-vs-rl">GFNs vs. RL</a></li>
+<li class="toc-entry toc-h3"><a href="#gfns-vs-mcmc">GFNs vs. MCMC</a></li>
+</ul>
+</li>
+</ul><h1 id="prelude">
+<a class="anchor" href="#prelude" aria-hidden="true"><span class="octicon octicon-link"></span></a>Prelude</h1>
 
 <p><strong>Question</strong>: Can we improve on MCMC-based methods for sampling using
 Generative Flow Networks?</p>
@@ -92,27 +114,40 @@ Generative Flow Networks?</p>
 <p><strong>Answer</strong>: Yes, when there is structure shared between the modes in a
 distribution.</p>
 
-<h2 id="terminology">Terminology</h2>
+<h2 id="terminology">
+<a class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h2>
 
-<h3 id="terms">Terms</h3>
+<h3 id="terms">
+<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h3>
 
 <ul>
-  <li><strong>DAG</strong>: Directed Acyclic Graph</li>
-  <li><strong>GFN</strong>: Generative Flow Network</li>
-  <li><strong>MCMC</strong>: Markov Chain Monte Carlo</li>
-  <li><strong>PPO</strong>: Proximal Policy Optimization</li>
-  <li><strong>RL</strong>: Reinforcement Learning</li>
-  <li><strong>TD</strong>: Temporal Difference</li>
-  <li><strong>Proxy</strong>: A function that approximates an oracle, i.e. $R(x)$, trained using
+  <li>
+<strong>DAG</strong>: Directed Acyclic Graph</li>
+  <li>
+<strong>GFN</strong>: Generative Flow Network</li>
+  <li>
+<strong>MCMC</strong>: Markov Chain Monte Carlo</li>
+  <li>
+<strong>PPO</strong>: Proximal Policy Optimization</li>
+  <li>
+<strong>RL</strong>: Reinforcement Learning</li>
+  <li>
+<strong>TD</strong>: Temporal Difference</li>
+  <li>
+<strong>Proxy</strong>: A function that approximates an oracle, i.e. $R(x)$, trained using
 $(x,y)$ pairs, which can incorporate (Bayesian) uncertainty</li>
-  <li><strong>Active learning</strong>: A context in which “student” and “teacher” interact during training.</li>
-  <li><strong>Flow matching</strong>: The total flow going into a state must match the total
+  <li>
+<strong>Active learning</strong>: A context in which “student” and “teacher” interact during training.</li>
+  <li>
+<strong>Flow matching</strong>: The total flow going into a state must match the total
 flow leaving the state, except for the source, $s_0$, and sink(s), $s_f$ or
 $s_T$.</li>
-  <li><strong>Assay</strong>: Measures the composition or quality of a substance.</li>
+  <li>
+<strong>Assay</strong>: Measures the composition or quality of a substance.</li>
 </ul>
 
-<h3 id="notation">Notation</h3>
+<h3 id="notation">
+<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h3>
 
 <ul>
   <li>$\mathcal{S}$: The set of states, i.e. the state space.</li>
@@ -145,7 +180,8 @@ a state $s\in\mathcal{S}$.</li>
 flow out of the source node or all the flow into the sink node.</li>
 </ul>
 
-<h1 id="generative-flow-networks">Generative Flow Networks</h1>
+<h1 id="generative-flow-networks">
+<a class="anchor" href="#generative-flow-networks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Generative Flow Networks</h1>
 
 <ul>
   <li>Definitions:
@@ -167,7 +203,8 @@ $A(s)=\emptyset$):
     <p>Propositions:</p>
 
     <ul>
-      <li><strong>Proposition 1</strong>: Illustrates the “overcounting” problem in the non-injective case.
+      <li>
+<strong>Proposition 1</strong>: Illustrates the “overcounting” problem in the non-injective case.
         <ul>
           <li>Given:
 \(\begin{aligned}
@@ -202,7 +239,8 @@ assumes the MDP’s structure is a tree.</li>
           </li>
         </ul>
       </li>
-      <li><strong>Proposition 2</strong>: Shows that $\pi(a\mid s)=\frac{F(s,a)}{F(s)}$ creates
+      <li>
+<strong>Proposition 2</strong>: Shows that $\pi(a\mid s)=\frac{F(s,a)}{F(s)}$ creates
 a generative policy where $\pi(x)\propto R(x)$ regardless of whether $C$
 is bijective or non-injective.
         <ul>
@@ -233,7 +271,8 @@ general because internal states are not mutually exclusive.</li>
           </li>
         </ul>
       </li>
-      <li><strong>Proposition 3</strong>: Off-policy sampling works provided the sampling policy
+      <li>
+<strong>Proposition 3</strong>: Off-policy sampling works provided the sampling policy
 $P$ has adequate support.
         <ul>
           <li>Given:
@@ -280,7 +319,8 @@ r]$.</li>
     <p>Objective Functions:</p>
 
     <ul>
-      <li><strong>Naive flow-matching loss</strong>:
+      <li>
+<strong>Naive flow-matching loss</strong>:
 \(\tilde{\mathcal{L}}_\theta(\tau)
 =\sum_{s^{\prime} \in \tau \neq s_0}\left(\sum_{s, a: T(s, a)=s^{\prime}}
 F_\theta(s, a)
@@ -292,17 +332,20 @@ F_\theta\left(s^{\prime}, a^{\prime}\right)\right)^2\)
             <ul>
               <li>Flow variability:
                 <ul>
-                  <li><strong>Problem</strong>: flow will be much larger for nodes near the source; the
+                  <li>
+<strong>Problem</strong>: flow will be much larger for nodes near the source; the
 higher the cardinality of $\mathcal{X}$, the smaller the terminal
 flow for each terminal state $x$.</li>
-                  <li><strong>Solution</strong>: estimate flow on the log scale.</li>
+                  <li>
+<strong>Solution</strong>: estimate flow on the log scale.</li>
                 </ul>
               </li>
             </ul>
           </li>
         </ul>
       </li>
-      <li><strong>Flow-matching Loss</strong>:
+      <li>
+<strong>Flow-matching Loss</strong>:
 \(\mathcal{L}_{\theta, \epsilon}(\tau)
 =\sum_{s^{\prime} \in \tau \neq s_0}\left(\log \left[\epsilon
 +\sum_{s, a: T(s, a)=s^{\prime}} \exp F_\theta^{\log }(s, a)\right]
@@ -316,8 +359,10 @@ flow for each terminal state $x$.</li>
             <ul>
               <li>Numerical instability:
                 <ul>
-                  <li><strong>Problem</strong>: taking the logarithm of very small flows.</li>
-                  <li><strong>Solution</strong>: the hyperpameter $\epsilon$ adjusts the pressure on
+                  <li>
+<strong>Problem</strong>: taking the logarithm of very small flows.</li>
+                  <li>
+<strong>Solution</strong>: the hyperpameter $\epsilon$ adjusts the pressure on
 matching small vs. large flows; the larger the value, the less
 sensitive to small flows; in practice, $\epsilon\approx \min_s R(s)$.</li>
                 </ul>
@@ -364,7 +409,8 @@ true distribution.</li>
   </li>
 </ul>
 
-<h1 id="empirical-results">Empirical Results</h1>
+<h1 id="empirical-results">
+<a class="anchor" href="#empirical-results" aria-hidden="true"><span class="octicon octicon-link"></span></a>Empirical Results</h1>
 
 <ul>
   <li>Hypergrid:
@@ -385,9 +431,11 @@ true distribution.</li>
   </li>
 </ul>
 
-<h1 id="comparisons">Comparisons</h1>
+<h1 id="comparisons">
+<a class="anchor" href="#comparisons" aria-hidden="true"><span class="octicon octicon-link"></span></a>Comparisons</h1>
 
-<h3 id="gfns-vs-rl">GFNs vs. RL</h3>
+<h3 id="gfns-vs-rl">
+<a class="anchor" href="#gfns-vs-rl" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFNs vs. RL</h3>
 
 <ul>
   <li>RL methods approximate the best possible policy in static and stochastic
@@ -396,7 +444,8 @@ state.</li>
   <li>GFNs approximate distributions in deterministic environments.</li>
 </ul>
 
-<h3 id="gfns-vs-mcmc">GFNs vs. MCMC</h3>
+<h3 id="gfns-vs-mcmc">
+<a class="anchor" href="#gfns-vs-mcmc" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFNs vs. MCMC</h3>
 
 <ul>
   <li>GFNs trade sampling complexity (MCMC hallmark) for training complexity;

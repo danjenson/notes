@@ -1,5 +1,6 @@
 ---
 title: How to Read a Book
+title_url: https://www.amazon.com/How-Read-Book-Classic-Intelligent/dp/0671212095/
 ---
 
 ## Summary
