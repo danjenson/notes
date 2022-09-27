@@ -1084,3 +1084,98 @@ $$
   represent edge flow involving continuous variables.
 
 ## Related Work
+
+### Contrast with Generative Models
+
+- While VAEs and GANs are typically trained with a finite set of examples
+  sampled from the distribution of interest, GFNs are normally trained with an
+  energy or reward function.
+- The reward function tells us about samples that are likely (positive) and
+  unlikely (negative) under a distribution.
+- GFNs have been designed for generating discrete variable-size compositional
+  structures (like sets or graphs), for both latent and observed variables,
+  while GANs, VAEs, or normalizing flows start by modeling real-valued
+  fixed-size vectors using real-valued fixed-size latent variables.
+- GFNs can be trained offline from a training distribution $\pi_T$, which does
+  not need to be stationary, whereas the maximum likelihood framework is very
+  sensitive to changes in the distribution of the data it sees.
+
+### Contrast with Regularized Reinforcement Learning
+
+- RL tends to focus on an agent acting in an unknown, external environment,
+  whereas GFNs tend to focus on an internal policy where external actions have
+  known consequences. In this way, ti is more similar to attention in modern
+  deep learning.
+- RL tends to find the reward maximizing policy, while GFNs find the
+  distribution over trajectories proportional to their rewards.
+- MaxEnt RL tries to maximize both return and entropy:
+
+$$
+p(\tau)=\left[p\left(s_0\right) \prod_{t=0}^{T-1} P\left(s_{t+1} \mid s_t,
+a_t\right)\right] \exp \left(\eta \sum_{t=0}^{T-1} R\left(s_t, a_t\right)\right)
+$$
+
+- In MaxEnt RL, entropy can be considered either an intrinsic reward or a
+  explicit regularization objective to be maximized.
+- Generally, MaxEnt RL and GFNs do not find the same result because GFNs sample
+  $P_T(s)\propto R(s)$, while MaxEnt RL samples $P_T(s)\propto n(s)R(s)$, where
+  $n(s)$ is the number of paths in the DAG that lead to $s$. Thus, they are only
+  equivalent if the DAG is a rooted tree.
+
+### Contrast with Monte-Carlo Markov Chain methods
+
+- A drawback of MCMC is reliance on iterative sampling, i.e. forming a Markov
+  chain, one configuration at a time, each of which is like a terminating state
+  in a GFN; a new state configuration is obtained at each step for the chain by
+  making a small stochastic change to the configuration in the previous step;
+  this can lead to very long chains which are unlikely to provide the desired
+  diversity of samples. This is known as the **mode-mixing problem**.
+- **Mode-mixing** time can be very large for MCMC when there are probability
+  deserts and highly concentrated modes scattered throughout the posterior.
+- GFNs trade the sampling complexity for the model training complexity and thus
+  amortize the cost of sampling. This works particularly well when the modes
+  share structure and the GFNs can "guess" at unseen modes.
+
+## Conclusions and Open Questions
+
+- Contributions:
+  - GFNs with detailed balance loss, which makes it possible to choose a
+    parameterization separating the backward policy $P_B$ from constraints imposed
+    by the target reward function.
+  - Marginalization or free energy estimation using GFNs.
+
+## Appendix A. Direct Credit Assignment in GFlowNets
+
+- Given a training trajectory $\tau$, are there more direct ways of assigning
+  credit to the earlier transitions in the trajectory?
+  - Malkin et al. (2022) provide an alternative answer by introducing the
+    Trajectory Balance loss.
+
+## Appendix B. Policies in Deterministic and Stochastic Environments
+
+- Extends GFN framework to learn a policy $\pi$ for an agent in an environment
+  that could be deterministic or stochastic.
+- The general idea is to compose teh state spaces into even and odd states and
+  have the policy govern one set of transitions and the environment the other.
+
+## Appendix C. Expected Downstream Reward and Reward-Maximizing Policy
+
+- You can calculate the expected reward given a distribution over terminating
+  states, $P_\pi$.
+
+## Appendix D. Intermediate Rewards and Trajectory Returns
+
+- Can consider an agent experiencing complete trajectory $\tau$ and declare its
+  return to be the sum of some intermediate environment rewards associated with
+  all the transitions into the sink node from each of the visited states.
+- Introduces the notion of accumulated reward.
+
+## Multi-Flows, Distributional GFlowNets, Unsupervised GFlowNets and Pareto GFlowNets
+
+- Imagine each particle in the flow has a color or label, and youc an account
+  for the different flows of all label types in a GFN.
+- **Proposition 61**: Shows how to convert an outcome-conditioned GFLowNet into
+  one that samples according to a given reward function given a posteriori,
+  without having to retrain the network.
+- Defines the **Pareto additive terminal reward functions** and the **Pareto
+  multiplicative terminal reward functions**.
