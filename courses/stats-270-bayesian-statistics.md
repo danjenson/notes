@@ -258,7 +258,120 @@ $$
 
 - Now let $W_n=T_n-\frac{S}{n}$, which makes the last term above become $2
   \mathbb{E}\_theta\left[W_n S\right]$, i.e. plug $S=n(T_n-W_n)$ in to
-  $\frac{S}{n}-\theta$ yields TODO
+  $\frac{S}{n}-\theta$ yields
+  {% sidenote 'sn-proof' 'This proof looks wack, revisit p.6.' %}
+
+#### Confidence Intervals
+
+- Upper and lower bounds are written $(T_n^{(L)},
+  T_n^{(U)})=(T^{(L)}(\mathbf{Y}),T^{(U)}(\mathbf{Y}))$.
+- Under [Neyman's construction](https://en.wikipedia.org/wiki/Neyman_construction):
+
+$$
+\Pr_\theta\left(T_n^{(L)} \leq \theta \leq
+T_n^{(U)}\right)=\Pr_\theta\left(\left\{T_n^{(L)} \leq \theta\right\}
+\cap\left\{T_n^{(U)} \geq \theta\right\}\right) \geq 1-\alpha
+$$
+
+- Also note that, for Example 1.1:
+
+$$
+\Pr_\theta\left(T_n^{(L)} \leq \theta\right)=\Pr_\theta\left(\frac{S}{n} \leq \theta\right) \approx 0.5
+$$
+
+- Now, to find the bounds, use the **cumulative distribution function**
+  $F_{n,\theta}(t)=\Pr_{n,\theta}\left(\frac{S}{n}\le t\right)$, then the event
+  $\\{\theta\ge T_n^{(L)}\\}$ is equivalent to $\left\\{F_{n,
+  \theta}\left(\frac{S}{n}\right) \leq F_{n,
+  T_n^{(L)}}\left(\frac{S}{n}\right)\right\\}$. This implies that
+  $\Pr_\theta(\theta\ge
+  T_n^{(L)})=\Pr_\theta(F_{n,\theta}\left(\frac{S}{n}\right)\le0.5)$, which
+  means you can set $F_{n,T_n^{(L)}}=1-\frac{\alpha^\*}{2}$ where
+  $\alpha^\*>\alpha$ because of discreteness.{% sidenote 'sn-ul' 'Bounds seem
+  reversed on Eqn 1.7 p.7' %}
+
+$$
+\begin{aligned}
+1-F_{n, T_n^{(L)}}(s) &= \sum_{k=s}^n\left(\begin{array}{l}n \\
+k\end{array}\right)\left(T_n^{(L)}\right)^k\left(1-T_n^{(L)}\right)^{n-k}=\frac{\alpha}{2}
+\\ F_{n, T_n^{(U)}}(s) &= \sum_{k=0}^s\left(\begin{array}{l}n \\
+k\end{array}\right)\left(T_n^{(U)}\right)^k\left(1-T_n^{(U)}\right)^{n-k}=\frac{\alpha}{2}
+\end{aligned}
+$$
+
+- Problems with CI construction:
+  - An exact $1-\alpha$ may not exist for some $\alpha$; many inversions may
+    exist for a test; an optimal one-sided test may not exist in that it depends
+    on $\theta^{(U)}$ {% sidenote 'sn-dep' 'What would this look like?' %}
+  - One sensible requirement for CIs is nestedness, i..e
+    $(1-\alpha)<(1-\alpha')$, which may not be guaranteed depending on how the
+    tests are constructed for each $\alpha$.
+  - There does not exist a unifired approach for treating a function of
+    parameters naturally, i.e. how do you construct a CI for a multinomial?
+  - It is difficult to deal with multi-parameters or parameters involving
+    nonparametric components.
+
+#### Bayesian Analysis
+
+- If one is able to think of $\theta$ as random instead of fixed and specify the
+  a prior $\pi(\theta)$ over it, then inference becomes clearer.
+- **Joint probability**: $p(\theta;\mathbf{y})=\pi(\theta)p(\mathbf{y}\mid\theta)$.
+- **Marginal probability**: $p(\mathbf{y})=\int
+  p(y\mid\theta)\pi(\theta)\dd\theta$.
+- **Posterior probability**: $p(\theta\mid
+  \mathbf{y})=\frac{\pi(\theta)p(\mathbf{y}\mid\theta)}{p(\mathbf{y})}$.
+- Example 1.5:
+  - Let $\mathbf{Y}=(Y_1,\ldots,Y_n)$ be a random sample where $Y_i\sim
+  \boldsymbol\theta=\begin{bmatrix}\theta_1 & \theta_2 & \theta_3
+  \end{bmatrix}$, a simplex where $\sum_i\theta_i = 1$.
+  - Let $x_k=\sum_{i=1}^n\mathbb{I}(y_i=k)$, the number of times for which
+    samples $y_1,\ldots,y_n$ have outcome $k$. Hence, $\sum_{k=1}^3 x_k=n$.
+  - Let $\Omega=\\{\boldsymbol\theta\in \mathbb{R}^3: 0\le\theta_i\le
+  1,\sum_{i=1}^3=1\\}$
+  - Specify a uniform prior on $\Omega$, i.e.
+    $\pi(\boldsymbol\theta)=1/\operatorname{Area}(\Omega)$ for
+    $\boldsymbol\theta\in\Omega$.
+  - Thus the joint is
+    $p(\boldsymbol\theta,\mathbf{y})=\operatorname{Area}^{-1}(\Omega)\Pi_{i=1}^3\theta_k^{x_k}$
+    and the posterior is $p(\boldsymbol\theta\mid
+    \mathbf{y})=\operatorname{Area}^{-1}\Pi_{i=1}^3\theta_k^{x_k}\left(\int_{\Omega}\Pi_{k=1}^3\theta_k^{x_k}\dd\theta\right)^{-1}$
+  - Recalling that $\operatorname{Beta}(\alpha,\beta)=\int_0^1
+  x^{\alpha-1}(1-x)^{\beta-1}\dd
+  x=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ where
+    $\Gamma(\alpha)=\int_0^\infty\exp(-\alpha x^{\alpha-1}\dd x)$, the prior
+    and posterior (densities can be written as:
+    {% sidenote 'sn-beta' 'Review beta and gamma distributions' %}
+
+$$
+\begin{aligned}
+\int_{\Omega} \prod_{k=1}^3 \theta_k^{x_k} d \theta &=\int_0^1 \theta_1^{x_1} d
+\theta_1 \int_0^{1-\theta_1}
+\theta_2^{x_2}\left(1-\theta_1-\theta_2\right)^{x_3} d \theta_2 \\ &=\int_0^1
+\theta_1^{x_1}\left(1-\theta_1\right)^{x_2+x_3} d \theta_1
+\int_0^{1-\theta_1}\left(\frac{\theta_2}{1-\theta_1}\right)^{x_2}\left(1-\frac{\theta_2}{1-\theta_1}\right)^{x_3}
+d \theta_2 \\
+\text{Change of variables: }\lambda&=\frac{\theta_2}{1-\theta_1} \\
+&=\int_0^1 \theta_1^{x_1}\left(1-\theta_1\right)^{x_2+x_3+1} d \theta_1 \int_0^1
+\lambda^{x_2}(1-\lambda)^{x_3} d \lambda \\
+&= \operatorname{Beta}\left(x_1+1, x_2+x_3+2\right)
+\operatorname{Beta}\left(x_2+1, x_3+1\right) \\
+&=\frac{\Gamma\left(x_1+1\right)
+\Gamma\left(x_2+1\right)\Gamma(x_3+1)}{\Gamma\left(x_1+x_2+x_3+3\right)} \\
+p(\theta \mid \mathbf{y})&=
+\begin{cases}\frac{\Gamma\left(\sum_{k=1}^3\left(x_k+1\right)\right)}{\prod_{k=1}^3
+\Gamma\left(x_k+1\right)} \prod_{k=1}^3 \theta_k^{x_k} & \theta \in \Omega
+\\ 0 & \theta \notin \Omega \end{cases}
+\end{aligned}
+$$
+
+- Given the posterior, we can calculate a number of things:
+  - $\Pr(A\mid\mathbf{y})$ where $A=\\{\theta_1 > 2\theta_2
+  +3\theta_3\\}=\\{\theta_1>2\theta_2+3(1-\theta_1-\theta_2)\\}=\\{4\theta_1+\theta_2>
+  3\\}$
+  - $\mathbb{E}\left[\theta_1-(2\theta_2+3\theta_3)\mid \mathbf{y}\right]$
+  - PDF of $\lambda=\theta_1-(2\theta_2+3\theta_3)$
+
+### Frequency Properties
 
 # Lectures
 

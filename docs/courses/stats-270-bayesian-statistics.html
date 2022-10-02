@@ -102,8 +102,11 @@
 <li class="toc-entry toc-h4"><a href="#overview">Overview</a></li>
 <li class="toc-entry toc-h4"><a href="#minimum-mean-squares">Minimum Mean Squares</a></li>
 <li class="toc-entry toc-h4"><a href="#maximum-likelihood">Maximum Likelihood</a></li>
+<li class="toc-entry toc-h4"><a href="#confidence-intervals">Confidence Intervals</a></li>
+<li class="toc-entry toc-h4"><a href="#bayesian-analysis">Bayesian Analysis</a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h3"><a href="#frequency-properties">Frequency Properties</a></li>
 </ul>
 </li>
 </ul>
@@ -421,8 +424,144 @@ The following is a proof:</li>
 <ul>
   <li>Now let $W_n=T_n-\frac{S}{n}$, which makes the last term above become $2
 \mathbb{E}_theta\left[W_n S\right]$, i.e. plug $S=n(T_n-W_n)$ in to
-$\frac{S}{n}-\theta$ yields TODO</li>
+$\frac{S}{n}-\theta$ yields
+<label for="sn-proof" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-proof" class="margin-toggle"><span class="sidenote">This proof looks wack, revisit p.6. </span>
+</li>
 </ul>
+
+<h4 id="confidence-intervals">
+<a class="anchor" href="#confidence-intervals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Confidence Intervals</h4>
+
+<ul>
+  <li>Upper and lower bounds are written $(T_n^{(L)},
+T_n^{(U)})=(T^{(L)}(\mathbf{Y}),T^{(U)}(\mathbf{Y}))$.</li>
+  <li>Under <a href="https://en.wikipedia.org/wiki/Neyman_construction">Neyman’s construction</a>:</li>
+</ul>
+
+\[\Pr_\theta\left(T_n^{(L)} \leq \theta \leq
+T_n^{(U)}\right)=\Pr_\theta\left(\left\{T_n^{(L)} \leq \theta\right\}
+\cap\left\{T_n^{(U)} \geq \theta\right\}\right) \geq 1-\alpha\]
+
+<ul>
+  <li>Also note that, for Example 1.1:</li>
+</ul>
+
+\[\Pr_\theta\left(T_n^{(L)} \leq \theta\right)=\Pr_\theta\left(\frac{S}{n} \leq \theta\right) \approx 0.5\]
+
+<ul>
+  <li>Now, to find the bounds, use the <strong>cumulative distribution function</strong>
+$F_{n,\theta}(t)=\Pr_{n,\theta}\left(\frac{S}{n}\le t\right)$, then the event
+$\{\theta\ge T_n^{(L)}\}$ is equivalent to $\left\{F_{n,
+\theta}\left(\frac{S}{n}\right) \leq F_{n,
+T_n^{(L)}}\left(\frac{S}{n}\right)\right\}$. This implies that
+$\Pr_\theta(\theta\ge
+T_n^{(L)})=\Pr_\theta(F_{n,\theta}\left(\frac{S}{n}\right)\le0.5)$, which
+means you can set $F_{n,T_n^{(L)}}=1-\frac{\alpha^*}{2}$ where
+$\alpha^*&gt;\alpha$ because of discreteness.<label for="sn-ul" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-ul" class="margin-toggle"><span class="sidenote">Bounds seem
+reversed on Eqn 1.7 p.7 </span>
+</li>
+</ul>
+
+\[\begin{aligned}
+1-F_{n, T_n^{(L)}}(s) &amp;= \sum_{k=s}^n\left(\begin{array}{l}n \\
+k\end{array}\right)\left(T_n^{(L)}\right)^k\left(1-T_n^{(L)}\right)^{n-k}=\frac{\alpha}{2}
+\\ F_{n, T_n^{(U)}}(s) &amp;= \sum_{k=0}^s\left(\begin{array}{l}n \\
+k\end{array}\right)\left(T_n^{(U)}\right)^k\left(1-T_n^{(U)}\right)^{n-k}=\frac{\alpha}{2}
+\end{aligned}\]
+
+<ul>
+  <li>Problems with CI construction:
+    <ul>
+      <li>An exact $1-\alpha$ may not exist for some $\alpha$; many inversions may
+exist for a test; an optimal one-sided test may not exist in that it depends
+on $\theta^{(U)}$ <label for="sn-dep" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-dep" class="margin-toggle"><span class="sidenote">What would this look like? </span>
+</li>
+      <li>One sensible requirement for CIs is nestedness, i..e
+$(1-\alpha)&lt;(1-\alpha’)$, which may not be guaranteed depending on how the
+tests are constructed for each $\alpha$.</li>
+      <li>There does not exist a unifired approach for treating a function of
+parameters naturally, i.e. how do you construct a CI for a multinomial?</li>
+      <li>It is difficult to deal with multi-parameters or parameters involving
+nonparametric components.</li>
+    </ul>
+  </li>
+</ul>
+
+<h4 id="bayesian-analysis">
+<a class="anchor" href="#bayesian-analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayesian Analysis</h4>
+
+<ul>
+  <li>If one is able to think of $\theta$ as random instead of fixed and specify the
+a prior $\pi(\theta)$ over it, then inference becomes clearer.</li>
+  <li>
+<strong>Joint probability</strong>: $p(\theta;\mathbf{y})=\pi(\theta)p(\mathbf{y}\mid\theta)$.</li>
+  <li>
+<strong>Marginal probability</strong>: $p(\mathbf{y})=\int
+p(y\mid\theta)\pi(\theta)\dd\theta$.</li>
+  <li>
+<strong>Posterior probability</strong>: $p(\theta\mid
+\mathbf{y})=\frac{\pi(\theta)p(\mathbf{y}\mid\theta)}{p(\mathbf{y})}$.</li>
+  <li>Example 1.5:
+    <ul>
+      <li>Let $\mathbf{Y}=(Y_1,\ldots,Y_n)$ be a random sample where $Y_i\sim
+\boldsymbol\theta=\begin{bmatrix}\theta_1 &amp; \theta_2 &amp; \theta_3
+\end{bmatrix}$, a simplex where $\sum_i\theta_i = 1$.</li>
+      <li>Let $x_k=\sum_{i=1}^n\mathbb{I}(y_i=k)$, the number of times for which
+samples $y_1,\ldots,y_n$ have outcome $k$. Hence, $\sum_{k=1}^3 x_k=n$.</li>
+      <li>Let $\Omega=\{\boldsymbol\theta\in \mathbb{R}^3: 0\le\theta_i\le
+1,\sum_{i=1}^3=1\}$</li>
+      <li>Specify a uniform prior on $\Omega$, i.e.
+$\pi(\boldsymbol\theta)=1/\operatorname{Area}(\Omega)$ for
+$\boldsymbol\theta\in\Omega$.</li>
+      <li>Thus the joint is
+$p(\boldsymbol\theta,\mathbf{y})=\operatorname{Area}^{-1}(\Omega)\Pi_{i=1}^3\theta_k^{x_k}$
+and the posterior is $p(\boldsymbol\theta\mid
+\mathbf{y})=\operatorname{Area}^{-1}\Pi_{i=1}^3\theta_k^{x_k}\left(\int_{\Omega}\Pi_{k=1}^3\theta_k^{x_k}\dd\theta\right)^{-1}$</li>
+      <li>Recalling that $\operatorname{Beta}(\alpha,\beta)=\int_0^1
+x^{\alpha-1}(1-x)^{\beta-1}\dd
+x=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ where
+$\Gamma(\alpha)=\int_0^\infty\exp(-\alpha x^{\alpha-1}\dd x)$, the prior
+and posterior (densities can be written as:
+<label for="sn-beta" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-beta" class="margin-toggle"><span class="sidenote">Review beta and gamma distributions </span>
+</li>
+    </ul>
+  </li>
+</ul>
+
+\[\begin{aligned}
+\int_{\Omega} \prod_{k=1}^3 \theta_k^{x_k} d \theta &amp;=\int_0^1 \theta_1^{x_1} d
+\theta_1 \int_0^{1-\theta_1}
+\theta_2^{x_2}\left(1-\theta_1-\theta_2\right)^{x_3} d \theta_2 \\ &amp;=\int_0^1
+\theta_1^{x_1}\left(1-\theta_1\right)^{x_2+x_3} d \theta_1
+\int_0^{1-\theta_1}\left(\frac{\theta_2}{1-\theta_1}\right)^{x_2}\left(1-\frac{\theta_2}{1-\theta_1}\right)^{x_3}
+d \theta_2 \\
+\text{Change of variables: }\lambda&amp;=\frac{\theta_2}{1-\theta_1} \\
+&amp;=\int_0^1 \theta_1^{x_1}\left(1-\theta_1\right)^{x_2+x_3+1} d \theta_1 \int_0^1
+\lambda^{x_2}(1-\lambda)^{x_3} d \lambda \\
+&amp;= \operatorname{Beta}\left(x_1+1, x_2+x_3+2\right)
+\operatorname{Beta}\left(x_2+1, x_3+1\right) \\
+&amp;=\frac{\Gamma\left(x_1+1\right)
+\Gamma\left(x_2+1\right)\Gamma(x_3+1)}{\Gamma\left(x_1+x_2+x_3+3\right)} \\
+p(\theta \mid \mathbf{y})&amp;=
+\begin{cases}\frac{\Gamma\left(\sum_{k=1}^3\left(x_k+1\right)\right)}{\prod_{k=1}^3
+\Gamma\left(x_k+1\right)} \prod_{k=1}^3 \theta_k^{x_k} &amp; \theta \in \Omega
+\\ 0 &amp; \theta \notin \Omega \end{cases}
+\end{aligned}\]
+
+<ul>
+  <li>Given the posterior, we can calculate a number of things:
+    <ul>
+      <li>$\Pr(A\mid\mathbf{y})$ where $A=\{\theta_1 &gt; 2\theta_2
++3\theta_3\}=\{\theta_1&gt;2\theta_2+3(1-\theta_1-\theta_2)\}=\{4\theta_1+\theta_2&gt;
+3\}$</li>
+      <li>$\mathbb{E}\left[\theta_1-(2\theta_2+3\theta_3)\mid \mathbf{y}\right]$</li>
+      <li>PDF of $\lambda=\theta_1-(2\theta_2+3\theta_3)$</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="frequency-properties">
+<a class="anchor" href="#frequency-properties" aria-hidden="true"><span class="octicon octicon-link"></span></a>Frequency Properties</h3>
 
 <h1 id="lectures">
 <a class="anchor" href="#lectures" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lectures</h1>
