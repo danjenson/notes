@@ -141,6 +141,17 @@ $$
 \end{aligned}
 $$
 
+- Equivalently:
+
+$$
+\begin{aligned}
+\mathbb{E}\left[u\right]
+&=\mathbb{E}\left[\mathbb{E}\left[u\mid v\right]\right]
+\\ &= \int \left[\int u\cdot f_{U\mid V}(u\mid v)\dd u\right] f_V(v)\dd v
+\\ &= \int \left[\int u\cdot \frac{f_{U,V}(u,v)}{f_V(v)}\dd u\right]f_V(v)\dd v
+\end{aligned}
+$$
+
 - Law of total variance: $\var(u)=\mathbb{E}\left[\var(u\mid v)\right] +
   \var(\mathbb{E}\left[u\mid v\right])$ (also holds for vectors/matrices).
 
@@ -214,3 +225,64 @@ $$
     for estimands of interest will be robust to model assumptions.
 
 # Chapter 2: Single-parameter models
+
+- For the binomial, $p(y\mid\theta)=\operatorname{Binomial}\left(y\mid
+  n,\theta\right)=\binom{n}{y}\theta^y(1-\theta)^{n-y}$, $n$ is suppressed on
+  the left hand side because it is regarded as part of the experimental design
+  that is considered fixed.
+- The posterior of the binomial is $\theta\mid y\sim
+  \operatorname{Beta}\left(y+1,n-y+1\right)$.
+- Jacob Bernoulli identified the "weak law of large numbers", namely if $y\sim
+  \operatorname{Binomial}\left(n,\theta\right)$ then
+  $\Pr\left(\left|\frac{y}{n}-\theta\right|>\epsilon\mid\theta\right)\to 0$ as
+  $n\to\infty$.
+- Pierre Simon Laplace and Reverend Thomas Bayes inverted the probability
+  statement to $\Pr(\theta\in(\theta_1,\theta_2)\mid y)$.
+- The posterior predictive distribution can be represented as follows:
+
+$$
+\begin{aligned}
+\operatorname{Pr}(\tilde{y}=1 \mid y)
+&=\int_0^1 \operatorname{Pr}(\tilde{y}=1 \mid \theta, y) p(\theta \mid y) \dd \theta \\
+\\ &=\int_0^1 \theta \operatorname{Beta}\left(y+1,n-y+1\right) \dd \theta
+\\ &=\mathbb{E}[\theta \mid y]
+\\ &=\frac{y+1}{n+2}
+\end{aligned}
+$$
+
+- This result, based on the uniform prior distribution, is known as "Laplace's
+  law of succession". When $y=0$, this law predicts $\frac{1}{n+2}$, and when
+  $y=n$, this law predicts $\frac{n+1}{n+2}$.
+
+## Posterior as compromise between data and prior information
+
+- The prior mean is the expectation over posterior means, i.e.
+  $\mathbb{E}\left[\theta\right]=\mathbb{E}\left[\mathbb{E}\left[\theta\mid
+  y\right]\right]$. In other words, **the prior mean of $\theta$ is the average
+  of all possible posterior means over the distribution of possible data**,
+  distributed as $p(y)$.
+- In general, during Bayesian inference which progresses form $p(\theta)$ to
+  $p(\theta\mid y)$, we expect that the posterior will be less variable than the
+  prior because we have more information. This can be seen from the
+  decomposition of variance, which separates into two terms:
+  1. The mean of the posterior variances.
+  2. The variance of the posterior means.
+
+$$
+\begin{aligned}
+\var(u)&=\mathbb{E}\left[\var(u\mid v)\right] + \var(\mathbb{E}\left[u\mid v\right])
+\end{aligned}
+$$
+
+- This suggests that on average, the posterior variance is lower than the prior
+  variance because does not incorporate the variance of the posterior means over
+  the distribution of possible data.
+- The greater the variation in posterior means, the more potential for reducing
+  uncertainty regarding our estimate of $\theta$.
+- The posterior is always a compromise between the data and the prior.
+
+## Summarizing posterior inference
+
+{% maincolumn 'books/figures/bayesian-data-analysis/cpi-vs-hpd.png' '' %}
+
+-

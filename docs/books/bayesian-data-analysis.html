@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="http://localhost:4000/notes/books/bayesian-data-analysis.html"
+    href="https://danjenson.github.io/notes/books/bayesian-data-analysis.html"
   />
 </head>
 
@@ -250,6 +250,17 @@ the conditional averages:</li>
 \end{aligned}\]
 
 <ul>
+  <li>Equivalently:</li>
+</ul>
+
+\[\begin{aligned}
+\mathbb{E}\left[u\right]
+&amp;=\mathbb{E}\left[\mathbb{E}\left[u\mid v\right]\right]
+\\ &amp;= \int \left[\int u\cdot f_{U\mid V}(u\mid v)\dd u\right] f_V(v)\dd v
+\\ &amp;= \int \left[\int u\cdot \frac{f_{U,V}(u,v)}{f_V(v)}\dd u\right]f_V(v)\dd v
+\end{aligned}\]
+
+<ul>
   <li>
     <p>Law of total variance: $\var(u)=\mathbb{E}\left[\var(u\mid v)\right] +
 \var(\mathbb{E}\left[u\mid v\right])$ (also holds for vectors/matrices).</p>
@@ -338,6 +349,74 @@ for estimands of interest will be robust to model assumptions.</li>
 </ul>
 
 <h1 id="chapter-2-single-parameter-models">Chapter 2: Single-parameter models</h1>
+
+<ul>
+  <li>For the binomial, $p(y\mid\theta)=\operatorname{Binomial}\left(y\mid
+n,\theta\right)=\binom{n}{y}\theta^y(1-\theta)^{n-y}$, $n$ is suppressed on
+the left hand side because it is regarded as part of the experimental design
+that is considered fixed.</li>
+  <li>The posterior of the binomial is $\theta\mid y\sim
+\operatorname{Beta}\left(y+1,n-y+1\right)$.</li>
+  <li>Jacob Bernoulli identified the “weak law of large numbers”, namely if $y\sim
+\operatorname{Binomial}\left(n,\theta\right)$ then
+$\Pr\left(\left|\frac{y}{n}-\theta\right|&gt;\epsilon\mid\theta\right)\to 0$ as
+$n\to\infty$.</li>
+  <li>Pierre Simon Laplace and Reverend Thomas Bayes inverted the probability
+statement to $\Pr(\theta\in(\theta_1,\theta_2)\mid y)$.</li>
+  <li>The posterior predictive distribution can be represented as follows:</li>
+</ul>
+
+\[\begin{aligned}
+\operatorname{Pr}(\tilde{y}=1 \mid y)
+&amp;=\int_0^1 \operatorname{Pr}(\tilde{y}=1 \mid \theta, y) p(\theta \mid y) \dd \theta \\
+\\ &amp;=\int_0^1 \theta \operatorname{Beta}\left(y+1,n-y+1\right) \dd \theta
+\\ &amp;=\mathbb{E}[\theta \mid y]
+\\ &amp;=\frac{y+1}{n+2}
+\end{aligned}\]
+
+<ul>
+  <li>This result, based on the uniform prior distribution, is known as “Laplace’s
+law of succession”. When $y=0$, this law predicts $\frac{1}{n+2}$, and when
+$y=n$, this law predicts $\frac{n+1}{n+2}$.</li>
+</ul>
+
+<h2 id="posterior-as-compromise-between-data-and-prior-information">Posterior as compromise between data and prior information</h2>
+
+<ul>
+  <li>The prior mean is the expectation over posterior means, i.e.
+$\mathbb{E}\left[\theta\right]=\mathbb{E}\left[\mathbb{E}\left[\theta\mid
+y\right]\right]$. In other words, <strong>the prior mean of $\theta$ is the average
+of all possible posterior means over the distribution of possible data</strong>,
+distributed as $p(y)$.</li>
+  <li>In general, during Bayesian inference which progresses form $p(\theta)$ to
+$p(\theta\mid y)$, we expect that the posterior will be less variable than the
+prior because we have more information. This can be seen from the
+decomposition of variance, which separates into two terms:
+    <ol>
+      <li>The mean of the posterior variances.</li>
+      <li>The variance of the posterior means.</li>
+    </ol>
+  </li>
+</ul>
+
+\[\begin{aligned}
+\var(u)&amp;=\mathbb{E}\left[\var(u\mid v)\right] + \var(\mathbb{E}\left[u\mid v\right])
+\end{aligned}\]
+
+<ul>
+  <li>This suggests that on average, the posterior variance is lower than the prior
+variance because does not incorporate the variance of the posterior means over
+the distribution of possible data.</li>
+  <li>The greater the variation in posterior means, the more potential for reducing
+uncertainty regarding our estimate of $\theta$.</li>
+  <li>The posterior is always a compromise between the data and the prior.</li>
+</ul>
+
+<h2 id="summarizing-posterior-inference">Summarizing posterior inference</h2>
+
+<figure><img src="https://media.githubusercontent.com/media/danjenson/notes/main/books/figures/bayesian-data-analysis/cpi-vs-hpd.png" /><figcaption class="maincolumn-figure"></figcaption></figure>
+
+<p>-</p>
 
 </article>
     <span class="print-footer"
