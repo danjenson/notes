@@ -87,44 +87,37 @@
 <p class="subtitle"></p>
 
 <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h1"><a href="#typed-notes">Typed Notes</a>
+<li class="toc-entry toc-h1"><a href="#terminology">Terminology</a>
 <ul>
-<li class="toc-entry toc-h2"><a href="#terminology">Terminology</a>
-<ul>
-<li class="toc-entry toc-h3"><a href="#terms">Terms</a></li>
-<li class="toc-entry toc-h3"><a href="#notation">Notation</a></li>
+<li class="toc-entry toc-h2"><a href="#terms">Terms</a></li>
+<li class="toc-entry toc-h2"><a href="#notation">Notation</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#chapter-1-statistical-inference">Chapter 1: Statistical Inference</a>
+<li class="toc-entry toc-h1"><a href="#chapter-1-statistical-inference">Chapter 1: Statistical Inference</a>
 <ul>
-<li class="toc-entry toc-h3"><a href="#likelihood-and-inference">Likelihood and Inference</a>
+<li class="toc-entry toc-h2"><a href="#likelihood-and-inference">Likelihood and Inference</a>
 <ul>
-<li class="toc-entry toc-h4"><a href="#overview">Overview</a></li>
-<li class="toc-entry toc-h4"><a href="#minimum-mean-squares">Minimum Mean Squares</a></li>
-<li class="toc-entry toc-h4"><a href="#maximum-likelihood">Maximum Likelihood</a></li>
-<li class="toc-entry toc-h4"><a href="#confidence-intervals">Confidence Intervals</a></li>
-<li class="toc-entry toc-h4"><a href="#bayesian-analysis">Bayesian Analysis</a></li>
+<li class="toc-entry toc-h3"><a href="#overview">Overview</a></li>
+<li class="toc-entry toc-h3"><a href="#minimum-mean-squares">Minimum Mean Squares</a></li>
+<li class="toc-entry toc-h3"><a href="#maximum-likelihood">Maximum Likelihood</a></li>
+<li class="toc-entry toc-h3"><a href="#confidence-intervals">Confidence Intervals</a></li>
+<li class="toc-entry toc-h3"><a href="#bayesian-analysis">Bayesian Analysis</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h3"><a href="#frequency-properties">Frequency Properties</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-entry toc-h1"><a href="#lectures">Lectures</a>
+<li class="toc-entry toc-h2"><a href="#frequency-properties">Frequency Properties</a>
 <ul>
-<li class="toc-entry toc-h2"><a href="#lecture-1">Lecture 1</a></li>
-<li class="toc-entry toc-h2"><a href="#lecture-2">Lecture 2</a></li>
+<li class="toc-entry toc-h3"><a href="#admissibility">Admissibility</a></li>
+<li class="toc-entry toc-h3"><a href="#minimaxality">Minimaxality</a></li>
+<li class="toc-entry toc-h3"><a href="#consistency">Consistency</a></li>
 </ul>
 </li>
-</ul><h1 id="typed-notes">
-<a class="anchor" href="#typed-notes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Typed Notes</h1>
+</ul>
+</li>
+</ul><h1 id="terminology">
+<a class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h1>
 
-<h2 id="terminology">
-<a class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h2>
-
-<h3 id="terms">
-<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h3>
+<h2 id="terms">
+<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h2>
 
 <ul>
   <li>
@@ -189,8 +182,8 @@ same over $\mathcal{F}=\{\Pr_\theta(\mathbf{x}): \theta\in\Omega\}$, i.e.
 $\Pr(\mathbf{X}\mid T(\mathbf{X}),\theta)=\Pr(\mathbf{X}\mid T(\mathbf{X}))$.</li>
 </ul>
 
-<h3 id="notation">
-<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h3>
+<h2 id="notation">
+<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h2>
 
 <ul>
   <li>$p(\theta;\mathbf{y})$: $\theta$ given $\mathbf{y}$, not necessarily
@@ -206,14 +199,14 @@ conditional on $\theta$, i.e. $\int_{-\infty}^\infty
 T_n(\mathbf{x})p(\mathbf{x}\mid\theta)\dd x$.</li>
 </ul>
 
-<h2 id="chapter-1-statistical-inference">
-<a class="anchor" href="#chapter-1-statistical-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chapter 1: Statistical Inference</h2>
+<h1 id="chapter-1-statistical-inference">
+<a class="anchor" href="#chapter-1-statistical-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chapter 1: Statistical Inference</h1>
 
-<h3 id="likelihood-and-inference">
-<a class="anchor" href="#likelihood-and-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Likelihood and Inference</h3>
+<h2 id="likelihood-and-inference">
+<a class="anchor" href="#likelihood-and-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Likelihood and Inference</h2>
 
-<h4 id="overview">
-<a class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h4>
+<h3 id="overview">
+<a class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h3>
 
 <ul>
   <li>Given $\mathbf{Y}=(Y_1,\ldots,Y_n)$ is observed, i.e.
@@ -373,8 +366,8 @@ j}-\bar{y}_i\right)^2\right)\right), \\ \mathcal{L}_W\left(\mu_1, \cdots, \mu_n,
 and the decision-theoretical approach.</li>
 </ul>
 
-<h4 id="minimum-mean-squares">
-<a class="anchor" href="#minimum-mean-squares" aria-hidden="true"><span class="octicon octicon-link"></span></a>Minimum Mean Squares</h4>
+<h3 id="minimum-mean-squares">
+<a class="anchor" href="#minimum-mean-squares" aria-hidden="true"><span class="octicon octicon-link"></span></a>Minimum Mean Squares</h3>
 
 <ul>
   <li>This technique minimizes the mean squared error (MSE)
@@ -395,8 +388,8 @@ estimates.</li>
 partial solution is to exclude at least the $T_n$s worse than another.</li>
 </ul>
 
-<h4 id="maximum-likelihood">
-<a class="anchor" href="#maximum-likelihood" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maximum Likelihood</h4>
+<h3 id="maximum-likelihood">
+<a class="anchor" href="#maximum-likelihood" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maximum Likelihood</h3>
 
 <ul>
   <li>The maximum likelihood estimator (MLE) seeks $T_n$ to maximize
@@ -429,8 +422,8 @@ $\frac{S}{n}-\theta$ yields
 </li>
 </ul>
 
-<h4 id="confidence-intervals">
-<a class="anchor" href="#confidence-intervals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Confidence Intervals</h4>
+<h3 id="confidence-intervals">
+<a class="anchor" href="#confidence-intervals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Confidence Intervals</h3>
 
 <ul>
   <li>Upper and lower bounds are written $(T_n^{(L)},
@@ -487,8 +480,8 @@ nonparametric components.</li>
   </li>
 </ul>
 
-<h4 id="bayesian-analysis">
-<a class="anchor" href="#bayesian-analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayesian Analysis</h4>
+<h3 id="bayesian-analysis">
+<a class="anchor" href="#bayesian-analysis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayesian Analysis</h3>
 
 <ul>
   <li>If one is able to think of $\theta$ as random instead of fixed and specify the
@@ -521,9 +514,7 @@ and the posterior is $p(\boldsymbol\theta\mid
 x^{\alpha-1}(1-x)^{\beta-1}\dd
 x=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ where
 $\Gamma(\alpha)=\int_0^\infty\exp(-\alpha x^{\alpha-1}\dd x)$, the prior
-and posterior (densities can be written as:
-<label for="sn-beta" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-beta" class="margin-toggle"><span class="sidenote">Review beta and gamma distributions </span>
-</li>
+and posterior (densities can be written as:</li>
     </ul>
   </li>
 </ul>
@@ -560,17 +551,83 @@ p(\theta \mid \mathbf{y})&amp;=
   </li>
 </ul>
 
-<h3 id="frequency-properties">
-<a class="anchor" href="#frequency-properties" aria-hidden="true"><span class="octicon octicon-link"></span></a>Frequency Properties</h3>
+<h2 id="frequency-properties">
+<a class="anchor" href="#frequency-properties" aria-hidden="true"><span class="octicon octicon-link"></span></a>Frequency Properties</h2>
 
-<h1 id="lectures">
-<a class="anchor" href="#lectures" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lectures</h1>
+<ul>
+  <li>This section observes desirable frequency properties of a Bayesian procedure
+from a decision-theoretic perspective as well as the asymptotic perspective.</li>
+</ul>
 
-<h2 id="lecture-1">
-<a class="anchor" href="#lecture-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lecture 1</h2>
+<h3 id="admissibility">
+<a class="anchor" href="#admissibility" aria-hidden="true"><span class="octicon octicon-link"></span></a>Admissibility</h3>
 
-<h2 id="lecture-2">
-<a class="anchor" href="#lecture-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lecture 2</h2>
+<ul>
+  <li>Given a sample $\mathbf{Y}=(Y_1,\ldots,Y_n)$, the goal is to choose a decision
+rule $\delta: \mathcal{X}\to\mathcal{A}$ where $\mathcal{X}$ is the sample
+space and $\mathcal{A}$ is the action space, to minimize some <strong>loss
+function</strong>
+$\ell(\theta;\delta): \mathcal{X}\times\mathcal{A}\to \mathbb{R}$ that
+measures the discrepancy between the decision rule $\delta$ and parameter
+$\theta$.</li>
+  <li>It is often more difficult to deal with a loss function that is a function of
+a random sample, so we instead use the <strong>risk function</strong>: $r(\theta;\delta)=\mathbb{E}_\theta\left[\ell(\theta;\delta)\right]$ where $\mathbb{E}_\theta$ is the expectation with respect to $\Pr_\theta$ from which the random sample $\mathbf{Y}$ is generated.</li>
+  <li>A decision rule $\delta_1$ is said to be as good as another rule $\delta_2$ if
+$r(\theta;\delta_1)\le r(\theta;\delta_2)$ for all $\theta\in\Omega$.</li>
+  <li>If $r(\theta;\delta_1)&lt;r(\theta;\delta_2)$ for some $\theta\in\Omega$, then
+$\delta_1$ is “better” than $\delta_2$.</li>
+  <li>A decision rule $\delta$ is <strong>admissable</strong> if there exists no other rules that
+are better than $\delta$ across all $\theta\in\Omega$.</li>
+  <li>For Bayesians, building an admissable decision rule is straightforward:</li>
+</ul>
+
+\[\begin{aligned}
+\delta^*(\mathbf{y})
+&amp; = \arg\min_{a\in\mathcal{A}} \mathbb{E}\left[\ell(a,\Theta)\mid \mathbf{X}=\mathbf{x}\right]
+=\arg\min_{a\in\mathcal{A}}\int \ell(a,\theta)p(\theta\mid x)\dd x
+\end{aligned}\]
+
+<ul>
+  <li>Example 1.6:
+    <ul>
+      <li>Using $L_2$-loss $\ell(\theta,\delta)=(\theta-\delta)^2$ for
+$\theta\in\Omega=(-\infty,\infty)$.</li>
+      <li>The Bayes rule $\delta^*$ is the conditional expectation
+$\mathbb{E}\left[\theta\mid \mathbf{Y}=\mathbf{y}\right]$ which minimizes
+$\mathbb{E}\left[(\theta-\delta)^2\mid \mathbf{Y}=\mathbf{y}\right]$ over
+$\delta$.</li>
+    </ul>
+  </li>
+  <li>
+<strong>Lemma 1.2</strong> (proof on p.15): Suppose $\pi(\theta)&gt;0$ for all
+$\theta\in\Omega\subset\mathcal{K}$. Then the Bayes rule $\delta^*$ is
+admissable almost everywhere in $\theta$. That is, another decision rule
+$\delta$ cannot be better than $\delta^*$ except on a set of $\theta$-values
+with $\mu$-measure zero, where $\mu$ is a dominating measure for density
+$\pi(\theta)$. <label for="sn-measure" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-measure" class="margin-toggle"><span class="sidenote">What is a mu-measure? </span>
+</li>
+  <li>
+<strong>Lemma 1.3</strong>: Admissible rules are Bayes rules. If $\delta$ is non-Bayes,
+there exists a Bayes rule dominating $\delta$.</li>
+  <li>Example 1.7: Binomial with 3 values TODO(danj): finish with notes from class.</li>
+</ul>
+
+<h3 id="minimaxality">
+<a class="anchor" href="#minimaxality" aria-hidden="true"><span class="octicon octicon-link"></span></a>Minimaxality</h3>
+
+<ul>
+  <li>A weak property which guards against he worst situation. Choose the rule such
+that the worst case scenario is minimized.</li>
+  <li>An estimator $T_n$ is minimax if it minimizes the risk of the least favorable
+situation $\sup_\theta r(\theta,\delta)$.</li>
+  <li>
+<strong>Theorem 1.1</strong>: A minimax estimator $T_n$, if unique, is admissible. The
+proof is that any estimator better than a minimax estimator is also minimax.
+By uniqueness, it must be admissible. This completes the proof.</li>
+</ul>
+
+<h3 id="consistency">
+<a class="anchor" href="#consistency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Consistency</h3>
 
 </article>
     <span class="print-footer"

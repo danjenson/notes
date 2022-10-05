@@ -3,11 +3,9 @@ title: "STATS 270: Bayesian Statistics"
 toc: true
 ---
 
-# Typed Notes
+# Terminology
 
-## Terminology
-
-### Terms
+## Terms
 
 - **Bias**: The difference between the expected value of an estimator and the
   true value of the parameter. There can be mean or median bias.
@@ -58,7 +56,7 @@ toc: true
   same over $\mathcal{F}=\\{\Pr_\theta(\mathbf{x}): \theta\in\Omega\\}$, i.e.
   $\Pr(\mathbf{X}\mid T(\mathbf{X}),\theta)=\Pr(\mathbf{X}\mid T(\mathbf{X}))$.
 
-### Notation
+## Notation
 
 - $p(\theta;\mathbf{y})$: $\theta$ given $\mathbf{y}$, not necessarily
   conditional on in an event sense. This is often used in optimization.
@@ -72,11 +70,11 @@ toc: true
   conditional on $\theta$, i.e. $\int_{-\infty}^\infty
 T_n(\mathbf{x})p(\mathbf{x}\mid\theta)\dd x$.
 
-## Chapter 1: Statistical Inference
+# Chapter 1: Statistical Inference
 
-### Likelihood and Inference
+## Likelihood and Inference
 
-#### Overview
+### Overview
 
 - Given $\mathbf{Y}=(Y_1,\ldots,Y_n)$ is observed, i.e.
   $\mathbf{y}=(y_1,\ldots,y_n)$, our goal is to make an inferential statement
@@ -216,7 +214,7 @@ $$
 - There are several inferential techniques, including MLE, Bayesian posterior,
   and the decision-theoretical approach.
 
-#### Minimum Mean Squares
+### Minimum Mean Squares
 
 - This technique minimizes the mean squared error (MSE)
   $r(T_n,\theta)=\mathbb{E}\_\theta\left[T_n-\theta\right]$ where
@@ -232,7 +230,7 @@ $$
 - When you cannot minimize $r(T_n,\theta)$ independently of $\theta$, one
   partial solution is to exclude at least the $T_n$s worse than another.
 
-#### Maximum Likelihood
+### Maximum Likelihood
 
 - The maximum likelihood estimator (MLE) seeks $T_n$ to maximize
   $\mathcal{L}\_n(\theta)$ with respect to $\theta$. Mathematically,
@@ -261,7 +259,7 @@ $$
   $\frac{S}{n}-\theta$ yields
   {% sidenote 'sn-proof' 'This proof looks wack, revisit p.6.' %}
 
-#### Confidence Intervals
+### Confidence Intervals
 
 - Upper and lower bounds are written $(T_n^{(L)},
   T_n^{(U)})=(T^{(L)}(\mathbf{Y}),T^{(U)}(\mathbf{Y}))$.
@@ -311,7 +309,7 @@ $$
   - It is difficult to deal with multi-parameters or parameters involving
     nonparametric components.
 
-#### Bayesian Analysis
+### Bayesian Analysis
 
 - If one is able to think of $\theta$ as random instead of fixed and specify the
   a prior $\pi(\theta)$ over it, then inference becomes clearer.
@@ -340,7 +338,6 @@ $$
   x=\frac{\Gamma(\alpha)\Gamma(\beta)}{\Gamma(\alpha+\beta)}$ where
     $\Gamma(\alpha)=\int_0^\infty\exp(-\alpha x^{\alpha-1}\dd x)$, the prior
     and posterior (densities can be written as:
-    {% sidenote 'sn-beta' 'Review beta and gamma distributions' %}
 
 $$
 \begin{aligned}
@@ -371,10 +368,63 @@ $$
   - $\mathbb{E}\left[\theta_1-(2\theta_2+3\theta_3)\mid \mathbf{y}\right]$
   - PDF of $\lambda=\theta_1-(2\theta_2+3\theta_3)$
 
-### Frequency Properties
+## Frequency Properties
 
-# Lectures
+- This section observes desirable frequency properties of a Bayesian procedure
+  from a decision-theoretic perspective as well as the asymptotic perspective.
 
-## Lecture 1
+### Admissibility
 
-## Lecture 2
+- Given a sample $\mathbf{Y}=(Y_1,\ldots,Y_n)$, the goal is to choose a decision
+  rule $\delta: \mathcal{X}\to\mathcal{A}$ where $\mathcal{X}$ is the sample
+  space and $\mathcal{A}$ is the action space, to minimize some **loss
+  function**
+  $\ell(\theta;\delta): \mathcal{X}\times\mathcal{A}\to \mathbb{R}$ that
+  measures the discrepancy between the decision rule $\delta$ and parameter
+  $\theta$.
+- It is often more difficult to deal with a loss function that is a function of
+  a random sample, so we instead use the **risk function**: $r(\theta;\delta)=\mathbb{E}\_\theta\left[\ell(\theta;\delta)\right]$ where $\mathbb{E}\_\theta$ is the expectation with respect to $\Pr_\theta$ from which the random sample $\mathbf{Y}$ is generated.
+- A decision rule $\delta_1$ is said to be as good as another rule $\delta_2$ if
+  $r(\theta;\delta_1)\le r(\theta;\delta_2)$ for all $\theta\in\Omega$.
+- If $r(\theta;\delta_1)<r(\theta;\delta_2)$ for some $\theta\in\Omega$, then
+  $\delta_1$ is "better" than $\delta_2$.
+- A decision rule $\delta$ is **admissable** if there exists no other rules that
+  are better than $\delta$ across all $\theta\in\Omega$.
+- For Bayesians, building an admissable decision rule is straightforward:
+
+$$
+\begin{aligned}
+\delta^*(\mathbf{y})
+& = \arg\min_{a\in\mathcal{A}} \mathbb{E}\left[\ell(a,\Theta)\mid \mathbf{X}=\mathbf{x}\right]
+=\arg\min_{a\in\mathcal{A}}\int \ell(a,\theta)p(\theta\mid x)\dd x
+\end{aligned}
+$$
+
+- Example 1.6:
+  - Using $L_2$-loss $\ell(\theta,\delta)=(\theta-\delta)^2$ for
+    $\theta\in\Omega=(-\infty,\infty)$.
+  - The Bayes rule $\delta^*$ is the conditional expectation
+    $\mathbb{E}\left[\theta\mid \mathbf{Y}=\mathbf{y}\right]$ which minimizes
+    $\mathbb{E}\left[(\theta-\delta)^2\mid \mathbf{Y}=\mathbf{y}\right]$ over
+    $\delta$.
+- **Lemma 1.2** (proof on p.15): Suppose $\pi(\theta)>0$ for all
+  $\theta\in\Omega\subset\mathcal{K}$. Then the Bayes rule $\delta^\*$ is
+  admissable almost everywhere in $\theta$. That is, another decision rule
+  $\delta$ cannot be better than $\delta^\*$ except on a set of $\theta$-values
+  with $\mu$-measure zero, where $\mu$ is a dominating measure for density
+  $\pi(\theta)$. {% sidenote 'sn-measure' 'What is a mu-measure?' %}
+- **Lemma 1.3**: Admissible rules are Bayes rules. If $\delta$ is non-Bayes,
+  there exists a Bayes rule dominating $\delta$.
+- Example 1.7: Binomial with 3 values TODO(danj): finish with notes from class.
+
+### Minimaxality
+
+- A weak property which guards against he worst situation. Choose the rule such
+  that the worst case scenario is minimized.
+- An estimator $T_n$ is minimax if it minimizes the risk of the least favorable
+  situation $\sup_\theta r(\theta,\delta)$.
+- **Theorem 1.1**: A minimax estimator $T_n$, if unique, is admissible. The
+  proof is that any estimator better than a minimax estimator is also minimax.
+  By uniqueness, it must be admissible. This completes the proof.
+
+### Consistency
