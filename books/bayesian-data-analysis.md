@@ -283,6 +283,18 @@ $$
 
 ## Summarizing posterior inference
 
-{% maincolumn 'books/figures/bayesian-data-analysis/cpi-vs-hpd.png' '' %}
+- Commonly used summaries of location are the mean, median, and mode(s) of the
+  distribution.
+- Variation is commonly summarized by the standard deviation, interquartile
+  range, and other quantiles.
+- The mode or most likely posterior value is often easier to compute than the
+  mean or median.
+- In addition to point summaries, it is important to report posterior
+  uncertainty. These usually take the form of quantiles of the posterior
+  distribution of the estimands of interest.
+- The **central posterior interval** can differ significantly from the **highest
+  posterior density** region, as shown by the following graphic:
 
--
+{% fullwidth 'books/figures/bayesian-data-analysis/cpi-vs-hpd.png' '' %}
+
+## Informative prior distributions
