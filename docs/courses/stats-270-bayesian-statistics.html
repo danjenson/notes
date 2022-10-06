@@ -111,6 +111,12 @@
 <li class="toc-entry toc-h3"><a href="#consistency">Consistency</a></li>
 </ul>
 </li>
+<li class="toc-entry toc-h2"><a href="#lecture-3">Lecture 3</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#admissibility-and-the-risk-set">Admissibility and the risk set</a></li>
+<li class="toc-entry toc-h3"><a href="#bayes-rules-and-the-risk-set">Bayes rules and the risk set</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul><h1 id="terminology">
@@ -628,6 +634,76 @@ By uniqueness, it must be admissible. This completes the proof.</li>
 
 <h3 id="consistency">
 <a class="anchor" href="#consistency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Consistency</h3>
+
+<h2 id="lecture-3">
+<a class="anchor" href="#lecture-3" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lecture 3</h2>
+
+<h3 id="admissibility-and-the-risk-set">
+<a class="anchor" href="#admissibility-and-the-risk-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Admissibility and the risk set</h3>
+
+<ul>
+  <li>The lower quatrant $Q_x=\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\}$</li>
+  <li>TODO: finish</li>
+</ul>
+
+<h3 id="bayes-rules-and-the-risk-set">
+<a class="anchor" href="#bayes-rules-and-the-risk-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayes rules and the risk set</h3>
+
+<ul>
+  <li>Let $\pi(\cdot)$ be the prior.</li>
+  <li>\(\vec{\pi}=\begin{bmatrix}\pi(\theta_1)\\ \vdots \\
+\pi(\theta_k)\end{bmatrix}=\begin{bmatrix}\pi_1 \\ \vdots \\
+\pi{k}\end{bmatrix}\)
+such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.</li>
+  <li>All decision rules with the same $\pi$-averaged risk must lie in a hyperplane:
+$H_b=\{y: \sum_i \pi_iy_i=b\}$.</li>
+  <li>If $r^\delta(\theta_j)=y_j$ then $\vec{y}$ is the risk point for $\delta$
+$\pi$-averaged risk for $\delta$ is $\sum_{i=1}^k \pi(\theta_i)y_i$.
+    <ul>
+      <li>This suggests that we have shown that the Bayes rules minimize the
+$\pi$-averaged risk.</li>
+    </ul>
+  </li>
+  <li>To find the Bayes value with respect to $\pi(\cdot)$ we change $b$ so that
+$H_b$ becomes tangent to the risk set $S$.</li>
+  <li>
+<strong>Theorem</strong>: If $\Omega$ is finite and $\mathcal{A}$ is finite, under some
+regularity conditions, then for any admissible rule $\delta$, there is a Bayes
+rule that is as good as $\delta$. I.e. you don’t need to go outside of the
+Bayes rules. Proof:
+    <ul>
+      <li>Let $\delta$ be an admissible rule, and $x=r^\delta$, then $s\cap
+  Q_x=\{x\}$ .</li>
+      <li>Let \(T=Q_x/\{x\}\), then $T$ is convex. TODO: drawing here.</li>
+      <li>$S$ and $T$ are two disjoint convex sets (when you take out $x$).</li>
+      <li>By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
+such that $\sum_{i=1}^k\alpha_i y_i\le\sum_{i=1}^k\alpha_j z_j$ if
+$\vec{y}\in T$ and $\vec{z}\in S$.</li>
+      <li>Claim that $\alpha_j\ge 0\;\forall j=1,\ldots,k$. TODO: drawing here.
+        <ul>
+          <li>Suppose $\alpha_1&lt;0$, then $\sum_{i=1}^k \alpha_i y_i$.</li>
+          <li>If we let $y_1\to -\infty$, then $\sum_{i=1}^k\alpha_i y_i\to\infty$. This
+is a contradiction because it is not $\le \sum_{j=1}^k\alpha_j z_j$. This
+contradicts the separating property of $H_b$.</li>
+        </ul>
+      </li>
+      <li>We define $\pi_j=\frac{\alpha_j}{\sum_{i=1}^k\alpha_i}$; now, $\vec{\pi}$ is
+a probability vector. If $\delta$ achieves the minimum $\pi$-averaged risk and
+if the minimum is uniquely achieved, then $\delta$ is a Bayes rule.</li>
+    </ul>
+  </li>
+  <li>When is the minimum not uniquely achieved?
+    <ul>
+      <li>TODO: picture here.</li>
+      <li>Conditions:
+        <ul>
+          <li>Regularity condition.</li>
+          <li>Distribution of $x$ is continuous under all $\theta$.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 </article>
     <span class="print-footer"

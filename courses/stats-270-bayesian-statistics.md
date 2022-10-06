@@ -428,3 +428,52 @@ $$
   By uniqueness, it must be admissible. This completes the proof.
 
 ### Consistency
+
+## Lecture 3
+
+### Admissibility and the risk set
+
+- The lower quatrant $Q_x=\\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\\}$
+- TODO: finish
+
+### Bayes rules and the risk set
+
+- Let $\pi(\cdot)$ be the prior.
+- $$
+  \vec{\pi}=\begin{bmatrix}\pi(\theta_1)\\ \vdots \\
+  \pi(\theta_k)\end{bmatrix}=\begin{bmatrix}\pi_1 \\ \vdots \\
+  \pi{k}\end{bmatrix}
+  $$
+  such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.
+- All decision rules with the same $\pi$-averaged risk must lie in a hyperplane:
+  $H_b=\\{y: \sum_i \pi_iy_i=b\\}$.
+- If $r^\delta(\theta_j)=y_j$ then $\vec{y}$ is the risk point for $\delta$
+  $\pi$-averaged risk for $\delta$ is $\sum\_{i=1}^k \pi(\theta_i)y_i$.
+  - This suggests that we have shown that the Bayes rules minimize the
+    $\pi$-averaged risk.
+- To find the Bayes value with respect to $\pi(\cdot)$ we change $b$ so that
+  $H_b$ becomes tangent to the risk set $S$.
+- **Theorem**: If $\Omega$ is finite and $\mathcal{A}$ is finite, under some
+  regularity conditions, then for any admissible rule $\delta$, there is a Bayes
+  rule that is as good as $\delta$. I.e. you don't need to go outside of the
+  Bayes rules. Proof:
+  - Let $\delta$ be an admissible rule, and $x=r^\delta$, then $s\cap
+      Q_x=\\{x\\}$ .
+  - Let $$T=Q_x/\{x\}$$, then $T$ is convex. TODO: drawing here.
+  - $S$ and $T$ are two disjoint convex sets (when you take out $x$).
+  - By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
+    such that $\sum_{i=1}^k\alpha_i y_i\le\sum_{i=1}^k\alpha_j z_j$ if
+    $\vec{y}\in T$ and $\vec{z}\in S$.
+  - Claim that $\alpha_j\ge 0\;\forall j=1,\ldots,k$. TODO: drawing here.
+    - Suppose $\alpha_1<0$, then $\sum_{i=1}^k \alpha_i y_i$.
+    - If we let $y_1\to -\infty$, then $\sum_{i=1}^k\alpha_i y_i\to\infty$. This
+      is a contradiction because it is not $\le \sum_{j=1}^k\alpha_j z_j$. This
+      contradicts the separating property of $H_b$.
+  - We define $\pi_j=\frac{\alpha_j}{\sum_{i=1}^k\alpha_i}$; now, $\vec{\pi}$ is
+    a probability vector. If $\delta$ achieves the minimum $\pi$-averaged risk and
+    if the minimum is uniquely achieved, then $\delta$ is a Bayes rule.
+- When is the minimum not uniquely achieved?
+  - TODO: picture here.
+  - Conditions:
+    - Regularity condition.
+    - Distribution of $x$ is continuous under all $\theta$.
