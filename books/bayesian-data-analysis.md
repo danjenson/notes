@@ -35,6 +35,7 @@ $$
 - **Posterior density**: $p(\theta\mid y)=\frac{p(\theta)p(y\mid\theta)}{\int p(\theta)p(y\mid\theta)\dd\theta}$.
 - **Posterior odds**: The prior ratio multiplied by the likelihood ratio, i.e. $\frac{p\left(\theta_1 \mid y\right)}{p\left(\theta_2 \mid y\right)}=\frac{p\left(\theta_1\right) p\left(y \mid \theta_1\right) / p(y)}{p\left(\theta_2\right) p\left(y \mid \theta_2\right) / p(y)}=\frac{p\left(\theta_1\right)}{p\left(\theta_2\right)} \frac{p\left(y \mid \theta_1\right)}{p\left(y \mid \theta_2\right)}$.
 - **Posterior predictive distribution**: $p(\tilde{y}\mid y)$. It is posterior because it is conditional on observing $y$ and predictive because it is observable.
+- **Precision**: The inverse of the variance, $\frac{1}{\sigma^2}$.
 - **Prior predictive distribution**: Also known as the marginal distribution of $y$: $p(y)=\int p(y,\theta)\dd\theta=\int p(\theta)p(y\mid\theta)\dd\theta$. It is prior because it is not conditional on a previous observation of the process and predictive because it is the distribution of a quantity that is observable.
 - **Sampling distribution**: $p(y\mid\theta)$. Also known as the **data distribution**.
 - **Unit**: A record or single object measured, i.e. a person. Each unit may be associated with many observables.
@@ -355,3 +356,137 @@ $$
   that have natural conjugate prior distributions, since, apart from certain
   irregular cases, the only distributions having a fixed number of sufficient
   statistics for all $n$ are of the exponential type.
+- When applying the normal to a proportion, it is useful to logit transform it,
+  $\log\left(\frac{\theta}{1-\theta}\right)$ so that the unit interval becomes
+  the real line.
+
+## 2.5 Normal distribution with known variance
+
+- The central limit theorem helps to justify using the normal likelihood in many
+  problems as an approximation to a less analytically convenient actual
+  likelihood.
+- The normal density is
+  $\frac{1}{\sigma\sqrt{2\pi}}\exp\left(-\frac{1}{2\sigma^2}(y-\mu)^2\right)$
+- Considered as a function of $\mu$, the likelihood is an exponential of a
+  quadratic from in $\mu$, so conjugate priors look like
+
+$$
+p(\mu)=\exp\left(A\mu^2+B\mu+C\right)
+$$
+
+- We parameterize this family as $\mu\sim \operatorname{Normal}\left(\mu_0,\sigma_0^2\right)$:
+
+$$
+p(\mu)\propto\exp\left(-\frac{1}{2\sigma_0^2}(\mu-\mu_0)^2\right)
+$$
+
+- The posterior is then:
+
+$$
+p(\theta\mid y)\propto\exp\left(-\frac{1}{2}\left(\frac{(y-\mu)^2}{\sigma^2}+\frac{(\mu-\mu_0)^2}{\sigma_0^2}\right)\right)
+$$
+
+- And, combining terms, $\theta\mid y\sim \operatorname{Normal}\left(\mu_1,\sigma_1^2\right)$
+
+$$
+\begin{aligned}
+p(\theta\mid y)&\propto\exp\left(-\frac{1}{2\sigma_1^2}(\mu-\mu_1)^2\right) \\
+\mu_1&=\frac{\frac{1}{\sigma_0^2}\mu_0+\frac{1}{\sigma^2}y}{\frac{1}{\sigma_0^2}+\frac{1}{\sigma^2}} \\
+\frac{1}{\sigma_1^2}&=\frac{1}{\sigma_0^2}+\frac{1}{\sigma^2}
+\end{aligned}
+$$
+
+- The posterior mean can be expressed as a weighted average of the prior mean
+  and the observed value, $y$, with weights proportional to the precisions.
+- Alternatively, we can express $\mu_1$ as the prior mean adjusted toward the
+  observed $y$:
+
+$$
+\begin{aligned}
+\mu_1&=\mu_0+(y-\mu_0)\frac{\sigma_0^2}{\sigma^2+\sigma_0^2} \\
+\end{aligned}
+$$
+
+- Or, as the data shrunk toward the prior mean:
+
+$$
+\mu_1=y-(y-\mu_0)\frac{\sigma^2}{\sigma^2+\sigma_0^2}
+$$
+
+- Or, even as:
+
+$$
+\mu_1=\mu_0 \left(\frac{\sigma^2}{\sigma^2+\sigma_0^2}\right)+y
+\left(\frac{\sigma_0^2}{\sigma^2+\sigma_0^2}\right)
+$$
+
+- This makes it clear that
+
+$$
+\begin{aligned}
+\mu_1&=\mu_0\text{ if }y=\mu_0\text{ or }\sigma_0^2=0 \\
+\mu_1&=y\text{ if }y=\mu_0\text{ or }\sigma_0^2=0 \\
+\end{aligned}
+$$
+
+- The posterior predictive distribution can be calculated using integration:
+
+$$
+\begin{aligned}
+p(\tilde{y}\mid y)&=\int p(\tilde{y}\mid\mu)p(\mu\mid y)\dd\mu \\
+&\propto\int\exp\left(-\frac{1}{2\sigma^2}(\tilde{y}-\mu)^2\right)\exp\left(-\frac{1}{2\sigma_1^2}(\mu-\mu_1)^2\right)\dd\mu
+\end{aligned}
+$$
+
+- You can determine the mean and variance of the posterior predictive
+  distribution using the knowledge from the posterior distribution that
+  $\mathbb{E}\left[\tilde{y}\mid\mu\right]=\mu$ and
+  $\operatorname{var}\left[\tilde{y}\mid\theta\right]=\sigma^2$:
+
+$$
+\begin{aligned}
+\mathbb{E}\left[\tilde{y}\mid y\right]
+&=\mathbb{E}\left[\mathbb{E}\left[\tilde{y}\mid\mu,y\right]\mid
+y\right]=\mathbb{E}\left[\mu\mid y\right]=\mu_1 \\
+\operatorname{var}\left[\tilde{y}\mid y\right]
+&= \mathbb{E}\left[\operatorname{var}\left[\tilde{y}\mid \mu,y\mid y\right]\right]+ \operatorname{var}\left[\mathbb{E}\left[\tilde{y},\mu,y\right]\mid y\right] \\
+&= \mathbb{E}\left[\sigma^2\mid y\right]+ \operatorname{var}\left[\mu\mid y\right] \\
+&= \sigma^2+\sigma_1^2
+\end{aligned}
+$$
+
+- Thus, the posterior predictive for $\tilde{y}$ has a mean equal to the
+  posterior mean of $\mu$ and variance equal to the predictive variance
+  $\sigma^2$ and the variance $\sigma_1^2$ due to the uncertainty in $\mu_1$.
+- With multiple $y_i$, this becomes:
+
+$$
+\begin{aligned}
+p(\mu \mid y) & \propto p(\mu) p(y \mid \mu) \\
+&=p(\theta) \prod_{i=1}^n p\left(y_i \mid \theta\right) \\
+& \propto \exp \left(-\frac{1}{2 \sigma_0^2}\left(\mu-\mu_0\right)^2\right) \prod_{i=1}^n \exp \left(-\frac{1}{2 \sigma^2}\left(y_i-\mu\right)^2\right) \\
+& \propto \exp \left(-\frac{1}{2}\left(\frac{1}{\sigma_0^2}\left(\mu-\mu_0\right)^2+\frac{1}{\sigma^2} \sum_{i=1}^n\left(y_i-\mu\right)^2\right)\right)
+\end{aligned}
+$$
+
+- Algebraic simplification of this shows that the posterior depends on $y$ only
+  through the sample mean, $\bar{y}=\frac{1}{n}\sum_{i=1}^n y_i$; namely,
+  $\bar{y}$ is a **sufficient statistic** for the model. In fact, since
+  $\bar{y}\mid\mu\sigma^2\sim \operatorname{Normal}\left(\mu,\sigma^2\right)$,
+  the results derived for the single normal observation apply immediately
+  (treating $\bar{y}$) as a single observation:
+
+$$
+\begin{aligned}
+p(\mu\mid y_1,\ldots,y_n)=p(\mu\mid\bar{y})&=\operatorname{Normal}\left(\mu\mid\mu_n,\sigma_n^2\right) \\
+\mu_n&=\frac{\frac{1}{\sigma_0^2}\mu_0+\frac{n}{\sigma^2}\bar{y}}{\frac{1}{\sigma_0^2}+\frac{1}{\sigma^2}} \\
+\frac{1}{\sigma_n^2}&=\frac{1}{\sigma_0^2}+\frac{n}{\sigma^2}
+\end{aligned}
+$$
+
+- As $n\to\infty$, $p(\u\mid y)\approx \operatorname{Normal}\left(\mu\mid \bar{y},\sigma^2/n\right)$.
+
+## 2.6 Other standard single-parameter models
+
+- The normal distribution with known mean but unknown variance provides an
+  introductory example of the estimation of a scale parameter.
