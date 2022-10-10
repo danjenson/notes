@@ -484,7 +484,7 @@ p(\mu\mid y_1,\ldots,y_n)=p(\mu\mid\bar{y})&=\operatorname{Normal}\left(\mu\mid\
 \end{aligned}
 $$
 
-- As $n\to\infty$, $p(\u\mid y)\approx \operatorname{Normal}\left(\mu\mid \bar{y},\sigma^2/n\right)$.
+- As $n\to\infty$, $p(\mu\mid y)\approx \operatorname{Normal}\left(\mu\mid \bar{y},\sigma^2/n\right)$.
 
 ## 2.6 Other standard single-parameter models
 
