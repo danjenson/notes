@@ -1,7 +1,6 @@
 ---
-layout: default
+layout: page
+title: Dan Jenson's Notes
 ---
 
-{% fullwidth 'imgs/sailing.jpeg' 'Baja Haha 2021' %}
-
-Welcome to Dan Jenson's notes!
+{% fullwidth 'imgs/sailing.jpeg' '' %}

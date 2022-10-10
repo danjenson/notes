@@ -16,11 +16,21 @@ $$
 ## Terms
 
 - **Coefficient of variation**: $\op{sd}(\theta)/\mathbb{E}\left[\theta\right]$.
+- **Conjugacy**: If $\mathcal{F}$ is a class of sampling distributions
+  $p(y\mid\theta)$, and $\mathcal{P}$ is a class of prior distributions for
+  $\theta$, then the class $\mathcal{P}$ is conjugate for $\mathcal{F}$ if
+  $p(\theta\mid y)\in \mathcal{P}\quad\forall p(\cdot\mid\theta)\in \mathcal{F}\quad\forall\;
+  p(\cdot)\in \mathcal{P}$. This is trivial if you take $\mathcal{P}$ to be the
+  class of all distributions. Ergo, we are often interested in **natural
+  conjugate prior families** which share the same functional form as the
+  likelihood.
 - **Estimand**: Something estimated from data.
 - **Exchangeability**: The concept that permutations of the data doesn't affect their uncertainty.
 - **Explanatory variables**: Non-random variables or covariates.
 - **Geometric mean**: $\exp\left(\mathbb{E}\left[\log(\theta)\right]\right)$.
 - **Geometric standard deviation**: $\exp(\op{sd}(\log(\theta)))$.
+- **Hyperparameters**: The parameters of a distribution, i.e. $\alpha$ and
+  $\beta$ in $\operatorname{Beta}\left(\alpha,\beta\right)$.
 - **Likelihood function**: $\mathcal{L}(\theta\mid y)$ or $p(y\mid\theta)$.
 - **Posterior density**: $p(\theta\mid y)=\frac{p(\theta)p(y\mid\theta)}{\int p(\theta)p(y\mid\theta)\dd\theta}$.
 - **Posterior odds**: The prior ratio multiplied by the likelihood ratio, i.e. $\frac{p\left(\theta_1 \mid y\right)}{p\left(\theta_2 \mid y\right)}=\frac{p\left(\theta_1\right) p\left(y \mid \theta_1\right) / p(y)}{p\left(\theta_2\right) p\left(y \mid \theta_2\right) / p(y)}=\frac{p\left(\theta_1\right)}{p\left(\theta_2\right)} \frac{p\left(y \mid \theta_1\right)}{p\left(y \mid \theta_2\right)}$.
@@ -226,6 +236,8 @@ $$
 
 # Chapter 2: Single-parameter models
 
+## 2.1 Estimating a probability from binomial data
+
 - For the binomial, $p(y\mid\theta)=\operatorname{Binomial}\left(y\mid
   n,\theta\right)=\binom{n}{y}\theta^y(1-\theta)^{n-y}$, $n$ is suppressed on
   the left hand side because it is regarded as part of the experimental design
@@ -254,7 +266,7 @@ $$
   law of succession". When $y=0$, this law predicts $\frac{1}{n+2}$, and when
   $y=n$, this law predicts $\frac{n+1}{n+2}$.
 
-## Posterior as compromise between data and prior information
+## 2.2 Posterior as compromise between data and prior information
 
 - The prior mean is the expectation over posterior means, i.e.
   $\mathbb{E}\left[\theta\right]=\mathbb{E}\left[\mathbb{E}\left[\theta\mid
@@ -281,7 +293,7 @@ $$
   uncertainty regarding our estimate of $\theta$.
 - The posterior is always a compromise between the data and the prior.
 
-## Summarizing posterior inference
+## 2.3 Summarizing posterior inference
 
 - Commonly used summaries of location are the mean, median, and mode(s) of the
   distribution.
@@ -297,4 +309,49 @@ $$
 
 {% fullwidth 'books/figures/bayesian-data-analysis/cpi-vs-hpd.png' '' %}
 
-## Informative prior distributions
+## 2.4 Informative prior distributions
+
+- Two justifications for priors:
+  - _Population_ interpretation: the prior represents a population of possible
+    parameter values from which $\theta$ has been drawn.
+  - _State of knowledge_ interpretation: we must express our knowledge and
+    uncertainty about $\theta$ as if its value could be thought of as a random
+    realization from a prior distribution.
+- Typically, the prior should include all plausible values of $\theta$, and even
+  if the prior is not centered around the true value, the data will far
+  outweigh _any_ reasonable prior.
+- Probability distributions that belong to an **exponential family** have
+  natural conjugate prior distributions.
+- The class $\mathcal{F}$ is an exponential family if all its members have the
+  form:
+  - $\theta,y_i,\phi(\theta),u(y_i)\in \mathbb{R}^n$
+  - $\phi(\theta)$ is the **natural parameter**
+
+$$
+p(y_i\mid\theta)=f(y_i)g(\theta)e^{\phi(\theta)^\intercal u(y_i)}
+$$
+
+- The likelihood corresponding to i.i.d. $y_i$ is
+
+$$
+p(y\theta)=\left(\prod_{i=1}^n
+f(y_i)\right)g(\theta)^n\exp\left(\phi(\theta)^\intercal\sum_{i=1}^n u(y_i)\right)
+$$
+
+- And for all $n$ and $y$, this has a fixed form as a function of $\theta$ where
+  $t(y)=\sum_{i=1}^n u(y_i)$:
+
+$$
+p(y\mid\theta)\propto g(\theta)^ne^{\phi(\theta)^\intercal t(y)}
+$$
+
+- Here $t(y)$ is said to be a **sufficient statistic** for $\theta$ because the
+  likelihood for $\theta$ depends on the data $y$ only through the value of
+  $t(y)$.
+- If the prior density is $p(\theta)\propto g(\theta)^\eta
+  \exp(\phi(\theta)^\intercal \nu)$, then the posterior is $p(\theta\mid
+  y)\propto g(\theta)^{\eta+n}\exp(\phi(\theta)^\intercal(\nu+t(y)))$.
+- In general, the exponential families are the only classes of distributions
+  that have natural conjugate prior distributions, since, apart from certain
+  irregular cases, the only distributions having a fixed number of sufficient
+  statistics for all $n$ are of the exponential type.
