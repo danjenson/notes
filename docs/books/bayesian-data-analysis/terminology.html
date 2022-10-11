@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    Bayesian Data Analysis
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/books/bayesian-data-analysis/terminology.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">Bayesian Data Analysis</a>
+</h1>
+ 
+<h2 class="subtitle">Terminology</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#terms">Terms</a></li>
+<li class="toc-entry toc-h1"><a href="#notation">Notation</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\sd}{\op{sd}}
+\newcommand{\var}{\op{var}}
+\newcommand{\logit}{\op{logit}}
+\newcommand{\J}{\op{J}}\]
+
+<h1 id="terms">
+<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h1>
+
+<ul>
+  <li>
+<strong>Coefficient of variation</strong>: $\op{sd}(\theta)/\mathbb{E}\left[\theta\right]$.</li>
+  <li>
+<strong>Conjugacy</strong>: If $\mathcal{F}$ is a class of sampling distributions
+$p(y\mid\theta)$, and $\mathcal{P}$ is a class of prior distributions for
+$\theta$, then the class $\mathcal{P}$ is conjugate for $\mathcal{F}$ if
+$p(\theta\mid y)\in \mathcal{P}\quad\forall p(\cdot\mid\theta)\in \mathcal{F}\quad\forall\;
+p(\cdot)\in \mathcal{P}$. This is trivial if you take $\mathcal{P}$ to be the
+class of all distributions. Ergo, we are often interested in <strong>natural
+conjugate prior families</strong> which share the same functional form as the
+likelihood.</li>
+  <li>
+<strong>Estimand</strong>: Something estimated from data.</li>
+  <li>
+<strong>Exchangeability</strong>: The concept that permutations of the data doesn’t affect their uncertainty.</li>
+  <li>
+<strong>Explanatory variables</strong>: Non-random variables or covariates.</li>
+  <li>
+<strong>Geometric mean</strong>: $\exp\left(\mathbb{E}\left[\log(\theta)\right]\right)$.</li>
+  <li>
+<strong>Geometric standard deviation</strong>: $\exp(\op{sd}(\log(\theta)))$.</li>
+  <li>
+<strong>Hyperparameters</strong>: The parameters of a distribution, i.e. $\alpha$ and
+$\beta$ in $\operatorname{Beta}\left(\alpha,\beta\right)$.</li>
+  <li>
+<strong>Likelihood function</strong>: $\mathcal{L}(\theta\mid y)$ or $p(y\mid\theta)$.</li>
+  <li>
+<strong>Noninformative prior</strong>: A prior which is often flat or diffuse and has
+little effect on the posterior.</li>
+  <li>
+<strong>Pivotal quantity</strong>: If the density of $y$ is such that $p(y-\theta\mid\theta)$ is free of $\theta$ and $y$, then $y-\theta$ is a pivotal quantity. Furthermore $\theta$ is called a <strong>location</strong> parameter. Similarly, if $p\left(\frac{y}{\theta}\mid\theta\right)$ is a function free of $\theta$ and $y$, then $\theta$ is called a <strong>scale</strong> parameter.</li>
+  <li>
+<strong>Posterior density</strong>: $p(\theta\mid y)=\frac{p(\theta)p(y\mid\theta)}{\int p(\theta)p(y\mid\theta)\dd\theta}$.</li>
+  <li>
+<strong>Posterior odds</strong>: The prior ratio multiplied by the likelihood ratio, i.e. $\frac{p\left(\theta_1 \mid y\right)}{p\left(\theta_2 \mid y\right)}=\frac{p\left(\theta_1\right) p\left(y \mid \theta_1\right) / p(y)}{p\left(\theta_2\right) p\left(y \mid \theta_2\right) / p(y)}=\frac{p\left(\theta_1\right)}{p\left(\theta_2\right)} \frac{p\left(y \mid \theta_1\right)}{p\left(y \mid \theta_2\right)}$.</li>
+  <li>
+<strong>Posterior predictive distribution</strong>: $p(\tilde{y}\mid y)$. It is posterior because it is conditional on observing $y$ and predictive because it is observable.</li>
+  <li>
+<strong>Precision</strong>: The inverse of the variance, $\frac{1}{\sigma^2}$.</li>
+  <li>
+<strong>Prior predictive distribution</strong>: Also known as the marginal distribution of $y$: $p(y)=\int p(y,\theta)\dd\theta=\int p(\theta)p(y\mid\theta)\dd\theta$. It is prior because it is not conditional on a previous observation of the process and predictive because it is the distribution of a quantity that is observable.</li>
+  <li>
+<strong>Proper prior density</strong>: A prior density that does not depend on the data and integrates to 1. Improper prior densities can still lead to proper posterior densities.</li>
+  <li>
+<strong>Sampling distribution</strong>: $p(y\mid\theta)$. Also known as the <strong>data distribution</strong>.</li>
+  <li>
+<strong>Unit</strong>: A record or single object measured, i.e. a person. Each unit may be associated with many observables.</li>
+  <li>
+<strong>Weakly informative priors</strong>: Priors that contain enough information to “regularize” the posterior distribution.</li>
+</ul>
+
+<h1 id="notation">
+<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h1>
+
+<ul>
+  <li>$\mathbb{E}\left[u\mid v\right]$: The conditional expectation of $u$ with $v$ held fixed, i.e. it is a function of $v$.</li>
+  <li>$\mathbb{E}\left[u\right]=\int up(u)\dd u$. This is the expectation of $u$ averaging over any conditioning variables, e.g. $v$, as well as $u$. - $\operatorname{Normal}\left(\mu,\sigma^2\right)$: Typically used for random variables.</li>
+  <li>$\operatorname{Normal}\left(\theta\mid\mu,\sigma^2\right)$: Typically used for density functions.</li>
+  <li>$\theta$: Parameters.</li>
+  <li>$\theta\sim \operatorname{Normal}\left(\mu,\sigma^2\right)$: Equivalent to $p(\theta)=p(\theta\mid\mu,\sigma^2)=\operatorname{Normal}\left(\theta\mid\mu,\sigma^2\right)$</li>
+  <li>$\tilde{y}$: Unknown, but potentially observable, quantities.</li>
+  <li>$\var(u)=\int(u-\mathbb{E}\left[u\right])^2p(u)\dd u$. While for vectors, the covariance matrix is $\var(u)=\int(u-\mathbb{E}\left[u\right])(u-\mathbb{E}\left[u\right])^\intercal p(u)\dd u$</li>
+  <li>$p(\cdot)$: A marginal probability distribution.</li>
+  <li>$p(\cdot\mid\cdot)$: A conditional probability distribution.</li>
+  <li>$y$: Observed data.</li>
+  <li>$(\theta^s,\tilde{y}^s)$: $s$ indexes the simulation draws $s=1,\ldots,S$.</li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >Bayesian Data Analysis - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

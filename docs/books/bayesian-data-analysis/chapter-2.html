@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="https://danjenson.github.io/notes/books/bayesian-data-analysis.html"
+    href="https://danjenson.github.io/notes/books/bayesian-data-analysis/chapter-2.html"
   />
 </head>
 
@@ -82,290 +82,29 @@
 </header>
 
     <article class="group">
-<h1><a href="https://www.amazon.com/Bayesian-Analysis-Chapman-Statistical-2013-11-01/dp/B01JNVQ2QC/" target="_blank">Bayesian Data Analysis</a></h1>
-
-<p class="subtitle"></p>
-
-\[\newcommand{\op}{\operatorname}
+<h1 class="title">
+  <a href=".">Bayesian Data Analysis</a>
+</h1>
+ 
+<h2 class="subtitle">Chapter 2: Single-parameter models</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#21-estimating-a-probability-from-binomial-data">2.1 Estimating a probability from binomial data</a></li>
+<li class="toc-entry toc-h1"><a href="#22-posterior-as-compromise-between-data-and-prior-information">2.2 Posterior as compromise between data and prior information</a></li>
+<li class="toc-entry toc-h1"><a href="#23-summarizing-posterior-inference">2.3 Summarizing posterior inference</a></li>
+<li class="toc-entry toc-h1"><a href="#24-informative-prior-distributions">2.4 Informative prior distributions</a></li>
+<li class="toc-entry toc-h1"><a href="#25-normal-distribution-with-known-variance">2.5 Normal distribution with known variance</a></li>
+<li class="toc-entry toc-h1"><a href="#26-other-standard-single-parameter-models">2.6 Other standard single-parameter models</a></li>
+<li class="toc-entry toc-h1"><a href="#27-example-informative-prior-distribution-for-cancer-rates">2.7 Example: informative prior distribution for cancer rates</a></li>
+<li class="toc-entry toc-h1"><a href="#28-noninformative-prior-distributions">2.8 Noninformative prior distributions</a></li>
+<li class="toc-entry toc-h1"><a href="#29-weakly-informative-prior-distributions">2.9 Weakly informative prior distributions</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
 \newcommand{\sd}{\op{sd}}
 \newcommand{\var}{\op{var}}
 \newcommand{\logit}{\op{logit}}
 \newcommand{\J}{\op{J}}\]
 
-<h1 id="terminology">Terminology</h1>
-
-<h2 id="terms">Terms</h2>
-
-<ul>
-  <li><strong>Coefficient of variation</strong>: $\op{sd}(\theta)/\mathbb{E}\left[\theta\right]$.</li>
-  <li><strong>Conjugacy</strong>: If $\mathcal{F}$ is a class of sampling distributions
-$p(y\mid\theta)$, and $\mathcal{P}$ is a class of prior distributions for
-$\theta$, then the class $\mathcal{P}$ is conjugate for $\mathcal{F}$ if
-$p(\theta\mid y)\in \mathcal{P}\quad\forall p(\cdot\mid\theta)\in \mathcal{F}\quad\forall\;
-p(\cdot)\in \mathcal{P}$. This is trivial if you take $\mathcal{P}$ to be the
-class of all distributions. Ergo, we are often interested in <strong>natural
-conjugate prior families</strong> which share the same functional form as the
-likelihood.</li>
-  <li><strong>Estimand</strong>: Something estimated from data.</li>
-  <li><strong>Exchangeability</strong>: The concept that permutations of the data doesn’t affect their uncertainty.</li>
-  <li><strong>Explanatory variables</strong>: Non-random variables or covariates.</li>
-  <li><strong>Geometric mean</strong>: $\exp\left(\mathbb{E}\left[\log(\theta)\right]\right)$.</li>
-  <li><strong>Geometric standard deviation</strong>: $\exp(\op{sd}(\log(\theta)))$.</li>
-  <li><strong>Hyperparameters</strong>: The parameters of a distribution, i.e. $\alpha$ and
-$\beta$ in $\operatorname{Beta}\left(\alpha,\beta\right)$.</li>
-  <li><strong>Likelihood function</strong>: $\mathcal{L}(\theta\mid y)$ or $p(y\mid\theta)$.</li>
-  <li><strong>Noninformative prior</strong>: A prior which is often flat or diffuse and has
-little effect on the posterior.</li>
-  <li><strong>Pivotal quantity</strong>: If the density of $y$ is such that $p(y-\theta\mid\theta)$ is free of $\theta$ and $y$, then $y-\theta$ is a pivotal quantity. Furthermore $\theta$ is called a <strong>location</strong> parameter. Similarly, if $p\left(\frac{y}{\theta}\mid\theta\right)$ is a function free of $\theta$ and $y$, then $\theta$ is called a <strong>scale</strong> parameter.</li>
-  <li><strong>Posterior density</strong>: $p(\theta\mid y)=\frac{p(\theta)p(y\mid\theta)}{\int p(\theta)p(y\mid\theta)\dd\theta}$.</li>
-  <li><strong>Posterior odds</strong>: The prior ratio multiplied by the likelihood ratio, i.e. $\frac{p\left(\theta_1 \mid y\right)}{p\left(\theta_2 \mid y\right)}=\frac{p\left(\theta_1\right) p\left(y \mid \theta_1\right) / p(y)}{p\left(\theta_2\right) p\left(y \mid \theta_2\right) / p(y)}=\frac{p\left(\theta_1\right)}{p\left(\theta_2\right)} \frac{p\left(y \mid \theta_1\right)}{p\left(y \mid \theta_2\right)}$.</li>
-  <li><strong>Posterior predictive distribution</strong>: $p(\tilde{y}\mid y)$. It is posterior because it is conditional on observing $y$ and predictive because it is observable.</li>
-  <li><strong>Precision</strong>: The inverse of the variance, $\frac{1}{\sigma^2}$.</li>
-  <li><strong>Prior predictive distribution</strong>: Also known as the marginal distribution of $y$: $p(y)=\int p(y,\theta)\dd\theta=\int p(\theta)p(y\mid\theta)\dd\theta$. It is prior because it is not conditional on a previous observation of the process and predictive because it is the distribution of a quantity that is observable.</li>
-  <li><strong>Proper prior density</strong>: A prior density that does not depend on the data and integrates to 1. Improper prior densities can still lead to proper posterior densities.</li>
-  <li><strong>Sampling distribution</strong>: $p(y\mid\theta)$. Also known as the <strong>data distribution</strong>.</li>
-  <li><strong>Unit</strong>: A record or single object measured, i.e. a person. Each unit may be associated with many observables.</li>
-  <li><strong>Weakly informative priors</strong>: Priors that contain enough information to “regularize” the posterior distribution.</li>
-</ul>
-
-<h2 id="notation">Notation</h2>
-
-<ul>
-  <li>$\mathbb{E}\left[u\mid v\right]$: The conditional expectation of $u$ with $v$ held fixed, i.e. it is a function of $v$.</li>
-  <li>$\mathbb{E}\left[u\right]=\int up(u)\dd u$. This is the expectation of $u$ averaging over any conditioning variables, e.g. $v$, as well as $u$. - $\operatorname{Normal}\left(\mu,\sigma^2\right)$: Typically used for random variables.</li>
-  <li>$\operatorname{Normal}\left(\theta\mid\mu,\sigma^2\right)$: Typically used for density functions.</li>
-  <li>$\theta$: Parameters.</li>
-  <li>$\theta\sim \operatorname{Normal}\left(\mu,\sigma^2\right)$: Equivalent to $p(\theta)=p(\theta\mid\mu,\sigma^2)=\operatorname{Normal}\left(\theta\mid\mu,\sigma^2\right)$</li>
-  <li>$\tilde{y}$: Unknown, but potentially observable, quantities.</li>
-  <li>$\var(u)=\int(u-\mathbb{E}\left[u\right])^2p(u)\dd u$. While for vectors, the covariance matrix is $\var(u)=\int(u-\mathbb{E}\left[u\right])(u-\mathbb{E}\left[u\right])^\intercal p(u)\dd u$</li>
-  <li>$p(\cdot)$: A marginal probability distribution.</li>
-  <li>$p(\cdot\mid\cdot)$: A conditional probability distribution.</li>
-  <li>$y$: Observed data.</li>
-  <li>$(\theta^s,\tilde{y}^s)$: $s$ indexes the simulation draws $s=1,\ldots,S$.</li>
-</ul>
-
-<h1 id="chapter-1-probability-and-inference">Chapter 1: Probability and inference</h1>
-
-<h2 id="11-the-three-steps-of-bayesian-data-analysis">1.1 The three steps of Bayesian data analysis</h2>
-
-<ol>
-  <li>Setting up a full probability model informed by knowledge, the problem, and
-the data collection process.</li>
-  <li>Conditioning on observed data and calculating the posterior distribution.</li>
-  <li>Evaluating the fit and implications of the posterior.</li>
-</ol>
-
-<h2 id="12-general-notation-for-statistical-inference">1.2 General notation for statistical inference</h2>
-
-<ul>
-  <li>Two kinds of estimands:
-    <ol>
-      <li>Potential observable quantities, i.e. future outcomes or outcomes under
-treatments not received.</li>
-      <li>Parameters governing the data generating process.</li>
-    </ol>
-  </li>
-  <li>Often, data is assumed to be exchangeable, i.e. the order doesn’t matter: $y =
-(y_1,y_2,\ldots,y_n)\equiv(y_2,y_n,\ldots,y_1)$.</li>
-</ul>
-
-<h2 id="13-bayesian-inference">1.3 Bayesian inference</h2>
-
-<ul>
-  <li>Prior predictive distribution: $p(y)$.</li>
-  <li>Posterior predictive distribution: $p(\tilde{y}\mid y)$. Assuming the
-conditional indpendence of $y$ and $\tilde{y}$ given $\theta$:</li>
-</ul>
-
-\[\begin{aligned}
-p(\tilde{y}\mid y)
-&amp;=\int p(\tilde{y},\theta\mid y)\dd\theta
-\\ &amp;=\int p(\tilde{y}\mid\theta, y)p(\theta\mid y)\dd\theta
-\\ &amp;=\int p(\tilde{y}\mid\theta)p(\theta\mid y)\dd\theta
-\end{aligned}\]
-
-<ul>
-  <li>You can rarely be sure that the model you have selected is correct.</li>
-</ul>
-
-<h2 id="14-discrete-examples-genetics-and-spell-checking">1.4 Discrete examples: genetics and spell checking</h2>
-
-<ul>
-  <li>Spelling example is excellent, p.9-11.</li>
-</ul>
-
-<h2 id="15-probability-as-a-measure-of-uncertainty">1.5 Probability as a measure of uncertainty</h2>
-
-<ul>
-  <li>Two common notions:
-    <ul>
-      <li>Symmetry or exchangeability: assuming equally likely possibilities, it is
-the number of favorable outcomes over total number of possibilities.</li>
-      <li>Frequency: With a large number of repeated trials, one would expect this
-event to happen in proportion to the number of favorable outcomes over the
-total number of outcomes.</li>
-    </ul>
-  </li>
-  <li>The Frequentist perspective embeds probability questions in a long sequence
-of identical events, which runs into difficultly for rare events.</li>
-  <li>Probability is a reasonable way of quantifying uncertainty for the following
-reasons:
-    <ol>
-      <li>By analogy: physical randomness induces uncertainty, so it seems
-reasonable to describe uncertainty in the language of random events.</li>
-      <li>Axiomatic or normative approach: related to decision theory, this approach
-places all statistical inference in the context of decision-making with
-gains and losses. Then reasonable axioms (ordering, transitivity, etc)
-imply that uncertainty <em>must</em> be represented in terms of probability.</li>
-      <li>Coherence of bets. <em>Define</em> the probability $p$ attached by you to an
-event $E$ as the fraction $p\in[0,1]$ at which you would bet \$p for a
-return of \$1 if $E$ occurs. Namely, if $E$ occurs, you get \$$(1-p)$
-and if $\neg E$ occurs, you lose \$p.</li>
-    </ol>
-  </li>
-  <li><strong>Whenever there is replication, in the sense of many exchangeable units
-observed, there is scope for estimating features of a probability
-distribution from data and thus making the analysis more objective.</strong></li>
-</ul>
-
-<h2 id="16-example-probabilities-from-football-point-spreads">1.6 Example: probabilities from football point spreads</h2>
-
-<ul>
-  <li>p. 13</li>
-</ul>
-
-<h2 id="17-example-calibration-for-record-linkage">1.7 Example: calibration for record linkage</h2>
-
-<ul>
-  <li>p.16</li>
-  <li>The distribution can be thought of as a mixture of two distributions:
-matching and non-matching distributions:
-$p(y)=\Pr(\text{match})p(y\mid\text{match})+\Pr(\text{non-match})p(y\mid\text{non-match})$.</li>
-</ul>
-
-<h2 id="some-useful-results-from-probability-theory">Some useful results from probability theory</h2>
-
-<ul>
-  <li>When $H$ refers to the set of hypotheses or assumptions used to define the
-model, $p(\theta,y\mid H)=p(\theta\mid H)p(y\mid\theta,H)$.</li>
-  <li>In general, we prefer to model complexity with hierarchical structure using
-additional variables rather than with complicated marginal distributions,
-even when the additional variables are unobserved or even unobservable.</li>
-  <li>Iterated expectation first averages over the target random variable
-conditional on the second and then over the conditional variable, averaging
-the conditional averages:</li>
-</ul>
-
-\[\begin{aligned}
-\mathbb{E}\left[u\right]
-&amp;=\mathbb{E}\left[\mathbb{E}\left[u\mid v\right]\right]
-\\ &amp;= \int\int u\cdot p(u,v)\dd u\dd v
-\\ &amp;=\int p(v)\int u\cdot p(u\mid v)\dd u\dd v
-\\ &amp;= \int \mathbb{E}\left[u\mid v\right]p(v)\dd v
-\end{aligned}\]
-
-<ul>
-  <li>Equivalently:</li>
-</ul>
-
-\[\begin{aligned}
-\mathbb{E}\left[u\right]
-&amp;=\mathbb{E}\left[\mathbb{E}\left[u\mid v\right]\right]
-\\ &amp;= \int \left[\int u\cdot f_{U\mid V}(u\mid v)\dd u\right] f_V(v)\dd v
-\\ &amp;= \int \left[\int u\cdot \frac{f_{U,V}(u,v)}{f_V(v)}\dd u\right]f_V(v)\dd v
-\end{aligned}\]
-
-<ul>
-  <li>
-    <p>Law of total variance: $\var(u)=\mathbb{E}\left[\var(u\mid v)\right] +
-\var(\mathbb{E}\left[u\mid v\right])$ (also holds for vectors/matrices).</p>
-
-\[\begin{aligned}
-\mathrm{\mathbb{E}}(\operatorname{var}(u \mid v))+\operatorname{var}(\mathrm{\mathbb{E}}(u \mid v)) &amp;=\mathrm{\mathbb{E}}\left(\mathrm{\mathbb{E}}\left(u^2 \mid v\right)-(\mathrm{\mathbb{E}}(u \mid v))^2\right)+\mathrm{\mathbb{E}}\left((\mathrm{\mathbb{E}}(u \mid v))^2\right)-(\mathrm{\mathbb{E}}(\mathrm{\mathbb{E}}(u \mid v)))^2 \\
-&amp;=\mathrm{\mathbb{E}}\left(u^2\right)-\mathrm{\mathbb{E}}\left((\mathrm{\mathbb{E}}(u \mid v))^2\right)+\mathrm{\mathbb{E}}\left((\mathrm{\mathbb{E}}(u \mid v))^2\right)-(\mathrm{\mathbb{E}}(u))^2 \\
-&amp;=\mathrm{\mathbb{E}}\left(u^2\right)-(\mathrm{\mathbb{E}}(u))^2 \\
-&amp;=\operatorname{var}(u)
-\end{aligned}\]
-  </li>
-  <li>Transformation of variables:
-    <ul>
-      <li>Let $p_u(u)$ be the density of vector $u$.</li>
-      <li>Let $v=f(u)$ where $f:\mathbb{R}^n\to \mathbb{R}^n$.</li>
-      <li>If $p_u$ is a discrete distribution and $f$ is a one-to-one function, then $p_v(v)=p_u(f^{-1(v)})$.</li>
-      <li>If $f$ is a many-to-one function, then a sum appears on the right hand side
-with one term corresponding to each of the branches of the inverse function.</li>
-      <li>If $p_u$ is a continuous distribution and $f$ is a one-to-one
-transformation, then the joint density of the transformed vector is
-$p_v(v)=|\det\J|p_u(f^{-1}(v))$ where the $(i,j)$the entry in $\J$ is
-$\pdv{u_i}{v_j}$.</li>
-    </ul>
-  </li>
-  <li>In one dimension, the logarithm is often used to transform the parameter space
-from $(0,\infty)$ to $(-\infty,\infty)$.</li>
-  <li>When working with parameters defined on the open unit interval, $(0,1)$, we
-often use the logistic transformation
-$\logit(u)=\log\left(\frac{u}{1-u}\right)$ whose inverse is
-$\logit^{-1}(v)=\frac{e^v}{1+e^v}$.</li>
-  <li>Another common choice is the probit transformation, $\Phi^{-1}(u)$ where
-$\Phi$ is the standard normal cumulative distribution function, to transform
-from $(0,1)$ to $(-\infty,\infty)$.</li>
-</ul>
-
-<h2 id="19-computation-and-software">1.9 Computation and software</h2>
-
-<ul>
-  <li>General approach is to fit many models, gradually increasing the complexity.</li>
-  <li>
-    <p>The cumulative density function:</p>
-
-\[\begin{aligned}
-F\left(v_*\right) &amp;=\operatorname{Pr}\left(v \leq v_*\right) \\
-&amp;= \begin{cases}\sum_{v \leq v_*} p(v) &amp; \text { if } p \text { is discrete } \\
-\int_{-\infty}^{v_*} p(v) d v &amp; \text { if } p \text { is continuous. }\end{cases}
-\end{aligned}\]
-  </li>
-  <li>Simple example of sampling an exponential:
-    <ul>
-      <li>Solve $U=F(v)=1-e^{-\lambda v}$ for $v$, which yields
-$-\frac{\log(1-U)}{\lambda}$, but since $1-U$ has the same distribution as
-$U$, you can say $v=-\frac{\log(U)}{\lambda}$. Then, you can simulate random
-uniforms to generate exponentials.</li>
-    </ul>
-  </li>
-  <li>Chart of sample indexing on p.24.</li>
-</ul>
-
-<h2 id="110-bayesian-inference-in-applied-statistics">1.10 Bayesian inference in applied statistics</h2>
-
-<ul>
-  <li>Benefits of a Bayesian approach:
-    <ul>
-      <li>Flexibility in combining multiple levels of uncertainty and sources of information.</li>
-      <li>Most intervals are interpreted naturally in a Bayesian sense.</li>
-      <li>If the Bayesian answers vary dramatically over a range of scientifically
-reasonable assumptions athat are unassailable by the data, then the resultant
-range of possible conclusions must be entertained as legitimate.</li>
-    </ul>
-  </li>
-  <li>Other important themes:
-    <ul>
-      <li>A willingness to use many parameters.</li>
-      <li>Hierarchical modeling, which is essential for partial pooling of estimates
-and compromising scientifically between alternative sources of information.</li>
-      <li>Model checking.</li>
-      <li>An emphasis on inference in the form of distributions or at least intervals
-rather than point estimates.</li>
-      <li>The use of simulation as the primary method of computation.</li>
-      <li>The importance of including as much background information as possible.</li>
-      <li>The importance of designing studies that have the property that inferences
-for estimands of interest will be robust to model assumptions.</li>
-    </ul>
-  </li>
-</ul>
-
-<h1 id="chapter-2-single-parameter-models">Chapter 2: Single-parameter models</h1>
-
-<h2 id="21-estimating-a-probability-from-binomial-data">2.1 Estimating a probability from binomial data</h2>
+<h1 id="21-estimating-a-probability-from-binomial-data">
+<a class="anchor" href="#21-estimating-a-probability-from-binomial-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.1 Estimating a probability from binomial data</h1>
 
 <ul>
   <li>For the binomial, $p(y\mid\theta)=\operatorname{Binomial}\left(y\mid
@@ -397,7 +136,8 @@ law of succession”. When $y=0$, this law predicts $\frac{1}{n+2}$, and when
 $y=n$, this law predicts $\frac{n+1}{n+2}$.</li>
 </ul>
 
-<h2 id="22-posterior-as-compromise-between-data-and-prior-information">2.2 Posterior as compromise between data and prior information</h2>
+<h1 id="22-posterior-as-compromise-between-data-and-prior-information">
+<a class="anchor" href="#22-posterior-as-compromise-between-data-and-prior-information" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.2 Posterior as compromise between data and prior information</h1>
 
 <ul>
   <li>The prior mean is the expectation over posterior means, i.e.
@@ -429,7 +169,8 @@ uncertainty regarding our estimate of $\theta$.</li>
   <li>The posterior is always a compromise between the data and the prior.</li>
 </ul>
 
-<h2 id="23-summarizing-posterior-inference">2.3 Summarizing posterior inference</h2>
+<h1 id="23-summarizing-posterior-inference">
+<a class="anchor" href="#23-summarizing-posterior-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.3 Summarizing posterior inference</h1>
 
 <ul>
   <li>Commonly used summaries of location are the mean, median, and mode(s) of the
@@ -445,16 +186,19 @@ distribution of the estimands of interest.</li>
 posterior density</strong> region, as shown by the following graphic:</li>
 </ul>
 
-<figure class="fullwidth"><img src="https://media.githubusercontent.com/media/danjenson/notes/main/books/figures/bayesian-data-analysis/cpi-vs-hpd.png" /><figcaption></figcaption></figure>
+<figure class="fullwidth"><img src="https://media.githubusercontent.com/media/danjenson/notes/main/books/bayesian-data-analysis/figures/chapter-2/cpi-vs-hpd.png"><figcaption></figcaption></figure>
 
-<h2 id="24-informative-prior-distributions">2.4 Informative prior distributions</h2>
+<h1 id="24-informative-prior-distributions">
+<a class="anchor" href="#24-informative-prior-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.4 Informative prior distributions</h1>
 
 <ul>
   <li>Two justifications for priors:
     <ul>
-      <li><em>Population</em> interpretation: the prior represents a population of possible
+      <li>
+<em>Population</em> interpretation: the prior represents a population of possible
 parameter values from which $\theta$ has been drawn.</li>
-      <li><em>State of knowledge</em> interpretation: we must express our knowledge and
+      <li>
+<em>State of knowledge</em> interpretation: we must express our knowledge and
 uncertainty about $\theta$ as if its value could be thought of as a random
 realization from a prior distribution.</li>
     </ul>
@@ -468,7 +212,8 @@ natural conjugate prior distributions.</li>
 form:
     <ul>
       <li>$\theta,y_i,\phi(\theta),u(y_i)\in \mathbb{R}^n$</li>
-      <li>$\phi(\theta)$ is the <strong>natural parameter</strong></li>
+      <li>$\phi(\theta)$ is the <strong>natural parameter</strong>
+</li>
     </ul>
   </li>
 </ul>
@@ -505,7 +250,8 @@ $\log\left(\frac{\theta}{1-\theta}\right)$ so that the unit interval becomes
 the real line.</li>
 </ul>
 
-<h2 id="25-normal-distribution-with-known-variance">2.5 Normal distribution with known variance</h2>
+<h1 id="25-normal-distribution-with-known-variance">
+<a class="anchor" href="#25-normal-distribution-with-known-variance" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.5 Normal distribution with known variance</h1>
 
 <ul>
   <li>The central limit theorem helps to justify using the normal likelihood in many
@@ -633,7 +379,8 @@ p(\mu\mid y_1,\ldots,y_n)=p(\mu\mid\bar{y})&amp;=\operatorname{Normal}\left(\mu\
   <li>As $n\to\infty$, $p(\mu\mid y)\approx \operatorname{Normal}\left(\mu\mid \bar{y},\sigma^2/n\right)$.</li>
 </ul>
 
-<h2 id="26-other-standard-single-parameter-models">2.6 Other standard single-parameter models</h2>
+<h1 id="26-other-standard-single-parameter-models">
+<a class="anchor" href="#26-other-standard-single-parameter-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.6 Other standard single-parameter models</h1>
 
 <ul>
   <li>The normal distribution with known mean but unknown variance provides an
@@ -771,13 +518,15 @@ viewed as $\alpha-1$ exponential observations with total waiting time $\beta$.</
   </li>
 </ul>
 
-<h2 id="27-example-informative-prior-distribution-for-cancer-rates">2.7 Example: informative prior distribution for cancer rates</h2>
+<h1 id="27-example-informative-prior-distribution-for-cancer-rates">
+<a class="anchor" href="#27-example-informative-prior-distribution-for-cancer-rates" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.7 Example: informative prior distribution for cancer rates</h1>
 
 <ul>
   <li>Introduces hierarchical modeling</li>
 </ul>
 
-<h2 id="28-noninformative-prior-distributions">2.8 Noninformative prior distributions</h2>
+<h1 id="28-noninformative-prior-distributions">
+<a class="anchor" href="#28-noninformative-prior-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.8 Noninformative prior distributions</h1>
 
 <ul>
   <li>When prior distributions have no population basis, they can be difficult to
@@ -828,7 +577,8 @@ improper prior distributions.</li>
 effort to codify real prior knowledge.</li>
 </ul>
 
-<h2 id="29-weakly-informative-prior-distributions">2.9 Weakly informative prior distributions</h2>
+<h1 id="29-weakly-informative-prior-distributions">
+<a class="anchor" href="#29-weakly-informative-prior-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>2.9 Weakly informative prior distributions</h1>
 
 <ul>
   <li>Weakly informative means that it is proper but weaker than any actual prior

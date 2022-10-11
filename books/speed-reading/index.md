@@ -11,7 +11,7 @@ title_url: https://www.amazon.com/Speed-Reading-Learn-Read-Page-ebook/dp/B07HQM9
 1. Ignore details/proofs, i.e. reduce fixations and regressions on early passes.
 1. Attempt to recall structure and key points from memory.
 
-## Book Summary
+# Book Summary
 
 1. Pre-Reading
    - Identify your purpose

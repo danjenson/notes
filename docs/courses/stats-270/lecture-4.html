@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-4.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 4: Decision Theory continued...</h2>
+ <h1 id="overview">Overview</h1>
+
+<ul>
+  <li>Example:
+    <ul>
+      <li>$\Pr_\theta(x)=\frac{1}{\theta}\mathbb{I}_{[0,\theta]}(x)$</li>
+      <li>$\theta\in\Omega=\{\theta_1,\theta_2\}=\{1,2\}$</li>
+      <li>Observe $x=(y_1,y_2,y_3)$ where $y_i$ are iid $\sim\Pr_\theta(\cdot)$</li>
+      <li>Let $\delta:[0,2]^3\to\mathcal{A}=\{1,2\}$</li>
+      <li>The risk function \(r^\delta(\theta)=\begin{bmatrix}r^\delta(\theta_1) \\r^\delta(\theta_2)\end{bmatrix}\)</li>
+      <li>The Loss is \(L=\begin{cases} 0&amp;\text{ if }\delta=\theta \\ 1&amp;\text{ if }\delta\ne\theta\end{cases}\)</li>
+      <li>If you assume that in position 1, $\theta_1$ is the correct value, then the
+loss is the probability of selecting $\theta_2$.
+\(r^\delta=\begin{bmatrix}p_1(\delta=2) \\ p_2(\delta=1)\end{bmatrix}\)</li>
+      <li>Now, choose a decision rule:
+        <ul>
+          <li>$\delta_a$: always choose $\theta_1$, then \(r=\begin{bmatrix}0 \\ 1\end{bmatrix}\)</li>
+          <li>$\delta_b$: always choose $\theta_2$, then \(r=\begin{bmatrix}1 \\ 0\end{bmatrix}\)</li>
+          <li>\(\delta_c=\begin{cases}1&amp;\text{if } \max(y_1,y_2)\le 0.9\\
+2&amp;\text{otherwise}\end{cases}\) then \(r=\begin{bmatrix}p_1(\max &gt; 0.9) \\ p_2(\max\le 0.9)\end{bmatrix}=\begin{bmatrix}1-0.9^2\\ \left(\frac{1}{2}\right)^2(0.9)^2\end{bmatrix}=\begin{bmatrix}0.19 \\ 0.2025\end{bmatrix}\)</li>
+          <li>\(\delta_d=\begin{cases}1&amp;\text{if }y\le 0.4048\\
+2&amp;\text{otherwise}\end{cases}\)
+which implies \(r=\begin{bmatrix}0.5942 \\ 0.2024\end{bmatrix}\)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Generally, if $\Omega=\{\theta_1,\ldots,\theta_k\}$ then $r^\delta(\cdot)$
+is represented by a point in k-dimensional space:</p>
+
+\[\vec{r}^\delta=\begin{bmatrix}r^\delta(\theta_1)\\ \vdots \\
+r^\delta(\theta_k)\end{bmatrix}\]
+  </li>
+  <li>Let $\mathcal{D}$ be the set of possible decisions.</li>
+  <li>Randomized decisions: let $\delta_1,\ldots,\delta_n$ are decision rules. Let
+$\delta^*=\delta_z$ where \(x=\begin{cases}1\\ \vdots \\ m\end{cases}\) with
+probability \(\begin{bmatrix}\alpha_1 \\ \vdots \\ \alpha_m\end{bmatrix}\)
+    <ul>
+      <li>The risk for a randomized rule is
+\(r^{\delta^*}(\theta)=\mathbb{E}_\theta\left[L(\delta_z,\theta)\right]=\mathbb{E}_\theta\left[\sum_{i=1}^m
+\alpha_i L(\delta_i,\theta)\right]=\sum_{i=1}^m \alpha_i
+r^{\delta_i}(\theta)\)</li>
+    </ul>
+  </li>
+  <li>
+    <p>The set of all randomized rules is a convex hull.
+<label for="lecture-4-convex-hull" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-hull" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-hull.png" /><br />Convex hull of decision points.</span></p>
+  </li>
+  <li>Let $S$ be the set of risk points of randomized rules: \(S=\{y\in \mathbb{R}^k: y=r^{\delta^*} \text{ for some randomized rule}\}\)</li>
+  <li><strong>Lemma</strong>: $S$ is a convex set in $\mathbb{R}^k$.</li>
+</ul>
+
+<h1 id="admissibility-and-the-risk-set">Admissibility and the risk set</h1>
+
+<ul>
+  <li>The lower quadrant of $\vec{x}$: $Q_\vec{x}=\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\}$</li>
+  <li>If $\vec{y}\ne \vec{x}$ where $\vec{x}=\vec{r}^\delta$,
+$\vec{y}=\vec{r}^{\delta’}$ then $\delta’$ is better than $\delta$ if and only
+if $y\in Q_\vec{x}$.</li>
+  <li><strong>Lemma</strong>: A decision rule is admissible iff its risk point $\vec{x}$
+satisfies $S\cap Q_\vec{x}=\{\vec{x}\}$.
+<label for="lecture-4-lower-quadrant" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-lower-quadrant" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/lower-quadrant.png" /><br />Lower quadrant admissibility.</span></li>
+</ul>
+
+<h1 id="bayes-rules-and-the-risk-set">Bayes rules and the risk set</h1>
+
+<ul>
+  <li>Let $\pi(\cdot)$ be the prior.</li>
+</ul>
+
+\[\vec{\pi}=\begin{bmatrix}\pi(\theta_1)\\ \vdots \\
+\pi(\theta_k)\end{bmatrix}=\begin{bmatrix}\pi_1 \\ \vdots \\
+\pi{k}\end{bmatrix}\]
+
+<p>such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.</p>
+
+<ul>
+  <li>All decision rules with the same $\pi$-averaged risk must lie in a hyperplane:
+$H_b=\{y: \sum_i \pi_iy_i=b\}$.
+<label for="lecture-4-pi-average-minimization" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-pi-average-minimization" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/pi-average-minimization.png" /><br />$\pi$-average minimization.</span></li>
+  <li>If $r^\delta(\theta_j)=y_j$ then $\vec{y}$ is the risk point for $\delta$.</li>
+  <li>$\pi$-averaged risk for $\delta$ is $\sum_{i=1}^k \pi(\theta_i)y_i$.</li>
+  <li>This suggests that we have shown that the Bayes rules minimize the
+$\pi$-averaged risk.</li>
+  <li>To find the Bayes value with respect to $\pi(\cdot)$ we change $b$ so that
+$H_b$ becomes tangent to the risk set $S$.</li>
+  <li><strong>Theorem</strong>: If $\Omega$ is finite and $\mathcal{A}$ is finite, under some
+regularity conditions, then for any admissible rule $\delta$, there is a Bayes
+rule that is as good as $\delta$, i.e. you don’t need to go outside of the
+Bayes rules. Proof:
+    <ul>
+      <li>Let $\delta$ be an admissible rule, and $x=r^\delta$, then $S\cap
+  Q_x=\{x\}$ .</li>
+      <li>Let \(T=Q_x\setminus\{x\}\), then $T$ is convex.
+<label for="lecture-4-convex-T" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-T" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-T.png" /><br />$T$ is a convex set.</span></li>
+      <li>$S$ and $T$ are two disjoint convex sets (when you take out $x$).</li>
+      <li>By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
+such that $\sum_{i=1}^k\alpha_i y_i\le\sum_{i=1}^k\alpha_j z_j$ if
+$\vec{y}\in T$ and $\vec{z}\in S$.</li>
+      <li>Claim that $\alpha_j\ge 0\;\forall j=1,\ldots,k$.
+        <ul>
+          <li>Suppose $\alpha_1&lt;0$, then $\sum_{i=1}^k \alpha_i y_i=\alpha_1y_1+\ldots$</li>
+          <li>If we let $y_1\to -\infty$, then $\sum_{i=1}^k\alpha_i y_i\to\infty$. This
+is a contradiction because it is not $\le \sum_{j=1}^k\alpha_j z_j$. This
+contradicts the separating property of $H_b$.</li>
+        </ul>
+      </li>
+      <li>We define $\pi_j=\frac{\alpha_j}{\sum_{i=1}^k\alpha_i}$; now, $\vec{\pi}$ is
+a probability vector. If $\delta$ achieves the minimum $\pi$-averaged risk and
+if the minimum is uniquely achieved, then $\delta$ is a Bayes rule.
+<label for="lecture-4-min-pi-averaged-risk" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-min-pi-averaged-risk" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/min-pi-averaged-risk.png" /><br />Bayes rules are the corners of the lower hull.</span></li>
+      <li>Conditions:
+        <ul>
+          <li>Regularity condition.</li>
+          <li>Distribution of $x$ is continuous under all $\theta$.</li>
+        </ul>
+      </li>
+      <li>When is the minimum not uniquely achieved?</li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

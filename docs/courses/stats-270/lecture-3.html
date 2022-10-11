@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-3.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 3: Decision THeory</h2>
+ <ul>
+  <li>Review of statistical decision theory.</li>
+  <li>When given a loss function, $L(a,\theta):\mathcal{A}\times\Omega\to
+\mathbb{R}^+$, nature chooses the $\theta\in \Omega$, while the statistician chooses an
+action, $a\in \mathcal{A}$, based on an observation $x\sim \Pr_\theta(\cdot)$
+according to a decision rule $\delta(x):\mathcal{X}\to\mathcal{A}$.</li>
+  <li>For the Bayesian with prior $\pi(\cdot)$, the solution is easy:</li>
+</ul>
+
+\[\delta^*(x)=\arg\min_{a\in\mathcal{A}}\mathbb{E}\left[L(a,\Theta)\mid X=x\right]$\]
+
+<ul>
+  <li>
+    <p>Example 1:</p>
+
+\[\begin{aligned}
+   p(x\mid\theta)&amp;=\begin{cases}1/\theta &amp; \text{if }0\le x\le \theta \\ 0
+   &amp;\text{otherwise}\end{cases} \\
+   \pi(\theta)&amp;=\begin{cases}\theta e^{-\theta}&amp;\text{if }\theta&gt;0 \\ 0
+   &amp;\text{otherwise}\end{cases} \\
+   p(x,\theta)&amp;=\begin{cases}e^{-\theta}&amp;\text{if }0\le x\le \theta \\
+   0&amp;\text{otherwise}\end{cases} \\
+   p(x)&amp;=\int_x^\infty e^{-\theta}\dd\theta = e^{-x} \\
+   p(\theta\mid x)&amp;=e^{-(\theta-x)}
+   \end{aligned}\]
+  </li>
+  <li>
+    <p>Decision here: let $\mathcal{A}=\Omega$, i.e. the action means it is our
+estimate of $\theta$. Then, use squared error loss, so
+$L(a,\theta)=(a-\theta)^2$. So, you want to calculate
+$\mathbb{E}\left[L(a,\Theta)\mid x\right]=\int_x^\infty(a-\theta)^2
+e^{x-\theta}\dd\theta$. If you take the derivative with respect to $a$ and
+then set it equal to 0.</p>
+  </li>
+</ul>
+
+\[\begin{aligned}
+0&amp;=\dv{a}\int_{x}^\infty (a-\theta)^2e^{x-\theta}\dd\theta \\
+&amp;=\int_x^\theta 2(a-\theta)e^{x-\theta}\dd\theta \\
+a&amp;=\frac{\int_x^\infty\theta \exp(x-\theta)\dd\theta}{\int_x^\infty
+\exp(x-\theta)\dd\theta} \\
+&amp;=x+1 \\
+\delta^*(x)&amp;=x+1
+\end{aligned}\]
+
+<ul>
+  <li>
+    <p>More generally, if the loss function is $(\theta-a)^2$, then the Bayes
+decision rule is $\delta^*(x)=\mathbb{E}\left[\Theta\mid X=x\right]$. The
+proof is that $\mathbb{E}\left[L\mid
+x\right]=\mathbb{E}\left[(\Theta-a)^2\right]$ when $\Theta\sim$posterior
+distribution given $x$. This is not true for other loss functions.</p>
+  </li>
+  <li>Example 2: Same as Example 1 but $X=(Y_1,\ldots,Y_10)$ where $Y_i$ are iid.</li>
+  <li>Example 3: Now $\theta\in\{1,2,3\}$, L=0,1,or 4 depending on $\Theta$ and
+$a$.</li>
+  <li>Example 4: $X\sim \operatorname{Binomial}\left(3,\theta\right)$ and
+$\theta\in\left\{\frac{1}{4},\frac{3}{4}\right\}$. This implies that
+$L=0$ when $a=\theta$ and $L=\frac{1}{4}$ when $a\ne 0$.</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>Example</th>
+      <th>$\Omega$</th>
+      <th>$\mathcal{A}$</th>
+      <th>$\mathcal{X}$</th>
+      <th>$\mathcal{D}$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>$(0,\infty)$</td>
+      <td>$(0,\infty)$</td>
+      <td>$(0,\infty)$</td>
+      <td>$\{\delta: \mathbb{R}^+\to \mathbb{R}^+\}$</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>$(0,\infty)$</td>
+      <td>$(0,\infty)$</td>
+      <td>$(0,\infty)^{10}$</td>
+      <td>$\{\delta: (\mathbb{R}^+)^{10}\to \mathbb{R}^+\}$</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>$\{1,2,3\}$</td>
+      <td>$\{1,2,3\}$</td>
+      <td>$(0,\infty)^{10}$</td>
+      <td>$\{\delta: (\mathbb{R}^+)^{10}\to \{1,2,3\}\}$</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>$\left\{\frac{1}{4},\frac{3}{4}\right\}$</td>
+      <td>$\left\{\frac{1}{4},\frac{3}{4}\right\}$</td>
+      <td>$\{0,1,2,3\}$</td>
+      <td>$\left\{\delta: \{0,1,2,3\}\to \left\{\frac{1}{4},\frac{3}{4}\right\}\right\}$</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Decisions are not so easy for the frequentist. The performance of
+$\delta(\cdot)$ is judged by the risk function (i.e. the frequentist expected
+loss).</li>
+</ul>
+
+\[r^\delta(\theta)=\mathbb{E}\left[L(\delta(X),\theta)\right]=\int
+L(\delta(x),\theta)\Pr_\theta(x)\dd x\]
+
+<ul>
+  <li>Example 1:
+    <ul>
+      <li>$r^\delta(\theta)=\int_0^\theta(\delta(x)-\theta)^2\frac{1}{\theta}\dd
+x=\int_0^1(\delta(\theta y)-\theta)^2\dd y$</li>
+      <li>Consider the following decision rules which can be drawn:</li>
+      <li>$\delta_1(x)=x+1$: $r^{\delta_1}(\theta)=\int_0^1(\theta
+y+1-\theta)^2\dd y
+y=\frac{1}{3}\theta^2+(1-\theta)$</li>
+      <li>$\delta_2(x)=\frac{1}{2}$: $r^{\delta_2}(\theta)=\int_0^1(\frac{1}{2}-\theta)^2\dd y=\left(\frac{1}{2}-\theta\right)^2$</li>
+      <li>$\delta_3(x)=-\frac{1}{2}$: $r^{\delta_3}(\theta)=\int_0^1(-\frac{1}{2}-\theta)^2\dd y=\left(-\frac{1}{2}-\theta\right)^2$</li>
+      <li>$\delta_4(x)=2x+1$: $r^{\delta_4}(\theta)=\frac{1}{3}\theta^2+1$</li>
+    </ul>
+  </li>
+  <li>A rule $\delta_1$ is said to be as good as $\delta_2$ if
+$r^{\delta_1}(\theta)\le r^{\delta_2}(\theta)\;\forall\theta\in\Omega$.
+Furthermore, if the inequality is strict at some $\theta$, then $\delta_1$ is
+better than $\delta_2$.</li>
+  <li>A rule is <strong>admissible</strong> if there does not exist any rule better than it.
+    <ul>
+      <li>Frequentists argue to only use admissible rules. However, you may need to
+choose from among many admissible rules using heuristics like minimax.</li>
+    </ul>
+  </li>
+  <li><strong>Theorem</strong>: Suppose $\Omega$ is either finite or compact in $\mathbb{R}^k$.
+In the latter case, also assume that $r^\delta(\cdot)$ is continuous in
+$\theta$, for all $\delta$. If $\delta^*$ is a Bayes rule with respect to
+$\pi(\cdot)$. satisfying the following, then $\delta^*$ is admissible:
+    <ol>
+      <li>Support of the prior $\pi(\cdot)$ is the whole $\Omega$.</li>
+      <li>$\int \pi(\theta)^{\delta^*}(\theta)\dd\theta &lt; \infty$.</li>
+    </ol>
+  </li>
+  <li>
+    <p><strong>Proof</strong>: First note that $E(L)=E(E(L\mid X))=E(E(L\mid\Theta))$, then:</p>
+
+\[\begin{aligned}
+&amp;\int \pi(\theta)r^{\delta^*}(\theta)\dd\theta \\
+&amp;=\int \pi(\theta)
+\mathbb{E}\left[L(\delta^*(X),\Theta)\mid\Theta=\theta\right]\dd\theta \\
+&amp;= \mathbb{E}\left[L(\delta^*(X),\Theta)\right] \\
+&amp;\le \int p(x) \mathbb{E}\left[L(\delta(x),\Theta)\mid X=x\right]\dd x \\
+&amp;= \int\pi(\theta)r^\delta(\theta)\dd\theta
+\end{aligned}\]
+  </li>
+  <li>Thus, $\int
+\pi(\theta)\left[r^{\delta^*}(\theta)-r^\delta(\theta)\right]\dd\theta \le 0$</li>
+  <li>The claim is is that if $\delta$ is better than $\delta^*$, then we will get
+a contradition.</li>
+  <li><strong>Proof</strong>: If $\delta$ is better than $\delta^*$, then there exists a
+measurable portion of the space, $B$ such that:</li>
+</ul>
+
+\[\int_B\pi(\theta)\left[r^{\delta^*}(\theta)-r^\delta(\theta)\right]\dd\theta
++ \int_{B^c}\pi(\theta)\left[r^{\delta^*}(\theta)-r^\delta(\theta)\right]\dd\theta \ge \epsilon \Pr_\pi(B) &gt; 0\]
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>
-    MS&E 231: Computational Social Science
+    STATS 270: Bayesian Statistics
   </title>
   <meta
     name="description"
@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="https://danjenson.github.io/notes/courses/mse-231-computational-social-science.html"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-2.html"
   />
 </head>
 
@@ -82,15 +82,25 @@
 </header>
 
     <article class="group">
-<h1>MS&E 231: Computational Social Science</h1>
-
-<p class="subtitle"></p>
-
-
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 2: Multinomial, Beta, and Dirichlet</h2>
+ <ul>
+  <li>Dirichlet is conjugate prior to multinomial and categorical distributions.</li>
+  <li><strong>Lemma 1</strong>: If $\theta\sim \operatorname{Dirichlet}\left(\vec{\alpha}\right)$
+then $\theta\sim \operatorname{Beta}\left(\alpha_1,\sum_{i\ne 1}\alpha_i\right)$</li>
+  <li><strong>Lemma 2</strong>: If $\theta\sim\operatorname{Beta}(\alpha,\beta)$ then
+$\mathbb{E}\left[\theta\right]=\frac{\alpha}{\alpha+\beta}$ and
+\(\operatorname{var}\left[\frac{\mathbb{E}\left[\theta\right](1-\mathbb{E}\left[\theta\right])}{\alpha+\beta+1}\right]\)</li>
+  <li>Posterior expectation and variance are combination of prior and data. Example
+with normal.</li>
+</ul>
 
 </article>
     <span class="print-footer"
-  >MS&E 231: Computational Social Science - Daniel Jenson
+  >STATS 270: Bayesian Statistics - Daniel Jenson
 </span>
  <footer>
   <hr class="slender">

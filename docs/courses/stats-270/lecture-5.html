@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="https://danjenson.github.io/notes/courses/stats-270/"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-5.html"
   />
 </head>
 
@@ -82,14 +82,72 @@
 </header>
 
     <article class="group">
-<h1 class="title">STATS 270: Bayesian Statistics</h1>
-  <ul>
-  <li><a href="typed-notes">Notes on “Old lectures by Wong and Shen”</a></li>
-  <li><a href="lecture-1">Lecture 1: Review</a></li>
-  <li><a href="lecture-2">Lecture 2: Multinomial, Beta, and Dirichlet</a></li>
-  <li><a href="lecture-3">Lecture 3: Decision Theory</a></li>
-  <li><a href="lecture-4">Lecture 4: Decision Theory continued…</a></li>
-  <li><a href="lecture-5">Lecture 5: Sufficiency</a></li>
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 5: Sufficiency</h2>
+ <ul>
+  <li>Sufficiency principle</li>
+  <li>Book: “Theoretical Statistics” by Cox &amp; Hinkley (Chapter 2)</li>
+  <li>Sufficient statistics:
+    <ul>
+      <li>$Y\in\mathcal{Y}$: $y$ is distributed according to a density
+$f\in\mathcal{F}$</li>
+      <li>Let $S$ be a statistic, i.e. $S=S(Y): \mathcal{Y}\to\mathcal{S}$</li>
+    </ul>
+  </li>
+  <li><strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
+$S$ is the same for all $f\in\mathcal{F}$.
+    <ul>
+      <li>$f_{Y\mid S}(y\mid s)$</li>
+      <li>$g_{Y\mid S}(y\mid s)$</li>
+      <li>$\forall f,g\in\mathcal{F}\;f_{Y\mid S}(y\mid s)=g_{Y\mid S}(y\mid s)$ if
+$S$ is a sufficient statistic</li>
+    </ul>
+  </li>
+  <li>Example 1:
+    <ul>
+      <li>\(Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}\) for $i=1,\ldots,n$ are iid
+vectors with density
+$p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,
+i.e. \(\operatorname{Normal}\left(\begin{bmatrix} 0 \\
+0\end{bmatrix},\begin{bmatrix}1 &amp; p \\ p &amp; 1\end{bmatrix}\right)\)</li>
+      <li>
+\[f(z)=\]
+      </li>
+      <li>So $S$ is sufficient.</li>
+      <li>If \(\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
+\operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
+\mu_2\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\)</li>
+      <li>TODO note here</li>
+    </ul>
+  </li>
+  <li>Example 2:
+    <ul>
+      <li>Suppose $\mathcal{F}=\{f_1,f_2,\ldots,f_k\}$; $\mathcal{Y}$ is arbitrary,
+then there exists a $k-1$ dimensional sufficient statistic to construct it,
+but $\bar{f}(x)=\frac{1}{k}\sum_{i=1}^k f_i(x)$, without loss of generality,
+we can assume $\bar{f}(x)&gt;0\;\forall x\in\mathcal{Y}$.</li>
+      <li>Define $S_1(y)=\frac{f_1(y)}{\bar{f}(y)}$ and
+$S_k(y)=\frac{f_k(y)}{\bar{f}_k(y)}$.</li>
+      <li>$k\bar{f}(y)=\sum_{i=1}^k f_i(y)=\sum_{i=1}^k S_i(y)\bar{f}(y)\implies
+\sum_{i=1}^k S_i(y)=k$</li>
+      <li>We claim that $S$ is a sufficient statistic.</li>
+      <li>Proof:
+        <ul>
+          <li>
+\[\mathcal{Y}_s=\{y\in\mathcal{Y}: S_j(y)=s_j, j=1,\ldots,k\}=\{y:
+f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\]
+          </li>
+          <li>Let $A\subset \mathcal{Y}<em>s$ then $P</em>{f_i}(Y\in A\mid S=s)=P_{f_i}(Y\in A\mid Y\in
+\mathcal{Y}_s)$</li>
+          <li>TODO integral</li>
+          <li>Test</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
 </ul>
 
 </article>

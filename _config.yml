@@ -45,9 +45,9 @@ exclude:
   - hooks
   - serve.sh
   - setup_dev.sh
-  - papers/figures/
-  - books/figures/
-  - courses/figures/
+  - papers/figures
+  - "books/*/figures"
+  - "courses/*/figures"
 #   - .sass-cache/
 #   - .jekyll-cache/
 #   - gemfiles/
