@@ -662,7 +662,7 @@ such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.
   - Let $\delta$ be an admissible rule, and $x=r^\delta$, then $S\cap
       Q_x=\\{x\\}$ .
   - Let $$T=Q_x\setminus\{x\}$$, then $T$ is convex.
-    {% marginfigure 'lecture-4-convex-T' 'courses/figures/stats-270-bayesian-statistics/lecture-4-pi-convex-T.png' '$T$ is a convex set.' %}
+    {% marginfigure 'lecture-4-convex-T' 'courses/figures/stats-270-bayesian-statistics/lecture-4-convex-T.png' '$T$ is a convex set.' %}
   - $S$ and $T$ are two disjoint convex sets (when you take out $x$).
   - By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
     such that $\sum_{i=1}^k\alpha_i y_i\le\sum_{i=1}^k\alpha_j z_j$ if
@@ -689,8 +689,8 @@ such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.
   - $Y\in\mathcal{Y}$: $y$ is distributed according to a density
     $f\in\mathcal{F}$
   - Let $S$ be a statistic, i.e. $S=S(Y): \mathcal{Y}\to\mathcal{S}$
-- **$S$ is a sufficient statistic if the conditional distribution of $Y$ given
-  $S$ is the same for all $f\in\mathcal{F}$**.
+- **Definition**: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
+  $S$ is the same for all $f\in\mathcal{F}$.
   - $f_{Y\mid S}(y\mid s)$
   - $g_{Y\mid S}(y\mid s)$
   - $\forall f,g\in\mathcal{F}\;f_{Y\mid S}(y\mid s)=g_{Y\mid S}(y\mid s)$ if
@@ -698,11 +698,10 @@ such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.
 - Example 1:
   - $$Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}$$ for $i=1,\ldots,n$ are iid
     vectors with density
-    $p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2xy)^2\right)$,
+    $p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,
     i.e. $$\operatorname{Normal}\left(\begin{bmatrix} 0 \\
   0\end{bmatrix},\begin{bmatrix}1 & p \\ p & 1\end{bmatrix}\right)$$
-  - TODO note z
-  - $$f_{Z\mid S}(z\mid s)=\frac{f_z(z)}{\int_{\left\{S_1(z)=s_1,S_2(z)=s_2\right\}}f_z(z)\dd z$$=$$\frac{1}{\int_{s_1,s_2} 1\dd z}=\frac{1}{\operatorname{Area}(s_1,s_2)}$$ and does not depend on $\rho$
+  - $$f(z)=$$
   - So $S$ is sufficient.
   - If $$\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
   \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
@@ -726,5 +725,4 @@ such that $\pi_i\ge0\;\forall i$ and $\sum_i \pi_i=1$.
     - Let $A\subset \mathcal{Y}_s$ then $P_{f_i}(Y\in A\mid S=s)=P_{f_i}(Y\in A\mid Y\in
       \mathcal{Y}\_s)$
     - TODO integral
-- TODO example
--
+    - Test

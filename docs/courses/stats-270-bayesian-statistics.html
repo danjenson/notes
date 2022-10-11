@@ -125,7 +125,6 @@
 </ul>
 </li>
 <li class="toc-entry toc-h2"><a href="#lecture-5">Lecture 5</a></li>
-<li class="toc-entry toc-h2"><a href="#todo-example">TODO example</a></li>
 </ul>
 </li>
 </ul><h1 id="terminology">
@@ -953,7 +952,7 @@ Bayes rules. Proof:
       <li>Let $\delta$ be an admissible rule, and $x=r^\delta$, then $S\cap
   Q_x=\{x\}$ .</li>
       <li>Let \(T=Q_x\setminus\{x\}\), then $T$ is convex.
-<label for="lecture-4-convex-T" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-T" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/figures/stats-270-bayesian-statistics/lecture-4-pi-convex-T.png"><br>$T$ is a convex set.</span>
+<label for="lecture-4-convex-T" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-T" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/figures/stats-270-bayesian-statistics/lecture-4-convex-T.png"><br>$T$ is a convex set.</span>
 </li>
       <li>$S$ and $T$ are two disjoint convex sets (when you take out $x$).</li>
       <li>By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
@@ -997,8 +996,8 @@ $f\in\mathcal{F}$</li>
     </ul>
   </li>
   <li>
-<strong>$S$ is a sufficient statistic if the conditional distribution of $Y$ given
-$S$ is the same for all $f\in\mathcal{F}$</strong>.
+<strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
+$S$ is the same for all $f\in\mathcal{F}$.
     <ul>
       <li>$f_{Y\mid S}(y\mid s)$</li>
       <li>$g_{Y\mid S}(y\mid s)$</li>
@@ -1010,11 +1009,12 @@ $S$ is a sufficient statistic</li>
     <ul>
       <li>\(Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}\) for $i=1,\ldots,n$ are iid
 vectors with density
-$p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2xy)^2\right)$,
+$p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,
 i.e. \(\operatorname{Normal}\left(\begin{bmatrix} 0 \\
 0\end{bmatrix},\begin{bmatrix}1 &amp; p \\ p &amp; 1\end{bmatrix}\right)\)</li>
-      <li>TODO note z</li>
-      <li>\(f_{Z\mid S}(z\mid s)=\frac{f_z(z)}{\int_{\left\{S_1(z)=s_1,S_2(z)=s_2\right\}}f_z(z)\dd z\)=\(\frac{1}{\int_{s_1,s_2} 1\dd z}=\frac{1}{\operatorname{Area}(s_1,s_2)}\) and does not depend on $\rho$</li>
+      <li>
+\[f(z)=\]
+      </li>
       <li>So $S$ is sufficient.</li>
       <li>If \(\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
 \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
@@ -1042,13 +1042,10 @@ f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\]
           <li>Let $A\subset \mathcal{Y}<em>s$ then $P</em>{f_i}(Y\in A\mid S=s)=P_{f_i}(Y\in A\mid Y\in
 \mathcal{Y}_s)$</li>
           <li>TODO integral</li>
+          <li>Test</li>
         </ul>
       </li>
     </ul>
-  </li>
-  <li>
-    <h2 id="todo-example">
-<a class="anchor" href="#todo-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>TODO example</h2>
   </li>
 </ul>
 
