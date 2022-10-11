@@ -631,7 +631,7 @@ $$
   if $y\in Q_\vec{x}$.
 - **Lemma**: A decision rule is admissible iff its risk point $\vec{x}$
   satisfies $S\cap Q_\vec{x}=\\{\vec{x}\\}$.
-  {% maincolumn 'courses/figures/stats-270-bayesian-statistics/lecture-4-lower-quantant.png' 'Lower quantant admissibility.' %}
+  {% marginfigure 'lecture-4-lower-quadrant' 'courses/figures/stats-270-bayesian-statistics/lecture-4-lower-quadrant.png' 'Lower quadrant admissibility.' %}
 
 ### Bayes rules and the risk set
 
