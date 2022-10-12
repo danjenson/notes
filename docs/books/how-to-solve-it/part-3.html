@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    How to Solve It
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/books/how-to-solve-it/part-3.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">How to Solve It</a>
+</h1>
+ 
+<h2 class="subtitle">Part 3: Short Dictionary of Heuristics</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#analogy">Analogy</a></li>
+<li class="toc-entry toc-h1"><a href="#auxiliary-elements">Auxiliary elements</a></li>
+<li class="toc-entry toc-h1"><a href="#bolzano">Bolzano</a></li>
+<li class="toc-entry toc-h1"><a href="#bright-idea">Bright idea</a></li>
+<li class="toc-entry toc-h1"><a href="#can-you-check-the-result">Can you check the result?</a></li>
+<li class="toc-entry toc-h1"><a href="#can-you-derive-the-result-differently">Can you derive the result differently?</a></li>
+<li class="toc-entry toc-h1"><a href="#can-you-use-the-result">Can you use the result?</a></li>
+<li class="toc-entry toc-h1"><a href="#carrying-out">Carrying out</a></li>
+<li class="toc-entry toc-h1"><a href="#condition">Condition</a></li>
+<li class="toc-entry toc-h1"><a href="#contradictory">Contradictory</a></li>
+<li class="toc-entry toc-h1"><a href="#corollary">Corollary</a></li>
+<li class="toc-entry toc-h1"><a href="#could-you-derive-something-useful-from-the-data">Could you derive something useful from the data?</a></li>
+<li class="toc-entry toc-h1"><a href="#could-you-restate-the-problem">Could you restate the problem?</a></li>
+<li class="toc-entry toc-h1"><a href="#decomposing-and-recombining">Decomposing and recombining</a></li>
+<li class="toc-entry toc-h1"><a href="#definition">Definition</a></li>
+<li class="toc-entry toc-h1"><a href="#descartes">Descartes</a></li>
+<li class="toc-entry toc-h1"><a href="#determination-hope-success">Determination, hope, success</a></li>
+<li class="toc-entry toc-h1"><a href="#diagnosis">Diagnosis</a></li>
+<li class="toc-entry toc-h1"><a href="#did-you-use-all-the-data">Did you use all the data?</a></li>
+<li class="toc-entry toc-h1"><a href="#do-you-know-a-related-problem">Do you know a related problem?</a></li>
+<li class="toc-entry toc-h1"><a href="#draw-a-figure">Draw a figure</a></li>
+<li class="toc-entry toc-h1"><a href="#examine-your-guess">Examine your guess</a></li>
+<li class="toc-entry toc-h1"><a href="#figures">Figures</a></li>
+<li class="toc-entry toc-h1"><a href="#generalization">Generalization</a></li>
+<li class="toc-entry toc-h1"><a href="#have-you-seen-it-before">Have you seen it before?</a></li>
+<li class="toc-entry toc-h1"><a href="#here-is-a-problem-related-to-yours-and-solved-before">Here is a problem related to yours and solved before</a></li>
+<li class="toc-entry toc-h1"><a href="#heuristic">Heuristic</a></li>
+<li class="toc-entry toc-h1"><a href="#heuristic-reasoning">Heuristic reasoning</a></li>
+<li class="toc-entry toc-h1"><a href="#if-you-cannot-solve-the-proposed-problem">If you cannot solve the proposed problem</a></li>
+<li class="toc-entry toc-h1"><a href="#induction-and-mathematical-induction">Induction and mathematical induction</a></li>
+<li class="toc-entry toc-h1"><a href="#inventors-paradox">Inventor’s paradox</a></li>
+<li class="toc-entry toc-h1"><a href="#is-it-possible-to-satisfy-the-condition">Is it possible to satisfy the condition?</a></li>
+<li class="toc-entry toc-h1"><a href="#leibnitz">Leibnitz</a></li>
+<li class="toc-entry toc-h1"><a href="#lemma">Lemma</a></li>
+<li class="toc-entry toc-h1"><a href="#look-at-the-unknown">Look at the unknown</a></li>
+<li class="toc-entry toc-h1"><a href="#modern-heuristic">Modern heuristic</a></li>
+<li class="toc-entry toc-h1"><a href="#notation">Notation</a></li>
+<li class="toc-entry toc-h1"><a href="#pappus">Pappus</a></li>
+<li class="toc-entry toc-h1"><a href="#pedantry-and-mastery">Pedantry and mastery</a></li>
+<li class="toc-entry toc-h1"><a href="#practical-problems">Practical problems</a></li>
+<li class="toc-entry toc-h1"><a href="#problems-to-find-problems-to-prove">Problems to find, problems to prove</a></li>
+<li class="toc-entry toc-h1"><a href="#progress-and-achievement">Progress and achievement</a></li>
+<li class="toc-entry toc-h1"><a href="#puzzles">Puzzles</a></li>
+<li class="toc-entry toc-h1"><a href="#reductio-ad-absurdum-and-indirect-proof">Reductio ad absurdum and indirect proof</a></li>
+<li class="toc-entry toc-h1"><a href="#redundant">Redundant</a></li>
+<li class="toc-entry toc-h1"><a href="#routine-problem">Routine problem</a></li>
+<li class="toc-entry toc-h1"><a href="#rules-of-discovery">Rules of discovery</a></li>
+<li class="toc-entry toc-h1"><a href="#rules-of-style">Rules of style</a></li>
+<li class="toc-entry toc-h1"><a href="#rules-of-teaching">Rules of teaching</a></li>
+<li class="toc-entry toc-h1"><a href="#separate-the-various-parts-of-the-condition">Separate the various parts of the condition</a></li>
+<li class="toc-entry toc-h1"><a href="#setting-up-equations">Setting up equations</a></li>
+<li class="toc-entry toc-h1"><a href="#signs-of-progress">Signs of progress</a></li>
+<li class="toc-entry toc-h1"><a href="#specialization">Specialization</a></li>
+<li class="toc-entry toc-h1"><a href="#subconscious-work">Subconscious work</a></li>
+<li class="toc-entry toc-h1"><a href="#symmetry">Symmetry</a></li>
+<li class="toc-entry toc-h1"><a href="#terms-old-and-new">Terms, old and new</a></li>
+<li class="toc-entry toc-h1"><a href="#test-by-dimension">Test by dimension</a></li>
+<li class="toc-entry toc-h1"><a href="#the-future-mathematician">The future mathematician</a></li>
+<li class="toc-entry toc-h1"><a href="#the-intelligent-problem-solver">The intelligent problem-solver</a></li>
+<li class="toc-entry toc-h1"><a href="#the-intelligent-reader">The intelligent reader</a></li>
+<li class="toc-entry toc-h1"><a href="#the-traditional-mathematics-professor">The traditional mathematics professor</a></li>
+<li class="toc-entry toc-h1"><a href="#variation-of-the-problem">Variation of the problem</a></li>
+<li class="toc-entry toc-h1"><a href="#what-is-the-unknown">What is the unknown?</a></li>
+<li class="toc-entry toc-h1"><a href="#why-proofs">Why proofs?</a></li>
+<li class="toc-entry toc-h1"><a href="#wisdom-of-proverbs">Wisdom of proverbs</a></li>
+<li class="toc-entry toc-h1"><a href="#working-backwards">Working backwards</a></li>
+</ul><h1 id="analogy">
+<a class="anchor" href="#analogy" aria-hidden="true"><span class="octicon octicon-link"></span></a>Analogy</h1>
+
+<ul>
+  <li>
+<strong>Analogy</strong> is a sort of similarity. Similar objects agree with each other in
+some respect, <em>analogous objects agree in certain relations of their respective
+parts</em>.</li>
+  <li>
+<strong>Inference by analogy</strong>: knowing that two objects are alike, conjecture that
+they are alike in one more respect.</li>
+  <li>An analogical conclusion from many parallel cases is stronger than one from
+fewer cases, yet quality is still more important than quantity.</li>
+  <li>Example: a rectangular parallelogram is analogous to a rectangular parallelepiped.</li>
+  <li>3 cases in which analogy attains the precision of mathematical ideas:
+    <ol>
+      <li>Two systems of mathematical objects, say $S$ and $S’$, are so connected
+that certain relations between the objects of $S$ are governed by the same
+laws as those between objects of $S’$.</li>
+      <li>There a one-to-one correspondence between the objects of two systems $S$
+and $S’$, preserving certain relations. That is, if such a relation holds
+between objects of one system, the same relation holds between the
+corresponding objects of the other system. This is called isomorphism.</li>
+      <li>There is a one-to-many correspondence between the objects of the two
+systems $S$ and $S’$ preserving certain relations. This is called
+merohedral isomorphism.</li>
+    </ol>
+  </li>
+</ul>
+
+<h1 id="auxiliary-elements">
+<a class="anchor" href="#auxiliary-elements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Auxiliary elements</h1>
+
+<h1 id="bolzano">
+<a class="anchor" href="#bolzano" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bolzano</h1>
+
+<h1 id="bright-idea">
+<a class="anchor" href="#bright-idea" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bright idea</h1>
+
+<h1 id="can-you-check-the-result">
+<a class="anchor" href="#can-you-check-the-result" aria-hidden="true"><span class="octicon octicon-link"></span></a>Can you check the result?</h1>
+
+<h1 id="can-you-derive-the-result-differently">
+<a class="anchor" href="#can-you-derive-the-result-differently" aria-hidden="true"><span class="octicon octicon-link"></span></a>Can you derive the result differently?</h1>
+
+<h1 id="can-you-use-the-result">
+<a class="anchor" href="#can-you-use-the-result" aria-hidden="true"><span class="octicon octicon-link"></span></a>Can you use the result?</h1>
+
+<h1 id="carrying-out">
+<a class="anchor" href="#carrying-out" aria-hidden="true"><span class="octicon octicon-link"></span></a>Carrying out</h1>
+
+<h1 id="condition">
+<a class="anchor" href="#condition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Condition</h1>
+
+<h1 id="contradictory">
+<a class="anchor" href="#contradictory" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contradictory</h1>
+
+<h1 id="corollary">
+<a class="anchor" href="#corollary" aria-hidden="true"><span class="octicon octicon-link"></span></a>Corollary</h1>
+
+<h1 id="could-you-derive-something-useful-from-the-data">
+<a class="anchor" href="#could-you-derive-something-useful-from-the-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Could you derive something useful from the data?</h1>
+
+<h1 id="could-you-restate-the-problem">
+<a class="anchor" href="#could-you-restate-the-problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Could you restate the problem?</h1>
+
+<h1 id="decomposing-and-recombining">
+<a class="anchor" href="#decomposing-and-recombining" aria-hidden="true"><span class="octicon octicon-link"></span></a>Decomposing and recombining</h1>
+
+<h1 id="definition">
+<a class="anchor" href="#definition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Definition</h1>
+
+<h1 id="descartes">
+<a class="anchor" href="#descartes" aria-hidden="true"><span class="octicon octicon-link"></span></a>Descartes</h1>
+
+<h1 id="determination-hope-success">
+<a class="anchor" href="#determination-hope-success" aria-hidden="true"><span class="octicon octicon-link"></span></a>Determination, hope, success</h1>
+
+<h1 id="diagnosis">
+<a class="anchor" href="#diagnosis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Diagnosis</h1>
+
+<h1 id="did-you-use-all-the-data">
+<a class="anchor" href="#did-you-use-all-the-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>Did you use all the data?</h1>
+
+<h1 id="do-you-know-a-related-problem">
+<a class="anchor" href="#do-you-know-a-related-problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Do you know a related problem?</h1>
+
+<h1 id="draw-a-figure">
+<a class="anchor" href="#draw-a-figure" aria-hidden="true"><span class="octicon octicon-link"></span></a>Draw a figure</h1>
+
+<h1 id="examine-your-guess">
+<a class="anchor" href="#examine-your-guess" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examine your guess</h1>
+
+<h1 id="figures">
+<a class="anchor" href="#figures" aria-hidden="true"><span class="octicon octicon-link"></span></a>Figures</h1>
+
+<h1 id="generalization">
+<a class="anchor" href="#generalization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Generalization</h1>
+
+<h1 id="have-you-seen-it-before">
+<a class="anchor" href="#have-you-seen-it-before" aria-hidden="true"><span class="octicon octicon-link"></span></a>Have you seen it before?</h1>
+
+<h1 id="here-is-a-problem-related-to-yours-and-solved-before">
+<a class="anchor" href="#here-is-a-problem-related-to-yours-and-solved-before" aria-hidden="true"><span class="octicon octicon-link"></span></a>Here is a problem related to yours and solved before</h1>
+
+<h1 id="heuristic">
+<a class="anchor" href="#heuristic" aria-hidden="true"><span class="octicon octicon-link"></span></a>Heuristic</h1>
+
+<h1 id="heuristic-reasoning">
+<a class="anchor" href="#heuristic-reasoning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Heuristic reasoning</h1>
+
+<h1 id="if-you-cannot-solve-the-proposed-problem">
+<a class="anchor" href="#if-you-cannot-solve-the-proposed-problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>If you cannot solve the proposed problem</h1>
+
+<h1 id="induction-and-mathematical-induction">
+<a class="anchor" href="#induction-and-mathematical-induction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Induction and mathematical induction</h1>
+
+<h1 id="inventors-paradox">
+<a class="anchor" href="#inventors-paradox" aria-hidden="true"><span class="octicon octicon-link"></span></a>Inventor’s paradox</h1>
+
+<h1 id="is-it-possible-to-satisfy-the-condition">
+<a class="anchor" href="#is-it-possible-to-satisfy-the-condition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Is it possible to satisfy the condition?</h1>
+
+<h1 id="leibnitz">
+<a class="anchor" href="#leibnitz" aria-hidden="true"><span class="octicon octicon-link"></span></a>Leibnitz</h1>
+
+<h1 id="lemma">
+<a class="anchor" href="#lemma" aria-hidden="true"><span class="octicon octicon-link"></span></a>Lemma</h1>
+
+<h1 id="look-at-the-unknown">
+<a class="anchor" href="#look-at-the-unknown" aria-hidden="true"><span class="octicon octicon-link"></span></a>Look at the unknown</h1>
+
+<h1 id="modern-heuristic">
+<a class="anchor" href="#modern-heuristic" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modern heuristic</h1>
+
+<h1 id="notation">
+<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h1>
+
+<h1 id="pappus">
+<a class="anchor" href="#pappus" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pappus</h1>
+
+<h1 id="pedantry-and-mastery">
+<a class="anchor" href="#pedantry-and-mastery" aria-hidden="true"><span class="octicon octicon-link"></span></a>Pedantry and mastery</h1>
+
+<h1 id="practical-problems">
+<a class="anchor" href="#practical-problems" aria-hidden="true"><span class="octicon octicon-link"></span></a>Practical problems</h1>
+
+<h1 id="problems-to-find-problems-to-prove">
+<a class="anchor" href="#problems-to-find-problems-to-prove" aria-hidden="true"><span class="octicon octicon-link"></span></a>Problems to find, problems to prove</h1>
+
+<h1 id="progress-and-achievement">
+<a class="anchor" href="#progress-and-achievement" aria-hidden="true"><span class="octicon octicon-link"></span></a>Progress and achievement</h1>
+
+<h1 id="puzzles">
+<a class="anchor" href="#puzzles" aria-hidden="true"><span class="octicon octicon-link"></span></a>Puzzles</h1>
+
+<h1 id="reductio-ad-absurdum-and-indirect-proof">
+<a class="anchor" href="#reductio-ad-absurdum-and-indirect-proof" aria-hidden="true"><span class="octicon octicon-link"></span></a>Reductio ad absurdum and indirect proof</h1>
+
+<h1 id="redundant">
+<a class="anchor" href="#redundant" aria-hidden="true"><span class="octicon octicon-link"></span></a>Redundant</h1>
+
+<h1 id="routine-problem">
+<a class="anchor" href="#routine-problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Routine problem</h1>
+
+<h1 id="rules-of-discovery">
+<a class="anchor" href="#rules-of-discovery" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules of discovery</h1>
+
+<h1 id="rules-of-style">
+<a class="anchor" href="#rules-of-style" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules of style</h1>
+
+<h1 id="rules-of-teaching">
+<a class="anchor" href="#rules-of-teaching" aria-hidden="true"><span class="octicon octicon-link"></span></a>Rules of teaching</h1>
+
+<h1 id="separate-the-various-parts-of-the-condition">
+<a class="anchor" href="#separate-the-various-parts-of-the-condition" aria-hidden="true"><span class="octicon octicon-link"></span></a>Separate the various parts of the condition</h1>
+
+<h1 id="setting-up-equations">
+<a class="anchor" href="#setting-up-equations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setting up equations</h1>
+
+<h1 id="signs-of-progress">
+<a class="anchor" href="#signs-of-progress" aria-hidden="true"><span class="octicon octicon-link"></span></a>Signs of progress</h1>
+
+<h1 id="specialization">
+<a class="anchor" href="#specialization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Specialization</h1>
+
+<h1 id="subconscious-work">
+<a class="anchor" href="#subconscious-work" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subconscious work</h1>
+
+<h1 id="symmetry">
+<a class="anchor" href="#symmetry" aria-hidden="true"><span class="octicon octicon-link"></span></a>Symmetry</h1>
+
+<h1 id="terms-old-and-new">
+<a class="anchor" href="#terms-old-and-new" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms, old and new</h1>
+
+<h1 id="test-by-dimension">
+<a class="anchor" href="#test-by-dimension" aria-hidden="true"><span class="octicon octicon-link"></span></a>Test by dimension</h1>
+
+<h1 id="the-future-mathematician">
+<a class="anchor" href="#the-future-mathematician" aria-hidden="true"><span class="octicon octicon-link"></span></a>The future mathematician</h1>
+
+<h1 id="the-intelligent-problem-solver">
+<a class="anchor" href="#the-intelligent-problem-solver" aria-hidden="true"><span class="octicon octicon-link"></span></a>The intelligent problem-solver</h1>
+
+<h1 id="the-intelligent-reader">
+<a class="anchor" href="#the-intelligent-reader" aria-hidden="true"><span class="octicon octicon-link"></span></a>The intelligent reader</h1>
+
+<h1 id="the-traditional-mathematics-professor">
+<a class="anchor" href="#the-traditional-mathematics-professor" aria-hidden="true"><span class="octicon octicon-link"></span></a>The traditional mathematics professor</h1>
+
+<h1 id="variation-of-the-problem">
+<a class="anchor" href="#variation-of-the-problem" aria-hidden="true"><span class="octicon octicon-link"></span></a>Variation of the problem</h1>
+
+<h1 id="what-is-the-unknown">
+<a class="anchor" href="#what-is-the-unknown" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is the unknown?</h1>
+
+<h1 id="why-proofs">
+<a class="anchor" href="#why-proofs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why proofs?</h1>
+
+<h1 id="wisdom-of-proverbs">
+<a class="anchor" href="#wisdom-of-proverbs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Wisdom of proverbs</h1>
+
+<h1 id="working-backwards">
+<a class="anchor" href="#working-backwards" aria-hidden="true"><span class="octicon octicon-link"></span></a>Working backwards</h1>
+
+</article>
+    <span class="print-footer"
+  >How to Solve It - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
