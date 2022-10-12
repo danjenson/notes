@@ -2,6 +2,7 @@
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
 subtitle: "Lecture 4: Decision Theory continued..."
+toc: true
 ---
 
 # Overview

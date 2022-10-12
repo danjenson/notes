@@ -87,7 +87,12 @@
 </h1>
  
 <h2 class="subtitle">Lecture 4: Decision Theory continued...</h2>
- <h1 id="overview">Overview</h1>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#overview">Overview</a></li>
+<li class="toc-entry toc-h1"><a href="#admissibility-and-the-risk-set">Admissibility and the risk set</a></li>
+<li class="toc-entry toc-h1"><a href="#bayes-rules-and-the-risk-set">Bayes rules and the risk set</a></li>
+</ul><h1 id="overview">
+<a class="anchor" href="#overview" aria-hidden="true"><span class="octicon octicon-link"></span></a>Overview</h1>
 
 <ul>
   <li>Example:
@@ -134,25 +139,30 @@ r^{\delta_i}(\theta)\)</li>
   </li>
   <li>
     <p>The set of all randomized rules is a convex hull.
-<label for="lecture-4-convex-hull" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-hull" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-hull.png" /><br />Convex hull of decision points.</span></p>
+<label for="lecture-4-convex-hull" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-hull" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-hull.png"><br>Convex hull of decision points.</span></p>
   </li>
   <li>Let $S$ be the set of risk points of randomized rules: \(S=\{y\in \mathbb{R}^k: y=r^{\delta^*} \text{ for some randomized rule}\}\)</li>
-  <li><strong>Lemma</strong>: $S$ is a convex set in $\mathbb{R}^k$.</li>
+  <li>
+<strong>Lemma</strong>: $S$ is a convex set in $\mathbb{R}^k$.</li>
 </ul>
 
-<h1 id="admissibility-and-the-risk-set">Admissibility and the risk set</h1>
+<h1 id="admissibility-and-the-risk-set">
+<a class="anchor" href="#admissibility-and-the-risk-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Admissibility and the risk set</h1>
 
 <ul>
   <li>The lower quadrant of $\vec{x}$: $Q_\vec{x}=\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\}$</li>
   <li>If $\vec{y}\ne \vec{x}$ where $\vec{x}=\vec{r}^\delta$,
 $\vec{y}=\vec{r}^{\delta’}$ then $\delta’$ is better than $\delta$ if and only
 if $y\in Q_\vec{x}$.</li>
-  <li><strong>Lemma</strong>: A decision rule is admissible iff its risk point $\vec{x}$
+  <li>
+<strong>Lemma</strong>: A decision rule is admissible iff its risk point $\vec{x}$
 satisfies $S\cap Q_\vec{x}=\{\vec{x}\}$.
-<label for="lecture-4-lower-quadrant" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-lower-quadrant" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/lower-quadrant.png" /><br />Lower quadrant admissibility.</span></li>
+<label for="lecture-4-lower-quadrant" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-lower-quadrant" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/lower-quadrant.png"><br>Lower quadrant admissibility.</span>
+</li>
 </ul>
 
-<h1 id="bayes-rules-and-the-risk-set">Bayes rules and the risk set</h1>
+<h1 id="bayes-rules-and-the-risk-set">
+<a class="anchor" href="#bayes-rules-and-the-risk-set" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayes rules and the risk set</h1>
 
 <ul>
   <li>Let $\pi(\cdot)$ be the prior.</li>
@@ -167,14 +177,16 @@ satisfies $S\cap Q_\vec{x}=\{\vec{x}\}$.
 <ul>
   <li>All decision rules with the same $\pi$-averaged risk must lie in a hyperplane:
 $H_b=\{y: \sum_i \pi_iy_i=b\}$.
-<label for="lecture-4-pi-average-minimization" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-pi-average-minimization" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/pi-average-minimization.png" /><br />$\pi$-average minimization.</span></li>
+<label for="lecture-4-pi-average-minimization" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-pi-average-minimization" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/pi-average-minimization.png"><br>$\pi$-average minimization.</span>
+</li>
   <li>If $r^\delta(\theta_j)=y_j$ then $\vec{y}$ is the risk point for $\delta$.</li>
   <li>$\pi$-averaged risk for $\delta$ is $\sum_{i=1}^k \pi(\theta_i)y_i$.</li>
   <li>This suggests that we have shown that the Bayes rules minimize the
 $\pi$-averaged risk.</li>
   <li>To find the Bayes value with respect to $\pi(\cdot)$ we change $b$ so that
 $H_b$ becomes tangent to the risk set $S$.</li>
-  <li><strong>Theorem</strong>: If $\Omega$ is finite and $\mathcal{A}$ is finite, under some
+  <li>
+<strong>Theorem</strong>: If $\Omega$ is finite and $\mathcal{A}$ is finite, under some
 regularity conditions, then for any admissible rule $\delta$, there is a Bayes
 rule that is as good as $\delta$, i.e. you don’t need to go outside of the
 Bayes rules. Proof:
@@ -182,7 +194,8 @@ Bayes rules. Proof:
       <li>Let $\delta$ be an admissible rule, and $x=r^\delta$, then $S\cap
   Q_x=\{x\}$ .</li>
       <li>Let \(T=Q_x\setminus\{x\}\), then $T$ is convex.
-<label for="lecture-4-convex-T" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-T" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-T.png" /><br />$T$ is a convex set.</span></li>
+<label for="lecture-4-convex-T" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-convex-T" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/convex-T.png"><br>$T$ is a convex set.</span>
+</li>
       <li>$S$ and $T$ are two disjoint convex sets (when you take out $x$).</li>
       <li>By the Separating Hyperplane Theorem, $\exists\vec{\alpha}\ne 0$
 such that $\sum_{i=1}^k\alpha_i y_i\le\sum_{i=1}^k\alpha_j z_j$ if
@@ -198,7 +211,8 @@ contradicts the separating property of $H_b$.</li>
       <li>We define $\pi_j=\frac{\alpha_j}{\sum_{i=1}^k\alpha_i}$; now, $\vec{\pi}$ is
 a probability vector. If $\delta$ achieves the minimum $\pi$-averaged risk and
 if the minimum is uniquely achieved, then $\delta$ is a Bayes rule.
-<label for="lecture-4-min-pi-averaged-risk" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-min-pi-averaged-risk" class="margin-toggle" /><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/min-pi-averaged-risk.png" /><br />Bayes rules are the corners of the lower hull.</span></li>
+<label for="lecture-4-min-pi-averaged-risk" class="margin-toggle">⊕</label><input type="checkbox" id="lecture-4-min-pi-averaged-risk" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-4/min-pi-averaged-risk.png"><br>Bayes rules are the corners of the lower hull.</span>
+</li>
       <li>Conditions:
         <ul>
           <li>Regularity condition.</li>

@@ -87,8 +87,14 @@
 </h1>
  
 <h2 class="subtitle">Lecture 5: Sufficiency</h2>
- <ul>
-  <li>Sufficiency principle</li>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#sufficiency-principle">Sufficiency principle</a></li>
+<li class="toc-entry toc-h1"><a href="#bayesian-inference-automatically-satisfies-the-sufficiency-principle">Bayesian Inference Automatically Satisfies the Sufficiency Principle</a></li>
+<li class="toc-entry toc-h1"><a href="#minimal-sufficiency">Minimal Sufficiency</a></li>
+</ul><h1 id="sufficiency-principle">
+<a class="anchor" href="#sufficiency-principle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sufficiency principle</h1>
+
+<ul>
   <li>Book: “Theoretical Statistics” by Cox &amp; Hinkley (Chapter 2)</li>
   <li>Sufficient statistics:
     <ul>
@@ -97,7 +103,8 @@ $f\in\mathcal{F}$</li>
       <li>Let $S$ be a statistic, i.e. $S=S(Y): \mathcal{Y}\to\mathcal{S}$</li>
     </ul>
   </li>
-  <li><strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
+  <li>
+<strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
 $S$ is the same for all $f\in\mathcal{F}$.
     <ul>
       <li>$f_{Y\mid S}(y\mid s)$</li>
@@ -109,45 +116,175 @@ $S$ is a sufficient statistic</li>
   <li>Example 1:
     <ul>
       <li>\(Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}\) for $i=1,\ldots,n$ are iid
-vectors with density
-$p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,
-i.e. \(\operatorname{Normal}\left(\begin{bmatrix} 0 \\
-0\end{bmatrix},\begin{bmatrix}1 &amp; p \\ p &amp; 1\end{bmatrix}\right)\)</li>
+vectors with \(\operatorname{Normal}\left(\begin{bmatrix} 0 \\
+0\end{bmatrix},\begin{bmatrix}1 &amp; p \\ p &amp; 1\end{bmatrix}\right)\) density:
+$p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,</li>
       <li>
-\[f(z)=\]
+\[f(z)=\left(\frac{1}{2\pi\sqrt{1-\rho^2}}\right)\exp
+\left(-\frac{1}{2}\cdot\frac{1}{1-\rho^2}\left(\underbrace{\sum_{i=1}^n x_i^2 +
+\sum_{i=1}^n y_i^2}_{s_2} - 2\rho \underbrace{\sum_{i=1}^n x_iy_i}_{s_1}\right)\right)\]
       </li>
-      <li>So $S$ is sufficient.</li>
+      <li>
+\[f_{Z\mid S}(z\mid
+s)=\frac{f_Z(z)}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}f_Z(z)\dd
+z}=\frac{1}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}1\dd
+z}=\frac{1}{\operatorname{Area}(\{S_1(z)=s_1,S_2(z)=s_2\})}\]
+        <ul>
+          <li>$f_{Z,S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
+density to be non-zero. <label for="fzs" class="margin-toggle sidenote-number"></label><input type="checkbox" id="fzs" class="margin-toggle"><span class="sidenote">what does this mean? </span>
+</li>
+          <li><strong>This does not depend on $\rho$, so $S$ is sufficient.</strong></li>
+        </ul>
+      </li>
       <li>If \(\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
 \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
-\mu_2\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\)</li>
-      <li>TODO note here</li>
+\mu_2\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\)
+then the sufficient statistic would be:</li>
     </ul>
   </li>
-  <li>Example 2:
+</ul>
+
+\[S=\left(\bar{X},\bar{Y},\sum_{i=1}^n(x_i-\bar{x})(y_i-\bar{y}),\sum_{i=1}^n
+(x_i-\bar{x})^2 + \sum_{i=1}^n (y_i-\bar{y})^2\right)\]
+
+<ul>
+  <li>
+    <p>Example 2:</p>
+
     <ul>
-      <li>Suppose $\mathcal{F}=\{f_1,f_2,\ldots,f_k\}$; $\mathcal{Y}$ is arbitrary,
-then there exists a $k-1$ dimensional sufficient statistic to construct it,
-but $\bar{f}(x)=\frac{1}{k}\sum_{i=1}^k f_i(x)$, without loss of generality,
-we can assume $\bar{f}(x)&gt;0\;\forall x\in\mathcal{Y}$.</li>
+      <li>Suppose $\mathcal{F}=\{f_1,f_2,\ldots,f_k\}$; the sample space, $\mathcal{Y}$, is arbitrary,
+then there exists a $k-1$ dimensional sufficient statistic.</li>
+      <li>To construct it, let $\bar{f}(x)=\frac{1}{k}\sum_{i=1}^k f_i(x)$, without
+loss of generality, we can assume $\bar{f}(x)&gt;0\;\forall x\in\mathcal{Y}$
+because that would imply that all densities are 0.</li>
       <li>Define $S_1(y)=\frac{f_1(y)}{\bar{f}(y)}$ and
-$S_k(y)=\frac{f_k(y)}{\bar{f}_k(y)}$.</li>
-      <li>$k\bar{f}(y)=\sum_{i=1}^k f_i(y)=\sum_{i=1}^k S_i(y)\bar{f}(y)\implies
-\sum_{i=1}^k S_i(y)=k$</li>
+$S_k(y)=\frac{f_k(y)}{\bar{f}_k(y)}$. So, assume $\bar{f}(x)&gt;0\;\forall
+x\in\mathcal{Y}$.</li>
+      <li>$k\bar{f}(y)=\sum_{j=1}^k f_j(y)=\sum_{j=1}^k S_j(y)\bar{f}(y)\implies
+\sum_{j=1}^k S_j(y)=k$
+        <ul>
+          <li>This means that $S$ is a $k-1$ dimensional statistic.</li>
+        </ul>
+      </li>
       <li>We claim that $S$ is a sufficient statistic.</li>
-      <li>Proof:
+      <li>
+        <p>Proof:</p>
+
         <ul>
           <li>
 \[\mathcal{Y}_s=\{y\in\mathcal{Y}: S_j(y)=s_j, j=1,\ldots,k\}=\{y:
-f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\]
+f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\}\]
           </li>
-          <li>Let $A\subset \mathcal{Y}<em>s$ then $P</em>{f_i}(Y\in A\mid S=s)=P_{f_i}(Y\in A\mid Y\in
-\mathcal{Y}_s)$</li>
-          <li>TODO integral</li>
-          <li>Test</li>
+          <li>
+            <p>Let $A\subset\mathcal{Y}_s$, then we can show it no longer depends on
+$j$:</p>
+
+\[\begin{aligned}
+  \Pr_{f_j}(Y\in A\mid S=s)
+  &amp;=\Pr_{f_j}(Y\in A\mid Y\in \mathcal{Y}_s)
+  \\ &amp;=\frac{\int_A f_i(y)\dd y}{\int_{\mathcal{Y}_s}f_i(y)\dd y}
+  \\ &amp;=\frac{\int_A s_j\bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}s_j\bar{f}(y)\dd y}
+  \\ &amp;=\frac{\int_A \bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}\bar{f}(y)\dd y}
+\end{aligned}\]
+          </li>
+          <li>Because it doesn’t matter what $s_j$ is, $S$ is sufficient.</li>
         </ul>
       </li>
     </ul>
   </li>
+  <li>
+    <p>Numerical example:
+<label for="line-partition" class="margin-toggle">⊕</label><input type="checkbox" id="line-partition" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-5/line-partition.png"><br>Line partitioned by $S$</span></p>
+
+    <ul>
+      <li>Observing $S$ allows us to pick out one of the subintervals.</li>
+      <li>Under any $f_j(\cdot)$, $Y$ is uniformly distributed within that
+subinterval.</li>
+      <li>
+        <p>What is important about the sufficient statistic is its ability to
+partition, not the actual value.</p>
+
+\[\begin{aligned}
+\mathcal{Y}&amp;=[0,1]
+\\ \mathcal{F}&amp;=\{f_1,f_2,f_3\}
+\\ f_1&amp;=1\;\forall y\in [0,1]
+\\ f_2&amp;=\begin{cases}1/2 &amp; y\in[0,1/2] \\ 3/2 &amp; y\in[1/2,1]\end{cases}
+\\ f_3&amp;=\begin{cases}1/4 &amp; y\in[0,1/4] \\ 5/4 &amp; y\in[1/4,1]\end{cases}
+\\ \bar{f}&amp;=\begin{cases}14/24 &amp; y\in [0,1/4] \\ 22/24 &amp; y\in [1/4,1/2]
+\\ 30/24 &amp; y\in[1/2,1]\end{cases}
+\\ S&amp;=\begin{bmatrix}f_1 / \bar{f} \\ f_2 / \bar{f}\end{bmatrix}\text{ (3rd is
+ determined by first 2)}
+ \\ S_1&amp;=\begin{bmatrix}12/7 \\ 6/7\end{bmatrix}
+ \quad S_2=\begin{bmatrix}12/11 \\ 6/11\end{bmatrix}
+ \quad S_3=\begin{bmatrix}12/15 \\ 6/15\end{bmatrix}
+ \\ &amp;\text{Also sufficient:}
+ \\ S_1&amp;=\begin{bmatrix}0 \\ 0\end{bmatrix}
+ \quad S_2=\begin{bmatrix}0 \\ 1\end{bmatrix}
+ \quad S_3=\begin{bmatrix}1 \\ 0\end{bmatrix}
+ \\ &amp;\text{Another sufficient:}
+\\ S_1&amp;=1\quad S_2=2\quad S_3=3
+\end{aligned}\]
+      </li>
+    </ul>
+  </li>
+  <li>Sufficiency depends on the partition of the sample space, and not on the
+statistic itself.
+<label for="y-partition" class="margin-toggle">⊕</label><input type="checkbox" id="y-partition" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-5/y-partition.png"><br>Partition of sample space.</span>
+</li>
+  <li>$\mathcal{Y}=\cup_{s\in\mathcal{S}}\mathcal{Y}_s$ is the partition of the
+sample space induced by a statistic $S$.</li>
+  <li>For $S$ to be sufficient, all $f\in\mathcal{F}$ must have the same conditional
+distribution within each slice of $\mathcal{Y}_s$.</li>
+  <li>The concept of sufficient and likelihood were developed by R.A. Fisher in the
+early 20th century. He gave the following theorem for the verification of
+sufficiency in parametric families.</li>
+  <li>
+<strong>Sufficiency Factorization Theorem</strong>: If $Y\in f_\theta(\cdot)$ and
+$\theta\in\Omega$, then $S(Y)$ is sufficient iff $f_\theta(y)=g(s,\theta)h(y)$
+for some $g(\cdot,\cdot)$ and $h(\cdot)$.</li>
+  <li>
+<strong>Sufficiency Principle</strong>: If $S$ is sufficient, then inference on the
+parameter $\theta$ should depend only on $S(Y)$ and not on any other aspects
+of $Y$. In other words, if we have $S(y_1)=S(y_2)$ (two possible realizations
+of the data), then inference on $\theta$ based on $Y=y_1$ should be identical to
+the inference based on $Y=y_2$.</li>
+  <li>To consider why this is a reasonable principle, consider drawing $Y$ from
+$f_\theta(\cdot)$ in two stages.
+    <ol>
+      <li>Generate $S=s$ from $f_{S;\theta}(s)$</li>
+      <li>Generate $Y=y$ from $f_{Y\mid S;\theta}(y\mid s)$</li>
+    </ol>
+  </li>
+  <li>Then, $Y\sim f_\theta(\cdot)$</li>
+  <li>If $S$ is sufficient, then the 2nd stage of the experiment contains no
+information on $\theta$ because $f_{Y\mid S;\theta}(y\mid s)$ does not depend
+on $\theta$.</li>
+</ul>
+
+<h1 id="bayesian-inference-automatically-satisfies-the-sufficiency-principle">
+<a class="anchor" href="#bayesian-inference-automatically-satisfies-the-sufficiency-principle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Bayesian Inference Automatically Satisfies the Sufficiency Principle</h1>
+
+<ul>
+  <li>Here, $y$ gives no new information about $\theta$:</li>
+</ul>
+
+\[p(\theta\mid y)=\frac{\pi(\theta)f_{S;\theta}(s)f_{Y\mid S}(y\mid s)}{\int\pi(\theta)f_{S;\theta}(s)f_{Y\mid S}(y\mid s)\dd \theta}
+=\frac{\pi(\theta)f_{S;\theta}(s)}{\int\pi(\theta)f_{S;\theta}(s)\dd \theta}\]
+
+<h1 id="minimal-sufficiency">
+<a class="anchor" href="#minimal-sufficiency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Minimal Sufficiency</h1>
+
+<ul>
+  <li>If $T$ is a statistic, and $S=g(T(Y))$ then the partition of $T$ is a
+refinement of that of $S$; that is, $S$ induces a coarser partition.
+<label for="coarseness" class="margin-toggle">⊕</label><input type="checkbox" id="coarseness" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-5/coarseness.png"><br>$S$
+is coarser than $T$.</span>
+</li>
+  <li>If both $T$ and $S$ are sufficient, you should use $S$, since it is coarser.</li>
+  <li>What if $S$ is not a function of $T$, i.e. they are not nested?</li>
+  <li>Bahadur (1954) showed that in general there exists a unique coarsest
+sufficient partition. The corresponding statistic is the “minimal sufficient
+statistic”.</li>
 </ul>
 
 </article>
