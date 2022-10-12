@@ -55,6 +55,8 @@ toc: true
 
 # Admissibility and the risk set
 
+- An admissible rule is optimal in taht it cannot be improved across all
+  $\theta\in\Omega$.
 - The lower quadrant of $\vec{x}$: $Q_\vec{x}=\\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\\}$
 - If $\vec{y}\ne \vec{x}$ where $\vec{x}=\vec{r}^\delta$,
   $\vec{y}=\vec{r}^{\delta'}$ then $\delta'$ is better than $\delta$ if and only
