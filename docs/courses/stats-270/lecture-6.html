@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-6.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 6: Likelihood and Conditionality Principles</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#likelihood-principle">Likelihood Principle</a></li>
+<li class="toc-entry toc-h1"><a href="#conditionality-principle">Conditionality Principle</a></li>
+</ul><h1 id="likelihood-principle">
+<a class="anchor" href="#likelihood-principle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Likelihood Principle</h1>
+
+<ul>
+  <li>
+    <p>R.A. Fisher:</p>
+
+    <ul>
+      <li>Sufficiency</li>
+      <li>Likelihood</li>
+      <li>Analysis of variance (ANOVA)</li>
+      <li>Maximum Likelihood Estimate (MLE)</li>
+      <li>F-statistics</li>
+      <li>Efficiency</li>
+      <li>p-value</li>
+      <li>Design of experiments</li>
+      <li>Fiducial inference (uses only likelihood for inference, no longer really
+used)</li>
+    </ul>
+  </li>
+  <li>
+<strong>Likelihood principle</strong>: Let $Y\sim f_\theta(\cdot)$, $\theta\in\Omega$,
+$Y_1$ and $Y_2$ are 2 possible observations giving the same likelihood
+function, then inference on $\theta$ based on one of $Y_1$ should be identical
+to to the inference based on $Y_2$. Likelihoods have the same “shape,” i.e.
+the same up to a constant.</li>
+  <li>
+<strong>Theorem</strong>: The likelihood principle is equivalent to the sufficiency
+principle.</li>
+  <li>
+<strong>Lemma</strong>: The likelihood function induces the minimal sufficient partition.</li>
+  <li>
+    <p>Proof:</p>
+
+    <ul>
+      <li>(a) The partition induced by the likelihood is a sufficient partition.
+        <ul>
+          <li>What is \(\mathcal{Y}_{L(y_0)}=\{y\in \mathcal{Y}: y\text{ gives the same
+likelihood as }y_0\}\)</li>
+          <li>Answer: $Y_1,Y_2$ given the same likelihood iff
+$f_\theta(Y_1)/f_\theta(Y_2)=h(Y_1,Y_2)$ (no longer depends on $\theta$ then
+\(\mathcal{Y}_{y_0}=\{y\in \mathcal{Y}:
+f_\theta(y)/f_\theta(y_0)=h(y,y_0)\}\)</li>
+          <li>Claim: $\mathcal{Y}=\cup_y \mathcal{Y}_{L(y)}$ is a sufficient partition.</li>
+          <li>Proof: For any $y\in \mathcal{Y}_{L(y)}$,
+\(\begin{aligned}
+\Pr_\theta(y\mid
+\mathcal{Y}_{L(y_0)})
+&amp;=\frac{f_\theta(y)}{\int_{\mathcal{Y}_{L(y)}} f_\theta(y)\dd y}
+\\ &amp;=\frac{f_\theta(y_0)h(y,y_0)}{\int_{\mathcal{Y}_{L(y_0)}}f_\theta(y_0)h(y,y_0)\dd y}
+\\ &amp;=\frac{h(y,y_0)}{\int_{\mathcal{Y}_{L(y_0)}}h(y,y_0)\dd y}
+\end{aligned}\)</li>
+          <li>TODO last line above</li>
+        </ul>
+      </li>
+      <li>
+        <p>(b) Let $S$ be a sufficient statistic, $\mathcal{Y}_s=\{y: S(y)=s\}$, and
+you want to show that $\mathcal{Y}=\cup_s \mathcal{Y}_s$ is not coarser than
+likelihood partition.</p>
+
+        <ul>
+          <li>Choose $Y_1,Y_2$ both in the same slice $\mathcal{Y}_s$.</li>
+          <li>You want to show that $Y_1,Y_2$ belong to the same slice in the likelihood
+partition. Does $\frac{f_\theta(y_1)}{f_\theta(y_2)}$ depend on $\theta$?</li>
+        </ul>
+
+\[\begin{aligned}
+\frac{f_\theta(y_1)}{f_\theta(y_2)}
+&amp;= \frac{\Pr_{s,\theta}(s)\Pr(Y_1\mid S=s)}{\Pr_{S,\theta}(s)\Pr(Y_2\mid S=s)}\quad\text{no $\theta$ because
+sufficient statistic}
+\\ &amp;= \frac{\Pr(Y_1\mid S=s)}{\Pr(Y_2\mid S=s)}
+\end{aligned}\]
+
+        <ul>
+          <li>Therefore, $Y_2, Y_2$ induces the same likelihood.</li>
+          <li>TODO add picture</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="conditionality-principle">
+<a class="anchor" href="#conditionality-principle" aria-hidden="true"><span class="octicon octicon-link"></span></a>Conditionality Principle</h1>
+
+<ul>
+  <li>
+<strong>Definition</strong>: A statistic $C=C(Y)$ is an ancillary statistic if it has the
+same marginal distribution under all all densities $f\in \mathcal{F}$.</li>
+  <li>Example 1:
+    <ul>
+      <li>$N\sim 1+\operatorname{Poisson}\left(5\right)$</li>
+      <li>Given $N=n$, $Y_1,Y_2,\ldots,Y_n\sim \operatorname{Bernoulli}\left(\theta\right)$</li>
+      <li>Then $N$ is ancillary, i.e. the marginal distribution of $N$ is independent of
+$\theta$.</li>
+      <li>$\mathcal{L}(\theta; n,y_1,\ldots,y_n)=c\theta^{\sum_{i=1}^n
+y_i}(1-\theta)^{n-\sum_{i=1}^n y_i}$</li>
+      <li>Then the sufficient statistic is $S=(n, \sum_{i=1}^n Y_i)$ and it is
+minimal.</li>
+    </ul>
+  </li>
+  <li>
+<strong>Conditionality Principle</strong>: If $C$ is ancillary, then inference should be
+based on the conditional distribution of $Y$ given $C=c$. (Can be
+conceptualized as reverse of sufficiency).</li>
+  <li>Intuition: 2-stage experiment
+    <ol>
+      <li>Draw $C=c$ from the marginal density $f_C(\cdot)$, which does not depend on
+$\theta$.
+        <ul>
+          <li>Does not contain any information on $\theta$.</li>
+        </ul>
+      </li>
+      <li>Draw $Y=y$ from the conditional distribution of $Y\mid C=c$, $f_{Y\mid C=c;
+\theta}(\cdot)$</li>
+    </ol>
+  </li>
+  <li>TODO drawing</li>
+  <li>Bayesian inference obviously obeys the conditionality principle.</li>
+  <li>However, this is not true for most other approaches to inference.</li>
+  <li>Example: Construct confidence interval based on MLE
+    <ol>
+      <li>Find MLE $\hat{\theta}(Y)$ by maximizing $\mathcal{L})(\theta; Y)$</li>
+      <li>Consider $\mathcal{D}_\theta(\hat{\theta}(Y)-\theta)$ in order to find the
+$(1-\alpha)$ C.I., $\hat{\theta}\pm\operatorname{SE}$
+        <ul>
+          <li>Now, suppose $C(Y)$ is ancillary, and $S=(T(Y), C(Y))$ is the minimal
+sufficient statistic ($T(Y)$ is the sum in previous example).</li>
+          <li>Then $\Pr_\theta(Y)=\Pr_\theta(T\mid C)\Pr(C)$, so MLE $\tilde{\theta}$ is
+the same whether you condition on $C$ or not, but
+$\mathcal{D}_\theta(\hat{\theta}-\theta)\ne
+\mathcal{D}_\theta(\hat{\theta}(Y)-\theta\mid C=c)$</li>
+          <li>TODO note?</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>In Example 1:
+    <ul>
+      <li>$N=1+\operatorname{Poisson}\left(5\right)$</li>
+      <li>$\mathcal{L}(\theta\mid Y)\propto \theta^{\sum_{i=1}^nY_i}(1-\theta)^{N-\sum_{i=1}^nY_i}$</li>
+      <li>$\hat{\theta}^{\operatorname{MLE}}=\frac{1}{N}\sum_{i=1}^N Y_i$, what is the
+distribution of $\hat{\theta}-\theta$?</li>
+      <li>Without conditioning:
+        <ul>
+          <li>$\mathbb{E}\left[\hat{\theta}\right]=\mathbb{E}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right]=\mathbb{E}\left[\theta\right]=\theta$</li>
+          <li>$\operatorname{var}\left[\hat{\theta}\right]=\mathbb{E}\left[\operatorname{var}\left[\hat{\theta}\mid N\right]\right]+\operatorname{var}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right]=\mathbb{E}\left[\frac{\theta(1-\theta)}{N}\right]+0=\theta(1-\theta)\mathbb{E}\left[\frac{1}{N}\right]$</li>
+        </ul>
+      </li>
+      <li>With conditioning, given $N=n$
+        <ul>
+          <li>$\mathbb{E}\left[\hat{\theta}\mid N=n\right]=\theta$</li>
+          <li>$\operatorname{var}\left[\frac{\theta(1-\theta)}{n}\right]=\theta(1-\theta)\frac{1}{n}$</li>
+        </ul>
+      </li>
+      <li>These could be very different depending on how much $N=n$ differs from the
+expectation.</li>
+      <li>For $N\sim 1+\operatorname{Poisson}\left(5\right)$, each event \(A=\{N\le
+2\}\), or \(B=\{N\ge 8\}\) has non-negligible probability, but the degree of
+uncertainty can be very different.</li>
+    </ul>
+  </li>
+  <li>In his critique of unconditional C.I. theory, Fisher pointed out that there is
+the problem / phenomenon of “relevant subset.”
+    <ul>
+      <li>Suppose $A(Y)$ is a $(1-\alpha)$ confidence set, i.e. $\Pr_\theta(\theta\in
+A(Y))\equiv 1-\alpha$ and $B\in \mathcal{Y}$ is a set satisfying either:
+        <ul>
+          <li>(a) $\sup_{\theta\in\Omega}\Pr_\theta(\theta\in A(Y)\mid Y\in B)&lt;1-\alpha$</li>
+          <li>(b) $\inf_{\theta\in\Omega}\Pr_\theta(\theta\in A(Y)\mid Y\in B)&gt;1-\alpha$</li>
+        </ul>
+      </li>
+      <li>Here $B$ is called a relevant subset.</li>
+      <li>Do not use $1-\alpha$ if you know $Y\in B$.</li>
+      <li>Unfortunately, relevant subset can exist even in the nicest parametric model
+such as iid observations $\sim
+\operatorname{Normal}\left(\mu,\sigma^2\right)$.</li>
+    </ul>
+  </li>
+  <li>Another problem is that ancillary statistics are not unique.</li>
+  <li>
+    <p>Example 2 (Basu):</p>
+
+\[Y_1,\ldots,Y_n\sim \operatorname{Categorical}\left(\begin{bmatrix}\frac{1}{6}(1-\theta) \\ \frac{1}{6}(1+\theta) \\ \frac{1}{6}(2-\theta) \\ \frac{1}{6}(2+\theta)\end{bmatrix}\right)\]
+  </li>
+  <li>Sufficient statistic is \(N=\begin{bmatrix}N_1\\N_2\\N_3\\N_4\end{bmatrix}\),
+the counts.</li>
+  <li>Ancillary statistics:
+    <ul>
+      <li>
+\[C=\begin{bmatrix}N_1+N_2\\
+N_3+N_4\end{bmatrix}=\begin{bmatrix}\frac{1}{3}\\\frac{2}{3}\end{bmatrix}\sim
+\operatorname{Multinomial}\left(n,\begin{bmatrix}\frac{1}{3}\\\frac{2}{3}\end{bmatrix}\right)\]
+      </li>
+      <li>
+\[D=\begin{bmatrix}N_1+N_4\\ N_2+N_3\end{bmatrix}\sim
+\operatorname{Multinomial}\left(n,\begin{bmatrix}\frac{1}{2}\\\frac{1}{2}\end{bmatrix}\right)\]
+      </li>
+      <li>Hard to decide between these two ancillary statistics.</li>
+      <li>Everything is satisfied when you use a prior in a Bayesian framework, i.e.
+sufficiently, likelihood, conditionality, etc.</li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

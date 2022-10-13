@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <title>
-    Old lectures by Wong and Shen
+    STATS 270: Bayesian Statistics
   </title>
   <meta
     name="description"
@@ -82,14 +82,12 @@
 </header>
 
     <article class="group">
-<h1 class="title">Old lectures by Wong and Shen</h1>
-  <ul id="toc" class="section-nav">
-<li class="toc-entry toc-h1"><a href="#terminology">Terminology</a>
-<ul>
-<li class="toc-entry toc-h2"><a href="#terms">Terms</a></li>
-<li class="toc-entry toc-h2"><a href="#notation">Notation</a></li>
-</ul>
-</li>
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Old lectures by Wong and Shen</h2>
+ <ul id="toc" class="section-nav">
 <li class="toc-entry toc-h1"><a href="#chapter-1-statistical-inference">Chapter 1: Statistical Inference</a>
 <ul>
 <li class="toc-entry toc-h2"><a href="#likelihood-and-inference">Likelihood and Inference</a>
@@ -110,93 +108,7 @@
 </li>
 </ul>
 </li>
-</ul><h1 id="terminology">
-<a class="anchor" href="#terminology" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terminology</h1>
-
-<h2 id="terms">
-<a class="anchor" href="#terms" aria-hidden="true"><span class="octicon octicon-link"></span></a>Terms</h2>
-
-<ul>
-  <li>
-<strong>Bias</strong>: The difference between the expected value of an estimator and the
-true value of the parameter. There can be mean or median bias.
-Mean-unbiasedness is not preserved under non-linear transformations, while
-median-unbiasedness is.</li>
-  <li>
-<strong>Conditional likelihood</strong>: A likelihood of data given a sufficient statistic
-for the nuisance parameters so that the likelihood does not depend on them.</li>
-  <li>
-<strong>Consistency</strong>: Consistent estimators converge to the true value of the
-parameter, but may be biased or unbiased.</li>
-  <li>
-<strong>Expected value</strong>: A generalization of the weighted average (weighted by
-probability). Informally, it is the arithmetic mean of a large number of
-independently sampled outcomes of a random variable.</li>
-  <li>
-<strong>Inference</strong>: The process of drawing reliable conclusions from
-data subject to random variation. In particular, based on data, inference
-draws a conclusion about a parameter $\theta$. Note that in ML/Deep Learning,
-“inference” is used slightly differently and often refers to passing input
-through a trained model to get predictions.</li>
-  <li>
-<strong>Likelihood function</strong>: Any function
-$\mathcal{L}(\theta;\mathbf{y})=c(\mathbf{y})p(\theta;\mathbf{y})$ that is
-proportional to $p(\theta;\mathbf{y})$ for any function $c(\mathbf{y})&gt;0$ that
-is independent of the parameter $\theta$ but may depend on $\mathbf{y}$.
-Typically, this is written as $\mathcal{L}(\theta\mid\mathbf{y})$, which
-emphasizes that it is a function of $\theta$ conditional on observed data.
-This is also written as $P(\mathbf{y}\mid\theta)$ or the probability of the
-data given a value for $\theta$. Further, note that this is invariant under
-linear transformations, i.e. if $\mathbf{z}=g(\mathbf{y})$, mapping $\mathbb{R}^n\to
-\mathbb{R}^n$, then
-$\mathcal{L}(\theta;\mathbf{z})=p\left(\theta;g^{-1}(\mathbf{z})\right)\left|\pdv{\mathbf{y}}{\mathbf{z}}\right|$
-where the last term is the absolute value of the determinant of the Jacobian.</li>
-  <li>
-<strong>Marginal likelihood</strong>: A likelihood based only on part of the information in
-the data to remove the nuisance parameters.</li>
-  <li>
-<strong>Maximum likelihood estimate (MLE)</strong>: A maximizer of the likelihood function.</li>
-  <li>
-<strong>Nuisance paramter</strong>: A parameter that the function depends on but that is
-not a parameter of interest.</li>
-  <li>
-<strong>Posterior</strong>: Likelihood $\times$ Prior / Evidence, i.e.
-$\frac{\mathcal{L}(\theta\mid\mathbf{y})\times P(\theta)}{\int
-P(\mathbf{y}\mid\theta)P(\theta)\dd\theta}$.</li>
-  <li>
-<strong>Statistic</strong>: a measurable function of $\mathbf{Y}$, i.e. $S=S(\mathbf{Y})$.</li>
-  <li>
-<strong>Sufficient Statistic</strong>: A statistic such that no other statistic calculated
-form the same sample can provide any more information about the parameter of
-interest. If a density can be factorized as
-$f_{\mathbf{X}}(\mathbf{x})=h(\mathbf{x})g(\theta,T(\mathbf{x}))$, then
-$T(\mathbf{x})$ is a sufficient statistic. In particular, from this
-factorization, you can see that the MLE estimate, $\arg\max_\theta
-h(\mathbf{x})g(\theta,T(\mathbf{x}))$ depends only on
-$g(\theta,T(\mathbf{x}))$. Another way of understanding this is that the
-conditional distribution of $\mathbf{X}$ given $T(\mathbf{X})$ remains the
-same over $\mathcal{F}=\{\Pr_\theta(\mathbf{x}): \theta\in\Omega\}$, i.e.
-$\Pr(\mathbf{X}\mid T(\mathbf{X}),\theta)=\Pr(\mathbf{X}\mid T(\mathbf{X}))$.</li>
-</ul>
-
-<h2 id="notation">
-<a class="anchor" href="#notation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Notation</h2>
-
-<ul>
-  <li>$p(\theta;\mathbf{y})$: $\theta$ given $\mathbf{y}$, not necessarily
-conditional on in an event sense. This is often used in optimization.</li>
-  <li>$p(\mathbf{y}\mid\theta)$: $\mathbf{y}$ conditional on the state of affairs or
-event that $\theta$ has happened. This usage is restricted to statistics.</li>
-  <li>$\Pr_\theta(\mathbf{y})$: Joint probability of $\mathbf{y}$ under parameters
-$\theta$, equivalent to $\Pr(\mathbf{y}\mid\theta)$.</li>
-  <li>$\mathcal{L}(\theta;\mathbf{y})$: The likelihood function of $\theta$ given $\mathbf{y}$.</li>
-  <li>$\mathbb{E}_{\theta}\left[T_n\right]=\mathbb{E}_{y\mid\theta}\left[T_n\right]$:
-The expected value of statistic $T_n=T_n(\mathbf{X})$ over $\mathbf{x}$
-conditional on $\theta$, i.e. $\int_{-\infty}^\infty
-T_n(\mathbf{x})p(\mathbf{x}\mid\theta)\dd x$.</li>
-</ul>
-
-<h1 id="chapter-1-statistical-inference">
+</ul><h1 id="chapter-1-statistical-inference">
 <a class="anchor" href="#chapter-1-statistical-inference" aria-hidden="true"><span class="octicon octicon-link"></span></a>Chapter 1: Statistical Inference</h1>
 
 <h2 id="likelihood-and-inference">
@@ -629,7 +541,7 @@ By uniqueness, it must be admissible. This completes the proof.</li>
 
 </article>
     <span class="print-footer"
-  >Old lectures by Wong and Shen - Daniel Jenson
+  >STATS 270: Bayesian Statistics - Daniel Jenson
 </span>
  <footer>
   <hr class="slender">
