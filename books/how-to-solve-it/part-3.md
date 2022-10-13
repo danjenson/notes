@@ -29,6 +29,38 @@ toc: true
 
 # Auxiliary elements
 
+- There are several types of auxiliary elements:
+  - Components, e.g. lines
+  - Unknowns
+  - Theorems
+  - Problems
+- Can we introduce an auxiliary element in order to make a previous problem or
+  theorem applicable?
+- Mathematics is interesting in so far as it occupies our reasoning and
+  inventive powers; there is nothing to learn about reasoning and invention if
+  the motive and purpose of the most conspicuous step remain incomprehensible.
+- **Auxiliary problems**: we hope that its consideration may able to help consider our
+  original problem. Humans are better than flies because they can move around
+  direct obstacles
+  - To raise a clear-cut new problem subservient to another problem, to
+    conceive distinctly as an end what is means to another end, is a refined
+    achievement of the intelligence.
+  - We may adopt the _result_ or _method_ of the auxiliary problem.
+  - We are often led to the auxiliary problem by looking at the unknown and
+    variation of the problem.
+  - The passage from the original problem to the auxiliary problem is called
+    _convertible_ reduction, or _bilateral_ reduction, or _equivalent_ reduction
+    if these two problems, the original and auxiliary, are equivalent.
+  - Chains of equivalent auxiliary problems are common in mathematical
+    reasoning. We may find that A is equivalent to another problem B.
+    Considering B we may run into a third problem C equivalent to B. Proceeding
+    the same way, we reduce C to D, and so on, until we come upon a last problem
+    L whose solution is known or immediate.
+  - If, from a proposed problem we pass either to a more ambitious or to a less
+    ambitious auxiliary problem we call the step a _unilateral reduction_.
+  - Sometimes, the more ambitious problem may be more accessible; this is called
+    the Inventor's Paradox.
+
 # Bolzano
 
 # Bright idea
