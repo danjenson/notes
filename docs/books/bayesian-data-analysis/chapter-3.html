@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    Bayesian Data Analysis
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/books/bayesian-data-analysis/chapter-3.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">Bayesian Data Analysis</a>
+</h1>
+ 
+<h2 class="subtitle">Chapter 3: Introduction to Multiparameter models</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#31-averaging-over-nuisance-parameters">3.1 Averaging over ‘nuisance parameters’</a></li>
+<li class="toc-entry toc-h1"><a href="#32-normal-data-with-a-noninformative-prior-distribution">3.2 Normal data with a noninformative prior distribution</a></li>
+<li class="toc-entry toc-h1"><a href="#33-normal-data-with-a-conjugate-prior-distribution">3.3 Normal data with a conjugate prior distribution</a></li>
+<li class="toc-entry toc-h1"><a href="#34-multinomial-model-for-categorical-data">3.4 Multinomial model for categorical data</a></li>
+<li class="toc-entry toc-h1"><a href="#35-multivariate-normal-model-with-known-variance">3.5 Multivariate normal model with known variance</a></li>
+<li class="toc-entry toc-h1"><a href="#36-multivariate-normal-with-unknown-mean-and-variance">3.6 Multivariate normal with unknown mean and variance</a></li>
+<li class="toc-entry toc-h1"><a href="#37-example-analysis-of-bioassay-experiment">3.7 Example: analysis of bioassay experiment</a></li>
+<li class="toc-entry toc-h1"><a href="#38-summary-of-elementary-modeling-and-computation">3.8 Summary of elementary modeling and computation</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\sd}{\op{sd}}
+\newcommand{\var}{\op{var}}
+\newcommand{\logit}{\op{logit}}
+\newcommand{\J}{\op{J}}\]
+
+<h1 id="31-averaging-over-nuisance-parameters">
+<a class="anchor" href="#31-averaging-over-nuisance-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Averaging over ‘nuisance parameters’</h1>
+
+<h1 id="32-normal-data-with-a-noninformative-prior-distribution">
+<a class="anchor" href="#32-normal-data-with-a-noninformative-prior-distribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Normal data with a noninformative prior distribution</h1>
+
+<h1 id="33-normal-data-with-a-conjugate-prior-distribution">
+<a class="anchor" href="#33-normal-data-with-a-conjugate-prior-distribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.3 Normal data with a conjugate prior distribution</h1>
+
+<h1 id="34-multinomial-model-for-categorical-data">
+<a class="anchor" href="#34-multinomial-model-for-categorical-data" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.4 Multinomial model for categorical data</h1>
+
+<h1 id="35-multivariate-normal-model-with-known-variance">
+<a class="anchor" href="#35-multivariate-normal-model-with-known-variance" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.5 Multivariate normal model with known variance</h1>
+
+<h1 id="36-multivariate-normal-with-unknown-mean-and-variance">
+<a class="anchor" href="#36-multivariate-normal-with-unknown-mean-and-variance" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.6 Multivariate normal with unknown mean and variance</h1>
+
+<h1 id="37-example-analysis-of-bioassay-experiment">
+<a class="anchor" href="#37-example-analysis-of-bioassay-experiment" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.7 Example: analysis of bioassay experiment</h1>
+
+<h1 id="38-summary-of-elementary-modeling-and-computation">
+<a class="anchor" href="#38-summary-of-elementary-modeling-and-computation" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.8 Summary of elementary modeling and computation</h1>
+
+</article>
+    <span class="print-footer"
+  >Bayesian Data Analysis - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

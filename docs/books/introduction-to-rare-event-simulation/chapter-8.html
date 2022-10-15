@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    Introduction to Rare Event Simulation
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/books/introduction-to-rare-event-simulation/chapter-8.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">Introduction to Rare Event Simulation</a>
+</h1>
+ 
+<h2 class="subtitle">Chapter 8: Chernoff's Bound and Asymptotic Expansions</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#81-mathcalr-valued-random-variables">8.1 $\mathcal{R}$-Valued Random Variables</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#811-the-non-lattice-case">8.1.1 The Non-Lattice Case</a></li>
+<li class="toc-entry toc-h2"><a href="#812-the-lattice-case">8.1.2 The Lattice Case</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#82-examples-for-the-mathcalr-valued-case">8.2 Examples for the $\mathcal{R}$-Valued Case</a></li>
+<li class="toc-entry toc-h1"><a href="#83-mathcalrd-valued-random-variables">8.3 $\mathcal{R}^d$-Valued Random Variables</a></li>
+<li class="toc-entry toc-h1"><a href="#84-variance-expansion-of-importance-sampling-estimation">8.4 Variance Expansion of Importance Sampling Estimation</a></li>
+<li class="toc-entry toc-h1"><a href="#85-notes-and-comments">8.5 Notes and Comments</a></li>
+</ul><h1 id="81-mathcalr-valued-random-variables">
+<a class="anchor" href="#81-mathcalr-valued-random-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.1 $\mathcal{R}$-Valued Random Variables</h1>
+
+<h2 id="811-the-non-lattice-case">
+<a class="anchor" href="#811-the-non-lattice-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.1.1 The Non-Lattice Case</h2>
+
+<h2 id="812-the-lattice-case">
+<a class="anchor" href="#812-the-lattice-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.1.2 The Lattice Case</h2>
+
+<h1 id="82-examples-for-the-mathcalr-valued-case">
+<a class="anchor" href="#82-examples-for-the-mathcalr-valued-case" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.2 Examples for the $\mathcal{R}$-Valued Case</h1>
+
+<h1 id="83-mathcalrd-valued-random-variables">
+<a class="anchor" href="#83-mathcalrd-valued-random-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.3 $\mathcal{R}^d$-Valued Random Variables</h1>
+
+<h1 id="84-variance-expansion-of-importance-sampling-estimation">
+<a class="anchor" href="#84-variance-expansion-of-importance-sampling-estimation" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.4 Variance Expansion of Importance Sampling Estimation</h1>
+
+<h1 id="85-notes-and-comments">
+<a class="anchor" href="#85-notes-and-comments" aria-hidden="true"><span class="octicon octicon-link"></span></a>8.5 Notes and Comments</h1>
+
+</article>
+    <span class="print-footer"
+  >Introduction to Rare Event Simulation - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

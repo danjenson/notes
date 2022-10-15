@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    Introduction to Rare Event Simulation
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/books/introduction-to-rare-event-simulation/chapter-14.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">Introduction to Rare Event Simulation</a>
+</h1>
+ 
+<h2 class="subtitle">Chapter 14: Tools and Techniques for Importance Sampling</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#141-adaptive-importance-sampling">14.1 Adaptive Importance Sampling</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#1411-empirical-variance-minimization">14.1.1 Empirical Variance Minimization</a></li>
+<li class="toc-entry toc-h2"><a href="#1412-exponential-shifts-and-the-dominating-point-property">14.1.2 Exponential Shifts and the Dominating Point Property</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#142-hit-rate-considerations">14.2 Hit Rate Considerations</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#1421-hit-rates-for-a-single-exponential-shift">14.2.1 Hit Rates for a Single Exponential Shift</a></li>
+<li class="toc-entry toc-h2"><a href="#1422-hit-rates-for-the-universal-distributions">14.2.2 Hit Rates for the Universal Distributions</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#143-efficient-biasing-of-functions-of-independent-random-sequences">14.3 Efficient Biasing of Functions of Independent Random Sequences</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#1431-sums-of-independent-sequences">14.3.1 Sums of Independent Sequences</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h1"><a href="#144-the-method-of-conditioning">14.4 The Method of Conditioning</a></li>
+<li class="toc-entry toc-h1"><a href="#145-simulating-ergodic-systems-with-memory">14.5 Simulating Ergodic Systems with Memory</a>
+<ul>
+<li class="toc-entry toc-h2"><a href="#1451-simulation-diagnostics">14.5.1 Simulation Diagnostics</a></li>
+</ul>
+</li>
+</ul><h1 id="141-adaptive-importance-sampling">
+<a class="anchor" href="#141-adaptive-importance-sampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.1 Adaptive Importance Sampling</h1>
+
+<h2 id="1411-empirical-variance-minimization">
+<a class="anchor" href="#1411-empirical-variance-minimization" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.1.1 Empirical Variance Minimization</h2>
+
+<h2 id="1412-exponential-shifts-and-the-dominating-point-property">
+<a class="anchor" href="#1412-exponential-shifts-and-the-dominating-point-property" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.1.2 Exponential Shifts and the Dominating Point Property</h2>
+
+<h1 id="142-hit-rate-considerations">
+<a class="anchor" href="#142-hit-rate-considerations" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.2 Hit Rate Considerations</h1>
+
+<h2 id="1421-hit-rates-for-a-single-exponential-shift">
+<a class="anchor" href="#1421-hit-rates-for-a-single-exponential-shift" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.2.1 Hit Rates for a Single Exponential Shift</h2>
+
+<h2 id="1422-hit-rates-for-the-universal-distributions">
+<a class="anchor" href="#1422-hit-rates-for-the-universal-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.2.2 Hit Rates for the Universal Distributions</h2>
+
+<h1 id="143-efficient-biasing-of-functions-of-independent-random-sequences">
+<a class="anchor" href="#143-efficient-biasing-of-functions-of-independent-random-sequences" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.3 Efficient Biasing of Functions of Independent Random Sequences</h1>
+
+<h2 id="1431-sums-of-independent-sequences">
+<a class="anchor" href="#1431-sums-of-independent-sequences" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.3.1 Sums of Independent Sequences</h2>
+
+<h1 id="144-the-method-of-conditioning">
+<a class="anchor" href="#144-the-method-of-conditioning" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.4 The Method of Conditioning</h1>
+
+<h1 id="145-simulating-ergodic-systems-with-memory">
+<a class="anchor" href="#145-simulating-ergodic-systems-with-memory" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.5 Simulating Ergodic Systems with Memory</h1>
+
+<h2 id="1451-simulation-diagnostics">
+<a class="anchor" href="#1451-simulation-diagnostics" aria-hidden="true"><span class="octicon octicon-link"></span></a>14.5.1 Simulation Diagnostics</h2>
+
+</article>
+    <span class="print-footer"
+  >Introduction to Rare Event Simulation - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
