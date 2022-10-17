@@ -5,14 +5,6 @@ subtitle: "Chapter 2: Single-parameter models"
 toc: true
 ---
 
-$$
-\newcommand{\op}{\operatorname}
-\newcommand{\sd}{\op{sd}}
-\newcommand{\var}{\op{var}}
-\newcommand{\logit}{\op{logit}}
-\newcommand{\J}{\op{J}}
-$$
-
 # 2.1 Estimating a probability from binomial data
 
 - For the binomial, $p(y\mid\theta)=\operatorname{Binomial}\left(y\mid

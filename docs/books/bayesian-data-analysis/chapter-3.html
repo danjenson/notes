@@ -96,14 +96,36 @@
 <li class="toc-entry toc-h1"><a href="#36-multivariate-normal-with-unknown-mean-and-variance">3.6 Multivariate normal with unknown mean and variance</a></li>
 <li class="toc-entry toc-h1"><a href="#37-example-analysis-of-bioassay-experiment">3.7 Example: analysis of bioassay experiment</a></li>
 <li class="toc-entry toc-h1"><a href="#38-summary-of-elementary-modeling-and-computation">3.8 Summary of elementary modeling and computation</a></li>
-</ul>\[\newcommand{\op}{\operatorname}
-\newcommand{\sd}{\op{sd}}
-\newcommand{\var}{\op{var}}
-\newcommand{\logit}{\op{logit}}
-\newcommand{\J}{\op{J}}\]
+</ul><ul>
+  <li>Although a problem can include several parameters of interest, conclusions
+will often be drawn about one or only a few parameters.</li>
+  <li>In this case, the ultimate aim of Bayesian analysis is the marginal posterior
+distribution of particular parameters of interest.</li>
+  <li>The method is clear:
+    <ol>
+      <li>Obtain the joint distribution of all unknowns.</li>
+      <li>Integrate out the nuisance parameters.</li>
+    </ol>
+  </li>
+  <li>Or, equivalently, using simulation:
+    <ol>
+      <li>Draw samples from the joint posterior and ignore the values of the other
+unknowns.</li>
+    </ol>
+  </li>
+</ul>
 
 <h1 id="31-averaging-over-nuisance-parameters">
 <a class="anchor" href="#31-averaging-over-nuisance-parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.1 Averaging over ‘nuisance parameters’</h1>
+
+<ul>
+  <li>A parameter used in the joint distribution but that is not one of interest is
+called a <strong>nuisance parameter</strong>.</li>
+  <li>Often the joint posterior density can be factored to yield:</li>
+</ul>
+
+\[p\left(\theta_1 \mid y\right)=\int p\left(\theta_1 \mid \theta_2, y\right)
+p\left(\theta_2 \mid y\right) d \theta_2\]
 
 <h1 id="32-normal-data-with-a-noninformative-prior-distribution">
 <a class="anchor" href="#32-normal-data-with-a-noninformative-prior-distribution" aria-hidden="true"><span class="octicon octicon-link"></span></a>3.2 Normal data with a noninformative prior distribution</h1>
