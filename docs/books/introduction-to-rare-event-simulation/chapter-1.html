@@ -104,23 +104,104 @@
 </ul><h1 id="11-uniform-generators">
 <a class="anchor" href="#11-uniform-generators" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.1 Uniform Generators</h1>
 
+<ul>
+  <li>A random number generator is nothing more than a deterministic algorithm
+operating on a finite state machine (the computer) that produces numbers with
+certain distributional properties.</li>
+  <li>The most popular generator is the <strong>congruential generator</strong>:
+    <ul>
+      <li>$M&gt;0$ is a large prime number called the modulus.</li>
+      <li>$0 &lt; a &lt; M$ is the multiplier.</li>
+      <li>$C$ is the increment.</li>
+      <li>$0 &lt; c_0 &lt; M$ is the initial value or seed.</li>
+    </ul>
+  </li>
+</ul>
+
+\[c_k=[ac_{k-1}+C\mod (M)]\]
+
+<ul>
+  <li>Typically, numbers are converted to something on the real interval with
+$u_k=c_k/M$.</li>
+  <li>A rule of thumb for linear generators in general is that the usable sample
+size is close to $\sqrt{P}$ where $P$ is the period of the generator.</li>
+  <li>Random generators may look normal but then have correlations in various
+ranges.</li>
+</ul>
+
+<p><label for="bit-correlation" class="margin-toggle">⊕</label><input type="checkbox" id="bit-correlation" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/books/introduction-to-rare-event-simulation/figures/chapter-1/last-8-bits.png"><br>Correlations among bigs.</span></p>
+
+<ul>
+  <li>Various generators such as the KISS generator and Mother of all RNGs.</li>
+</ul>
+
 <h1 id="12-nonuniform-generation">
 <a class="anchor" href="#12-nonuniform-generation" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2 Nonuniform Generation</h1>
 
 <h2 id="121-the-inversion-method">
 <a class="anchor" href="#121-the-inversion-method" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.1 The Inversion Method</h2>
 
+\[F^{-1}(u)=\inf\{x: F(x)\ge u\}\]
+
+<ul>
+  <li>Since the CDF of a distribution is uniform, invert the CDF (when possible),
+simulate a uniform random variable and plug it into the inverse.</li>
+  <li>
+<strong>Lemma 1.2.1</strong>: For $0&lt;u&lt;1,u\le F(x)$ if and only if $F^{-1}(u)\le x$.</li>
+  <li>Several examples, including the Box-Muller method for generating two random
+normals.</li>
+</ul>
+
 <h2 id="122-the-acceptance-rejection-method">
 <a class="anchor" href="#122-the-acceptance-rejection-method" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.2.2 The Acceptance-Rejection Method</h2>
+
+<ol>
+  <li>Find a dominating density $g$ over the support of $f$ such that $cg$ (where
+$c$ does not depend on $x$) is greater than the maximum of $f$.</li>
+  <li>Simulate an $X\sim g$.</li>
+  <li>Simulate a uniform from $[0, cg(x)]$. If this value is below $f(x)$, accept
+it. In other words, accept if $u &lt; f(x)/cg(x)$.</li>
+</ol>
+
+<ul>
+  <li>Note that $g$ must have heavier tails and sharper infinite peaks than $f$.</li>
+</ul>
 
 <h1 id="13-discrete-distributions">
 <a class="anchor" href="#13-discrete-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3 Discrete Distributions</h1>
 
+<ul>
+  <li>Inversion can be used for discrete distributions as well.</li>
+</ul>
+
+\[F(X-1) = \sum_{i&lt;X}p_i&lt;U\le\sum_{i\le X}p_i=F(X)\]
+
+<ul>
+  <li>You can do a sequential search; example with Poisson on p.14.</li>
+</ul>
+
 <h2 id="131-inversion-by-truncation-of-a-continuous-analog">
 <a class="anchor" href="#131-inversion-by-truncation-of-a-continuous-analog" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.1 Inversion by Truncation of a Continuous Analog</h2>
 
+<ul>
+  <li>You can use a continuous distribution $G$ as a dominating density for discrete
+distribution $F$ by using the floor function.</li>
+</ul>
+
 <h2 id="132-acceptance-rejection">
 <a class="anchor" href="#132-acceptance-rejection" aria-hidden="true"><span class="octicon octicon-link"></span></a>1.3.2 Acceptance-Rejection</h2>
+
+<ul>
+  <li>Acceptance-rejection can also be used on discrete distributions.</li>
+  <li>
+<strong>Hybrid Rejection Algorithm</strong>:
+    <ol>
+      <li>Generate $Y\sim g$, Set $X\leftarrow \lfloor Y\rfloor$</li>
+      <li>Generate a uniform $U$ on $[0,1]$.</li>
+      <li>Accept and return $X$ if $Ucg(Y)\le p(X)$, otherwise repeat.</li>
+    </ol>
+  </li>
+</ul>
 
 </article>
     <span class="print-footer"
