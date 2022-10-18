@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-7.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 7: Non-informative Priors</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h1"><a href="#non-informative-priors">Non-informative Priors</a></li>
+<li class="toc-entry toc-h1"><a href="#jeffreys-prior">Jeffrey’s Prior</a></li>
+</ul><h1 id="non-informative-priors">
+<a class="anchor" href="#non-informative-priors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Non-informative Priors</h1>
+
+<ul>
+  <li>Example: iid variables from $\operatorname{Bernoulli}\left(\theta\right)$
+where $\theta\in[0,1]$</li>
+  <li>Bayes &amp; Laplace used uniform priors to represent state of “no information.”
+    <ul>
+      <li>Put the same probability for $[\theta_0\pm\varepsilon]$ and
+$[\theta_1\pm\varepsilon]$</li>
+      <li>This was popular for about 100 years before being criticized.</li>
+      <li>This was criticized by:
+        <ol>
+          <li>The subjective Bayesian (Ramsey, de Finetti, Savage).</li>
+          <li>Frequentists (Neyman, Fisher).</li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li>Objections to the uniform prior:
+    <ul>
+      <li>Suppose $\theta\sim \operatorname{Uniform}\left(0,1\right)$ to represent “no
+information on $\theta$.”</li>
+      <li>Now, $\phi=-\log(\theta)\implies \theta=e^{-\theta}$</li>
+      <li>If we use $\phi$ as the parameter, we should also have “no information.”</li>
+      <li>A uniform prior on $\phi$ is not equivalent to a uniform prior on $\theta$.
+        <ul>
+          <li>If $\theta\sim \operatorname{Uniform}\left(0,1\right)$, then $\phi\sim
+\operatorname{Exponential}\left(1\right)$</li>
+          <li>On which scale should we put a uniform prior?</li>
+        </ul>
+      </li>
+      <li>Suppose there a $\phi(\theta)$ for which the uniform prior is “correct.”</li>
+      <li>TODO: picture</li>
+      <li>So equal probability on \(\{\phi\in\phi_0\pm\varepsilon\}\) and
+\(\{\phi\in\phi\pm\varepsilon\}\) implies that \(\{\theta\in\theta_0\pm
+\sigma(\theta_0)\varepsilon\}\) has same probability as
+\(\{\theta\in\theta_1\pm\sigma(\theta_1)\varepsilon\}\)
+        <ul>
+          <li>\(\pi(\theta_0)\sigma(\theta_0)\varepsilon=\pi(\theta_1)\sigma(\theta_1)\varepsilon\),
+then putting \(\pi(\theta)\propto\frac{1}{\sigma(\theta)}\)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>What is a good “yardstick” for measuring distance in $\theta$?
+    <ul>
+      <li>Consider $\operatorname{Bernoulli}\left(\theta\right)$, if we have $n$
+observations, then $p(\theta\mid
+x_1,\ldots,x_n)\propto\pi(\theta)\theta^{n\bar{x}}(1-\theta)^{n(1-\bar{x})}$
+        <ul>
+          <li>If $n$ is large, then the posterior is
+$\theta^{n\theta_0}(1-\theta)^{n(1-\theta_0)}$, this is a
+$\operatorname{Beta}\left(n\theta_0,n(1-\theta_0)\right)$, then the
+posterior mean is $\theta_0$ and posterior variance is
+$\sqrt{\theta_0(1\theta_0)/n}$, then
+$\operatorname{sd}\propto\sqrt{\theta_0(1-\theta_0)}$</li>
+          <li>This suggests that $\sigma(\theta_0)=\sqrt{\theta_0(1-\theta_0)}$.</li>
+          <li>The non-informative prior is then
+\(\pi^*(\theta)\proprto\frac{1}{\sqrt{\theta(1-\theta)}}\)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="jeffreys-prior">
+<a class="anchor" href="#jeffreys-prior" aria-hidden="true"><span class="octicon octicon-link"></span></a>Jeffrey’s Prior</h1>
+
+<ul>
+  <li>Let $x_1,\ldots,x_n$ be iid for $f_\theta(\cdot)$.</li>
+  <li>Define the score function as $\pdv{\theta}\log f_\theta(x)=S(\theta,x)$</li>
+  <li>Fisher information $i(\theta)=\operatorname{Var}(S(\theta,x))=E(S^2)$</li>
+  <li>Von Mises Theorem: If the sample size is large, then $\theta\mid
+x_1,\ldots,x_n\sim
+\operatorname{Normal}\left(\theta_0,1/(n(i(\theta)))\right)$, which is true
+regardless of the prior.</li>
+  <li>So, the correct measure is $\sigma(\theta)\propto i(\theta)^{-1/2}$.</li>
+  <li>\(\pi^*(\theta)\propto i(\theta)^{1/2}\), which is Jeffrey’s prior.</li>
+  <li>Exercise: Check this on the $\operatorname{Bernoulli}\left(\theta\right)$</li>
+  <li>Geometric view of Jeffrey’s Prior:
+    <ul>
+      <li>Let \(\mathcal{F}=\{f_\theta(\cdot),\theta\in[0,1]\}\) where $\mathcal{X}$
+is arbitrary.</li>
+      <li>Define $\sqrt{x}\mid\theta=\sqrt{f_\theta(x)}$</li>
+      <li>$\langle v_1,v_2\rangle=\int_\mathcal{X}v_1(x)v_2(x)\dd x$</li>
+      <li>\(\mathcal{G}=\{v_\theta:\theta\in\Omega\}\) is a curve in $L_2(\mathcal{X})$</li>
+      <li>It is natural to use the arc-length as the distance measure.</li>
+      <li>TODO picture</li>
+      <li>This suggests that $\pi(\theta)\cdot\Delta\propto
+||v_{\theta+\Delta}-v_\theta||$</li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>$\pi(\theta)\propto \lim_{\Delta\to 0}</td>
+              <td> </td>
+              <td>v_{\theta+\Delta}-v_\theta</td>
+              <td> </td>
+              <td>$</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li>Bernoulli example:
+        <ul>
+          <li>
+\[\mathcal{X}=\{x_1,x_2\}=\{0,1\}\]
+          </li>
+          <li>
+\[f_\theta(\cdot)=\begin{bmatrix}\theta \\ 1-\theta\end{bmatrix}\]
+          </li>
+          <li>\(v_\theta=\frac{\sqrt{\theta}}{\sqrt{1-\theta}}\),
+$L_2(\mathcal{x})=\mathbb{R}^2$</li>
+          <li>Then, \(\pi^*(\theta)=\lim_{\Delta\to
+0}\frac{||v_{\theta+\Delta}-v_\theta||}{\Delta}=\frac{1}{2}\cdot\frac{1}{\sqrt{\theta(1-\theta)}\),
+which is exactly Jeffrey’s prior.
+            <ul>
+              <li>If $\mathcal{X}$ has $k$ points, then $v_\theta\in \mathbb{R}^k$</li>
+              <li>If $\mathcal{X}\in[0,1]$, then $v_\theta(\cdot)=\sqrt{f_\theta(\cdot)}$
+is a $L_2$ function in $[0,1]$.</li>
+            </ul>
+          </li>
+          <li>Heddinger(?) distance between two densities.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Multi-dimensional case:
+    <ul>
+      <li>$\theta\in\Omega$ is a bounded region in $\mathbb{R}^2$</li>
+      <li>TODO picture</li>
+      <li>Transform region from $\Omega$ into $L_2(\mathcal{X})$
+        <ul>
+          <li>$v_{\theta_1,\theta_2}\to v_{\theta_1+\delta_1,\delta_2}$</li>
+          <li>You uniform in $L_2$ space and then translate it back.</li>
+          <li>So, $\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]$</li>
+          <li>$\operatorname{Vol}=\sqrt{\det(G)}$ where $G$ is the Graham matrix.</li>
+          <li>
+\[\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]=\left|\det \begin{bmatrix}\langle&lt;v^{(1)},v^{(1)}\rangle &amp; \langle&lt;v^{(1)},v^{(2)}\rangle \\ \langle&lt;v^{(2)},v^{(1)}\rangle &amp; \langle&lt;v^{(2)},v^{(2)}\rangle  \end{bmatrix}\right|\]
+          </li>
+          <li>TODO picture</li>
+          <li>$v^{(1)}(x)=L_2$-limit of $\frac{1}{\Delta_1}(\sqrt{f_{\theta_1+\delta_1,\theta_2}(x)}-\sqrt{f_{\theta_1,\theta_2}(x)})$ converges to $\pdv{\theta_1}\sqrt{f_{\theta_1,\theta_2}(x)}$</li>
+          <li>Worked out TODO finish
+\(\langle v^{(1)},v^{(2)}\rangle
+&amp;=\int_\mathcal{X} TODO finish //
+&amp;=\frac{1}{4} \mathbb{E}\left[\pdv{\theta_1}\log f\cdot \pdv{\theta_2}\log f\right]\)</li>
+          <li>In general, for $\theta$ that is $k$-dimensional, we define the score
+function TODO danj notation</li>
+          <li>An important property of the score function is $\mathbb{E}<em>\theta\left[\ell</em>\theta(x)\right]=0$</li>
+          <li>Fisher-information is now a $k\times k$ matrix.
+            <ul>
+              <li>TODO image</li>
+            </ul>
+          </li>
+          <li>Then Jeffrey’s prior is defined as
+$\pi(\theta)\propto|\det(i(\theta))|^{1/2}$</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
