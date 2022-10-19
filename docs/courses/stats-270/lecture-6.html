@@ -128,44 +128,56 @@ principle.</li>
       <li>(a) The partition induced by the likelihood is a sufficient partition.
         <ul>
           <li>What is \(\mathcal{Y}_{L(y_0)}=\{y\in \mathcal{Y}: y\text{ gives the same
-likelihood as }y_0\}\)</li>
+ likelihood as }y_0\}\)</li>
           <li>Answer: $Y_1,Y_2$ given the same likelihood iff
-$f_\theta(Y_1)/f_\theta(Y_2)=h(Y_1,Y_2)$ (no longer depends on $\theta$ then
-\(\mathcal{Y}_{y_0}=\{y\in \mathcal{Y}:
-f_\theta(y)/f_\theta(y_0)=h(y,y_0)\}\)</li>
+$f_\theta(Y_1)/f_\theta(Y_2)=h(Y_1,Y_2)$ (no longer depends on $\theta$)</li>
+          <li>
+\[\mathcal{Y}_{L(y_0)}=\{y\in \mathcal{Y}: f_\theta(y)/f_\theta(y_0)=h(y,y_0)\}\]
+          </li>
           <li>Claim: $\mathcal{Y}=\cup_y \mathcal{Y}_{L(y)}$ is a sufficient partition.</li>
-          <li>Proof: For any $y\in \mathcal{Y}_{L(y)}$,
+          <li>Proof: For any $y\in \mathcal{Y}_{L(y)}$, you want to show that
+conditional distribution no longer depends on $\theta$:
 \(\begin{aligned}
 \Pr_\theta(y\mid
 \mathcal{Y}_{L(y_0)})
-&amp;=\frac{f_\theta(y)}{\int_{\mathcal{Y}_{L(y)}} f_\theta(y)\dd y}
+&amp;=\frac{f_\theta(y_0)}{\int_{\mathcal{Y}_{L(y)}} f_\theta(y)\dd y}
 \\ &amp;=\frac{f_\theta(y_0)h(y,y_0)}{\int_{\mathcal{Y}_{L(y_0)}}f_\theta(y_0)h(y,y_0)\dd y}
 \\ &amp;=\frac{h(y,y_0)}{\int_{\mathcal{Y}_{L(y_0)}}h(y,y_0)\dd y}
 \end{aligned}\)</li>
-          <li>TODO last line above</li>
+          <li>Not dependent on $\theta$, so it is sufficient.
+<label for="likelihood-strip" class="margin-toggle">⊕</label><input type="checkbox" id="likelihood-strip" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-6/likelihood-strip.png"><br>Likelihood band.</span>
+</li>
         </ul>
       </li>
       <li>
         <p>(b) Let $S$ be a sufficient statistic, $\mathcal{Y}_s=\{y: S(y)=s\}$, and
 you want to show that $\mathcal{Y}=\cup_s \mathcal{Y}_s$ is not coarser than
-likelihood partition.</p>
+the likelihood partition.</p>
 
         <ul>
           <li>Choose $Y_1,Y_2$ both in the same slice $\mathcal{Y}_s$.</li>
           <li>You want to show that $Y_1,Y_2$ belong to the same slice in the likelihood
-partition. Does $\frac{f_\theta(y_1)}{f_\theta(y_2)}$ depend on $\theta$?</li>
+partition. Does $\frac{f_\theta(y_1)}{f_\theta(y_2)}$ depend on $\theta$?
+            <ul>
+              <li>First draw from the sufficient statistic $S=s$, then draw
+$Y_1$ and $Y_2$ conditional on that statistic.</li>
+            </ul>
+          </li>
         </ul>
 
 \[\begin{aligned}
 \frac{f_\theta(y_1)}{f_\theta(y_2)}
-&amp;= \frac{\Pr_{s,\theta}(s)\Pr(Y_1\mid S=s)}{\Pr_{S,\theta}(s)\Pr(Y_2\mid S=s)}\quad\text{no $\theta$ because
-sufficient statistic}
-\\ &amp;= \frac{\Pr(Y_1\mid S=s)}{\Pr(Y_2\mid S=s)}
+&amp;= \frac{\Pr_{s,\theta}(s)\Pr(Y_1\mid S=s,\theta)}{\Pr_{S,\theta}(s)\Pr(Y_2\mid S=s, \theta)} \\
+&amp;= \frac{\Pr_{s,\theta}(s)\Pr(Y_1\mid S=s)}{\Pr_{S,\theta}(s)\Pr(Y_2\mid S=s)} \\
+&amp;= \frac{\Pr(Y_1\mid S=s)}{\Pr(Y_2\mid S=s)}
 \end{aligned}\]
 
         <ul>
-          <li>Therefore, $Y_2, Y_2$ induces the same likelihood.</li>
-          <li>TODO add picture</li>
+          <li>Therefore, $Y_2, Y_2$ induces the same likelihood. In other words, because
+it is a ratio of the probabilities not conditional on $\theta$, they are
+part of the same likelihood partition.
+<label for="likelihood-sufficiency" class="margin-toggle">⊕</label><input type="checkbox" id="likelihood-sufficiency" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-6/likelihood-sufficiency.png"><br>Sufficient Statistic Partition $\subseteq$ Likelihood Partition.</span>
+</li>
         </ul>
       </li>
     </ul>
@@ -186,7 +198,12 @@ same marginal distribution under all all densities $f\in \mathcal{F}$.</li>
       <li>Then $N$ is ancillary, i.e. the marginal distribution of $N$ is independent of
 $\theta$.</li>
       <li>$\mathcal{L}(\theta; n,y_1,\ldots,y_n)=c\theta^{\sum_{i=1}^n
-y_i}(1-\theta)^{n-\sum_{i=1}^n y_i}$</li>
+y_i}(1-\theta)^{n-\sum_{i=1}^n y_i}$
+        <ul>
+          <li>$c$ is a constant determining how likely $N=n$ is, but it doesn’t depend
+on $\theta$, so it is a constant.</li>
+        </ul>
+      </li>
       <li>Then the sufficient statistic is $S=(n, \sum_{i=1}^n Y_i)$ and it is
 minimal.</li>
     </ul>
@@ -204,52 +221,65 @@ $\theta$.
         </ul>
       </li>
       <li>Draw $Y=y$ from the conditional distribution of $Y\mid C=c$, $f_{Y\mid C=c;
-\theta}(\cdot)$</li>
+\theta}(\cdot)$
+<label for="conditionality-principle" class="margin-toggle">⊕</label><input type="checkbox" id="conditionality-principle" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-6/conditionality-principle.png"><br>Conditionality Principle.</span>
+</li>
     </ol>
   </li>
-  <li>TODO drawing</li>
-  <li>Bayesian inference obviously obeys the conditionality principle.</li>
+  <li>Bayesian inference obviously obeys the conditionality principle because
+anything involving the constant $C$ cancels out in numerator and denominator.</li>
   <li>However, this is not true for most other approaches to inference.</li>
   <li>Example: Construct confidence interval based on MLE
     <ol>
-      <li>Find MLE $\hat{\theta}(Y)$ by maximizing $\mathcal{L})(\theta; Y)$</li>
+      <li>Find MLE $\hat{\theta}(Y)$ by maximizing $\mathcal{L}(\theta; Y)$</li>
       <li>Consider $\mathcal{D}_\theta(\hat{\theta}(Y)-\theta)$ in order to find the
-$(1-\alpha)$ C.I., $\hat{\theta}\pm\operatorname{SE}$
+$(1-\alpha)$ C.I., $\hat{\theta}\pm\operatorname{SE}$ ($\mathcal{D}_\theta$
+is the distribution given $\theta$)
         <ul>
           <li>Now, suppose $C(Y)$ is ancillary, and $S=(T(Y), C(Y))$ is the minimal
 sufficient statistic ($T(Y)$ is the sum in previous example).</li>
           <li>Then $\Pr_\theta(Y)=\Pr_\theta(T\mid C)\Pr(C)$, so MLE $\tilde{\theta}$ is
-the same whether you condition on $C$ or not, but
-$\mathcal{D}_\theta(\hat{\theta}-\theta)\ne
+the same whether you condition on $C$ or not, i.e. $\Pr(C)$ is constant, but
+$\mathcal{D}_\theta(\hat{\theta}(Y)-\theta)\ne
 \mathcal{D}_\theta(\hat{\theta}(Y)-\theta\mid C=c)$</li>
-          <li>TODO note?</li>
         </ul>
       </li>
     </ol>
   </li>
-  <li>In Example 1:
+  <li>
+    <p>In Example 1:</p>
+
     <ul>
       <li>$N=1+\operatorname{Poisson}\left(5\right)$</li>
       <li>$\mathcal{L}(\theta\mid Y)\propto \theta^{\sum_{i=1}^nY_i}(1-\theta)^{N-\sum_{i=1}^nY_i}$</li>
       <li>$\hat{\theta}^{\operatorname{MLE}}=\frac{1}{N}\sum_{i=1}^N Y_i$, what is the
 distribution of $\hat{\theta}-\theta$?</li>
-      <li>Without conditioning:
-        <ul>
-          <li>$\mathbb{E}\left[\hat{\theta}\right]=\mathbb{E}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right]=\mathbb{E}\left[\theta\right]=\theta$</li>
-          <li>$\operatorname{var}\left[\hat{\theta}\right]=\mathbb{E}\left[\operatorname{var}\left[\hat{\theta}\mid N\right]\right]+\operatorname{var}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right]=\mathbb{E}\left[\frac{\theta(1-\theta)}{N}\right]+0=\theta(1-\theta)\mathbb{E}\left[\frac{1}{N}\right]$</li>
-        </ul>
+      <li>
+        <p>Without conditioning: <label for="zero-q" class="margin-toggle sidenote-number"></label><input type="checkbox" id="zero-q" class="margin-toggle"><span class="sidenote">Why is it 0? </span></p>
+
+\[\begin{aligned}
+\mathbb{E}\left[\hat{\theta}\right]
+&amp;=\mathbb{E}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right] \\
+&amp;=\mathbb{E}\left[\theta\right] \\
+&amp;=\theta \\
+\operatorname{var}\left[\hat{\theta}\right]
+&amp;=\mathbb{E}\left[\operatorname{var}\left[\hat{\theta}\mid N\right]\right]+\operatorname{var}\left[\mathbb{E}\left[\hat{\theta}\mid N\right]\right] \\
+&amp;=\mathbb{E}\left[\frac{\theta(1-\theta)}{N}\right]+0 \\
+&amp;=\theta(1-\theta)\mathbb{E}\left[\frac{1}{N}\right]
+\end{aligned}\]
       </li>
-      <li>With conditioning, given $N=n$
+      <li>With conditioning, given $N=n$:
         <ul>
           <li>$\mathbb{E}\left[\hat{\theta}\mid N=n\right]=\theta$</li>
           <li>$\operatorname{var}\left[\frac{\theta(1-\theta)}{n}\right]=\theta(1-\theta)\frac{1}{n}$</li>
         </ul>
       </li>
-      <li>These could be very different depending on how much $N=n$ differs from the
-expectation.</li>
+      <li>These could be very different depending on how much
+$\mathbb{E}\left[\frac{1}{n}\right]$ differs from $\frac{1}{n}$.</li>
       <li>For $N\sim 1+\operatorname{Poisson}\left(5\right)$, each event \(A=\{N\le
 2\}\), or \(B=\{N\ge 8\}\) has non-negligible probability, but the degree of
-uncertainty can be very different.</li>
+uncertainty can be very different. I.e. you should use condition on the
+ancillary statistic.</li>
     </ul>
   </li>
   <li>In his critique of unconditional C.I. theory, Fisher pointed out that there is
@@ -277,7 +307,7 @@ such as iid observations $\sim
   </li>
   <li>Sufficient statistic is \(N=\begin{bmatrix}N_1\\N_2\\N_3\\N_4\end{bmatrix}\),
 the counts.</li>
-  <li>Ancillary statistics:
+  <li>Ancillary statistics: <label for="ancillary" class="margin-toggle sidenote-number"></label><input type="checkbox" id="ancillary" class="margin-toggle"><span class="sidenote">Why are these ancillary? </span>
     <ul>
       <li>
 \[C=\begin{bmatrix}N_1+N_2\\
