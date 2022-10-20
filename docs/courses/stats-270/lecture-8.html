@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-8.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 8: Something</h2>
+ <ul id="toc" class="section-nav">
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}{\operatorname{var}}
+\newcommand{\sd}{\operatorname{sd}}
+\newcommand{\cov}{\operatorname{cov}}\]
+
+<ul>
+  <li>Example:</li>
+</ul>
+
+\[\begin{aligned}
+\begin{bmatrix}x \\ y\end{bmatrix}
+&amp;\sim \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\ \mu_2\end{bmatrix},\tau\begin{bmatrix}1 &amp; 0 \\ 0 &amp; 1\end{bmatrix}\right) \\
+\theta
+&amp;= (\tau, \mu_1,\mu_2) \\
+\tau
+&amp;= \sigma^2 \\
+f_\theta(x,y)
+&amp;= \frac{1}{2\pi\tau}\exp\left(-\frac{1}{2\tau}\left[(x-\mu_1)^2+(y-\mu_2)^2\right]\right) \\
+\ell
+&amp;=\log f_\theta(x,y)=c - \log\tau-\frac{1}{2\tau}\left[(x-\mu_1)^2+(y-\mu_2)^2\right] \\
+\dot\ell_1
+&amp;=\pdv{\ell}{\tau}=-\frac{1}{\tau}+\frac{1}{2\tau}\left[\left(\frac{x-\mu_1}{\sigma}\right)^2+\left(\frac{y-\mu_2}{\sigma}\right)^2\right] \\
+\dot\ell_2
+&amp;=\pdv{\ell}{\mu_1}=\frac{1}{\sqrt{\tau}}\cdot\frac{x-\mu_1}{\sigma} \\
+\dot\ell_3
+&amp;=\pdv{\ell}{\mu_2}=\frac{1}{\sqrt{\tau}}\cdot\frac{y-\mu_2}{\sigma} \\
+\mathbb{E}\left[\dot\ell\right]
+&amp;= \vec{0} \\
+c
+&amp;= \frac{2}{4}\var{Z^2}\text{ where }Z\sim \operatorname{Normal}\left(0,1\right) \\
+\var{\dot\ell_1}
+&amp;=\frac{c}{\tau^2} \\
+\var{\dot\ell_2}
+&amp;= \frac{1}{\tau} \\
+\var{\dot\ell_3}
+&amp;= \frac{1}{\tau} \\
+\cov(\dot\ell_1,\dot\ell_2)
+&amp;=
+\end{aligned}\]
+
+<ul>
+  <li>TODO finish</li>
+  <li>If we have \(\vec{X}=\{(X_i,Y_i)\}_{i=1}^n\), then what is the posterior?</li>
+</ul>
+
+\[\begin{aligned}
+p(\tau,\mu_1,\mu_1\mid\vec{x})&amp;\propto\frac{1}{\tau^2}\cdot\frac{1}{\tau^n}\exp\left(-\frac{1}{2\tau}\left[\underbrace{\sum_{i=1}^n(x_i-\bar{x})^2+\sum_{i=1}^n(y_i-\bar{y})}_{S}+n(\bar{x}-\mu_1)^2+n(\bar{y}-\mu_2)^2\right]\right) \\
+p(\tau\mid\vec{x})&amp;\propto\frac{1}{\tau^{n+2}}\exp\left(-\frac{1}{2\tau}S\right)\underbrace{\int_{-\infty}^\infty
+\exp\left(-\frac{n}{2\tau}(\bar{x}-\mu_1)^2\right)\dd
+\mu_1}_{\sqrt{2\pi\tau/n}}\underbrace{\int_{-\infty}^\infty
+\exp\left(-\frac{n}{2\tau}(\bar{y}-\mu_2)\right)^2\dd \mu_2}_{\sqrt{2\pi\tau/n}} \\
+p(\tau\mid\vec{x})&amp;\propto\frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2\tau}S\right)
+\end{aligned}\]
+
+<ul>
+  <li>$S$ is the corrected sum of squares.</li>
+  <li>Let $\gamma=\frac{S}{\tau}$, i.e. $\tau=\frac{S}{\gamma}$</li>
+  <li>This is a scaled inverse $\chi^2$ with $2n$ degrees of freedom.</li>
+  <li>$p(\gamma\mid\vec{x})\propto
+\frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2}\gamma\cdot\frac{S}{\gamma^2}\right)\propto \gamma^{n-1}\exp\left(-\frac{1}{2}\gamma\right)$
+    <ul>
+      <li>This is $\operatorname{Gamma}\left(n,\frac{1}{2}\right)=\chi_{2n}^2$.</li>
+    </ul>
+  </li>
+  <li>Thus, conditional on $\vec{x}$, $\gamma=\frac{S}{\tau}\sim\chi_{2n}^2$.</li>
+  <li>But conditional on $\vec{\theta}$, $\gamma\sim\chi_{2n-2}^2$.</li>
+  <li>TODO finish</li>
+  <li>Let us also compute the marginal posterior for the location parameters.</li>
+</ul>
+
+\[\begin{aligned}
+p(\tau,\mu_1,\mu_2\mid\vec{x})
+&amp;\propto\frac{1}{\tau^{n+2}}\exp\left(-\frac{1}{2\tau}\left[S+n(\bar{x}-\mu_1)^2-n(\bar{y}+\mu_2)^2\right]\right) \\
+p(\tau,\mu_1\mid\vec{x})
+\propto\frac{1}{\tau^{n+\frac{3}{2}}}\exp\left(-\frac{1}{2\tau}\left[S+n(\bar{x}-\mu_1)^2\right]\right) \\
+\end{aligned}\]
+
+<ul>
+  <li>To integrate $\tau$, recall the gamma function $\Gamma(\alpha)=\int_0^\infty
+x^{\alpha-1}e^{-x}\dd x=\int_0^\infty\beta^\alpha x^{\alpha-1}e^{-\beta x}\dd
+x$ (TODO CHECK)</li>
+  <li>So, set $x=\frac{1}{y}$ (gives a Jacobian of $\frac{1}{y^2}$), then</li>
+</ul>
+
+\[\begin{aligned}
+\int_0^\infty\frac{1}{y^{\alpha+1}}\exp\left(-\frac{\beta}{y}\right)\dd
+y=\frac{\Gamma(\alpha)}{\beta^\alpha}
+\end{aligned}\]
+
+<ul>
+  <li>Using this with \(\begin{cases} \alpha+1=n+\frac{3}{2} \\
+\beta=S+n(\bar{x}-\mu_1)^2\end{cases}\)</li>
+  <li>
+    <p>Then we have</p>
+
+\[\begin{aligned}
+p(\mu_1\mid\vec{x})
+&amp;\propto\frac{\Gamma(\alpha)}{\beta^\alpha} \\
+&amp;\propto\frac{1}{\left[S+n(\mu_1-\bar{x})^2\right]^{n+\frac{1}{2}}} \\
+&amp;\propto\frac{1}{[1+\frac{1}{2n}\cdot\frac{n(\mu_1-\bar{x})^2}{S/2n}]^{n+\frac{1}{2}}}
+\end{aligned}\]
+  </li>
+  <li>TODO finish</li>
+  <li>On the other hand, if we condition on $\theta$, then</li>
+  <li>TODO finish this</li>
+  <li>Example 2:</li>
+  <li>TODO Write up</li>
+  <li>We know that $n$ is the correct degrees of freedom.</li>
+  <li>The problem is caused by the unbounded parameter space and the “improper”
+nature of Jeffrey’s prior. You can’t put a uniform prior over an unbounded
+space.</li>
+  <li>In Example 1, \(\Omega=\left\{(\tau,\mu_1,\mu_2):\tau&gt;0, \mu_1\in \mathbb{R}^1,\mu_2\in \mathbb{R}^1\right\}\)</li>
+  <li>Approximate $\Omega$ by \(\Omega^{(k)}=\)</li>
+  <li>
+    <p>Jeffrey’s way of dealing with the problem.</p>
+
+    <ul>
+      <li>
+        <p>Starting with any prior $\vec{\pi}(\theta)$, let $n\to\infty$, we have that
+$\sqrt{n}(\theta-\hat{\theta})\mid X_n\implies \operatorname{Normal}\left(0,i^{-1}(\theta)\right)$.</p>
+
+        <ul>
+          <li>
+            <p>Now, if $i(\theta)$ is diagonal, \(\begin{bmatrix} i_{1,1}(\theta) &amp; 0 \\
+0 &amp; i_{2,2}(\theta)\end{bmatrix}\) in this sense $\theta_1$ and $\theta_2$
+are “independent” parameters, then
+$\pi(\tau,\mu_1,\mu_2)=\pi(\tau)\pi(\mu_1)\pi(\mu_2)$ where</p>
+
+\[\begin{aligned}
+\pi(\tau)
+&amp;\propto i_{1,1}^{\frac{1}{2}}(\theta)\propto\frac{1}{\tau} \\
+\pi(\mu_1)
+&amp;\propto i_{2,2}^{\frac{1}{2}}(\theta)\propto\frac{1}{\tau}\propto 1 \\
+\pi(\mu_1)
+&amp;\propto i_{2,2}^{\frac{1}{2}}(\theta)\propto\frac{1}{\tau}\propto 1 \\
+\end{aligned}\]
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
