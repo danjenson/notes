@@ -99,7 +99,8 @@ where $\theta\in[0,1]$</li>
   <li>Bayes &amp; Laplace used uniform priors to represent state of “no information.”
     <ul>
       <li>Put the same probability for $[\theta_0\pm\varepsilon]$ and
-$[\theta_1\pm\varepsilon]$</li>
+$[\theta_1\pm\varepsilon]$ (as long as intervals are of same length, they
+get the same prior probability – this is the meaning of uniform prior)</li>
       <li>This was popular for about 100 years before being criticized.</li>
       <li>This was criticized by:
         <ol>
@@ -122,34 +123,39 @@ information on $\theta$.”</li>
           <li>On which scale should we put a uniform prior?</li>
         </ul>
       </li>
-      <li>Suppose there a $\phi(\theta)$ for which the uniform prior is “correct.”</li>
-      <li>TODO: picture</li>
+      <li>Suppose there a $\phi(\theta)$ for which the uniform prior is “correct.”
+<label for="uniform-phi-theta" class="margin-toggle">⊕</label><input type="checkbox" id="uniform-phi-theta" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-7/uniform-phi-theta.png"><br>Uniform probability: $\phi$ vs $\theta$.</span>
+</li>
       <li>So equal probability on \(\{\phi\in\phi_0\pm\varepsilon\}\) and
-\(\{\phi\in\phi\pm\varepsilon\}\) implies that \(\{\theta\in\theta_0\pm
+\(\{\phi\in\phi_1\pm\varepsilon\}\) implies that \(\{\theta\in\theta_0\pm
 \sigma(\theta_0)\varepsilon\}\) has same probability as
 \(\{\theta\in\theta_1\pm\sigma(\theta_1)\varepsilon\}\)
         <ul>
           <li>\(\pi(\theta_0)\sigma(\theta_0)\varepsilon=\pi(\theta_1)\sigma(\theta_1)\varepsilon\),
-then putting \(\pi(\theta)\propto\frac{1}{\sigma(\theta)}\)</li>
+then \(\pi(\theta)\propto\frac{1}{\sigma(\theta)}\)</li>
+          <li>$\sigma(\theta)$ is like a yardstick for measuring distance, like standard
+deviation.</li>
         </ul>
       </li>
     </ul>
   </li>
-  <li>What is a good “yardstick” for measuring distance in $\theta$?
+  <li>What is a good “yardstick” for measuring distance in $\theta$ scale?
     <ul>
       <li>Consider $\operatorname{Bernoulli}\left(\theta\right)$, if we have $n$
 observations, then $p(\theta\mid
 x_1,\ldots,x_n)\propto\pi(\theta)\theta^{n\bar{x}}(1-\theta)^{n(1-\bar{x})}$
         <ul>
-          <li>If $n$ is large, then the posterior is
-$\theta^{n\theta_0}(1-\theta)^{n(1-\theta_0)}$, this is a
+          <li>If $n$ is large, then the posterior converges to
+$\pi(\theta)\theta^{n\theta_0}(1-\theta)^{n(1-\theta_0)}$ (since
+$\bar{x}\to\theta_0$ as $n\to\infty$) where $\pi(\theta)$ becomes
+irrelevant; this is a
 $\operatorname{Beta}\left(n\theta_0,n(1-\theta_0)\right)$, then the
 posterior mean is $\theta_0$ and posterior variance is
-$\sqrt{\theta_0(1\theta_0)/n}$, then
+$\sqrt{\theta_0(1-\theta_0)/n}$, then
 $\operatorname{sd}\propto\sqrt{\theta_0(1-\theta_0)}$</li>
           <li>This suggests that $\sigma(\theta_0)=\sqrt{\theta_0(1-\theta_0)}$.</li>
           <li>The non-informative prior is then
-\(\pi^*(\theta)\proprto\frac{1}{\sqrt{\theta(1-\theta)}}\)</li>
+\(\pi^*(\theta)\propto\frac{1}{\sqrt{\theta(1-\theta)}}\)</li>
         </ul>
       </li>
     </ul>
@@ -162,95 +168,139 @@ $\operatorname{sd}\propto\sqrt{\theta_0(1-\theta_0)}$</li>
 <ul>
   <li>Let $x_1,\ldots,x_n$ be iid for $f_\theta(\cdot)$.</li>
   <li>Define the score function as $\pdv{\theta}\log f_\theta(x)=S(\theta,x)$</li>
-  <li>Fisher information $i(\theta)=\operatorname{Var}(S(\theta,x))=E(S^2)$</li>
-  <li>Von Mises Theorem: If the sample size is large, then $\theta\mid
+  <li>Fisher information $i(\theta)=\operatorname{Var}(S(\theta,x))=E(S^2)$
+    <ul>
+      <li>This is because the score function has mean 0.</li>
+    </ul>
+  </li>
+  <li>Bernstein-von Mises Theorem: If the sample size is large, then $\theta\mid
 x_1,\ldots,x_n\sim
-\operatorname{Normal}\left(\theta_0,1/(n(i(\theta)))\right)$, which is true
+\operatorname{Normal}\left(\theta_0,(ni(\theta))^{-1}\right)$, which is true
 regardless of the prior.</li>
-  <li>So, the correct measure is $\sigma(\theta)\propto i(\theta)^{-1/2}$.</li>
+  <li>So, the correct measure is $\sigma(\theta)\propto i(\theta)^{-1/2}$ (square
+root of variance above).</li>
   <li>\(\pi^*(\theta)\propto i(\theta)^{1/2}\), which is Jeffrey’s prior.</li>
   <li>Exercise: Check this on the $\operatorname{Bernoulli}\left(\theta\right)$</li>
-  <li>Geometric view of Jeffrey’s Prior:
+  <li>
+    <p>Geometric view of Jeffrey’s Prior:</p>
+
     <ul>
       <li>Let \(\mathcal{F}=\{f_\theta(\cdot),\theta\in[0,1]\}\) where $\mathcal{X}$
 is arbitrary.</li>
-      <li>Define $\sqrt{x}\mid\theta=\sqrt{f_\theta(x)}$</li>
-      <li>$\langle v_1,v_2\rangle=\int_\mathcal{X}v_1(x)v_2(x)\dd x$</li>
-      <li>\(\mathcal{G}=\{v_\theta:\theta\in\Omega\}\) is a curve in $L_2(\mathcal{X})$</li>
-      <li>It is natural to use the arc-length as the distance measure.</li>
-      <li>TODO picture</li>
-      <li>This suggests that $\pi(\theta)\cdot\Delta\propto
-||v_{\theta+\Delta}-v_\theta||$</li>
-      <li>
-        <table>
-          <tbody>
-            <tr>
-              <td>$\pi(\theta)\propto \lim_{\Delta\to 0}</td>
-              <td> </td>
-              <td>v_{\theta+\Delta}-v_\theta</td>
-              <td> </td>
-              <td>$</td>
-            </tr>
-          </tbody>
-        </table>
-      </li>
-      <li>Bernoulli example:
+      <li>Define the square root density as $v_\theta(x)=\sqrt{f_\theta(x)}$
         <ul>
-          <li>
-\[\mathcal{X}=\{x_1,x_2\}=\{0,1\}\]
-          </li>
-          <li>
-\[f_\theta(\cdot)=\begin{bmatrix}\theta \\ 1-\theta\end{bmatrix}\]
-          </li>
-          <li>\(v_\theta=\frac{\sqrt{\theta}}{\sqrt{1-\theta}}\),
-$L_2(\mathcal{x})=\mathbb{R}^2$</li>
-          <li>Then, \(\pi^*(\theta)=\lim_{\Delta\to
-0}\frac{||v_{\theta+\Delta}-v_\theta||}{\Delta}=\frac{1}{2}\cdot\frac{1}{\sqrt{\theta(1-\theta)}\),
-which is exactly Jeffrey’s prior.
-            <ul>
-              <li>If $\mathcal{X}$ has $k$ points, then $v_\theta\in \mathbb{R}^k$</li>
-              <li>If $\mathcal{X}\in[0,1]$, then $v_\theta(\cdot)=\sqrt{f_\theta(\cdot)}$
+          <li>This square root density is a member of the $L_2(\mathcal{X})$ function
+space.</li>
+        </ul>
+      </li>
+      <li>$L_2$ space is the inner product space, so $\langle
+v_1(x),v_2(x)\rangle=\int_\mathcal{X}v_1(x)v_2(x)\dd x$</li>
+      <li>\(\mathcal{G}=\{v_\theta(x):\theta\in\Omega\}\) is a curve in $L_2(\mathcal{X})$</li>
+      <li>It is natural to use the arc-length as the distance measure.
+<label for="sqrt-density-curve" class="margin-toggle">⊕</label><input type="checkbox" id="sqrt-density-curve" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-7/sqrt-density-curve.png"><br>Arc length in sqrt density space.</span>
+</li>
+      <li>This suggests that $\pi(\theta)\cdot\Delta\propto
+\lVert v_{\theta+\Delta}(x)-v_\theta(x)\rVert$
+        <ul>
+          <li>This arc length will change depending on where you are in the curve, so
+take the limit as delta approaches 0:</li>
+        </ul>
+      </li>
+    </ul>
+
+\[\pi(\theta)\propto \lim_{\Delta\to 0}\frac{\lVert v_{\theta+\Delta}(x)-v_\theta(x)\rVert}{\Delta}\]
+
+    <ul>
+      <li>
+        <p>Bernoulli example:</p>
+
+\[\begin{aligned}
+\mathcal{X}&amp;=\{x_1,x_2\}=\{0,1\} \\
+f_\theta(x)&amp;=\begin{bmatrix}\theta \\ 1-\theta\end{bmatrix} \\
+v_\theta(x)&amp;=\begin{bmatrix}v_\theta(x) \\ v_{1-\theta}(x)\end{bmatrix} \\
+\end{aligned}\]
+
+        <ul>
+          <li>$L_2(\mathcal{X})=\mathbb{R}^2$</li>
+          <li>Then,</li>
+        </ul>
+
+\[\begin{aligned}
+\pi^*(\theta)
+&amp;=\lim_{\Delta\to 0}\frac{\lVert v_{\theta+\Delta}(x)-v_\theta(x)\rVert}{\Delta} \\
+&amp;=\frac{1}{2}\cdot\frac{1}{\theta(1-\theta)}
+\end{aligned}\]
+
+        <ul>
+          <li>This is exactly Jeffrey’s prior.
+If $\mathcal{X}$ has $k$ points, then $v_\theta(x)\in\mathbb{R}^k$</li>
+          <li>If $\mathcal{X}\in[0,1]$, then $v_\theta(x)=\sqrt{f_\theta(x)}$
 is a $L_2$ function in $[0,1]$.</li>
-            </ul>
-          </li>
-          <li>Heddinger(?) distance between two densities.</li>
         </ul>
       </li>
     </ul>
   </li>
   <li>Multi-dimensional case:
+    <figure><img src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-7/multi-dimensional-prior.png"><figcaption class="maincolumn-figure">Prior in $\mathbb{R}^2$.</figcaption></figure>
+
     <ul>
+      <li>The objective is to assign a uniform prior on the $L_2$ space ($B$) and then map
+that probability back to $\theta$-space ($A$).</li>
       <li>$\theta\in\Omega$ is a bounded region in $\mathbb{R}^2$</li>
-      <li>TODO picture</li>
-      <li>Transform region from $\Omega$ into $L_2(\mathcal{X})$
-        <ul>
-          <li>$v_{\theta_1,\theta_2}\to v_{\theta_1+\delta_1,\delta_2}$</li>
-          <li>You uniform in $L_2$ space and then translate it back.</li>
-          <li>So, $\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]$</li>
-          <li>$\operatorname{Vol}=\sqrt{\det(G)}$ where $G$ is the Graham matrix.</li>
-          <li>
-\[\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]=\left|\det \begin{bmatrix}\langle&lt;v^{(1)},v^{(1)}\rangle &amp; \langle&lt;v^{(1)},v^{(2)}\rangle \\ \langle&lt;v^{(2)},v^{(1)}\rangle &amp; \langle&lt;v^{(2)},v^{(2)}\rangle  \end{bmatrix}\right|\]
-          </li>
-          <li>TODO picture</li>
-          <li>$v^{(1)}(x)=L_2$-limit of $\frac{1}{\Delta_1}(\sqrt{f_{\theta_1+\delta_1,\theta_2}(x)}-\sqrt{f_{\theta_1,\theta_2}(x)})$ converges to $\pdv{\theta_1}\sqrt{f_{\theta_1,\theta_2}(x)}$</li>
-          <li>Worked out TODO finish
-\(\langle v^{(1)},v^{(2)}\rangle
-&amp;=\int_\mathcal{X} TODO finish //
-&amp;=\frac{1}{4} \mathbb{E}\left[\pdv{\theta_1}\log f\cdot \pdv{\theta_2}\log f\right]\)</li>
-          <li>In general, for $\theta$ that is $k$-dimensional, we define the score
-function TODO danj notation</li>
-          <li>An important property of the score function is $\mathbb{E}<em>\theta\left[\ell</em>\theta(x)\right]=0$</li>
-          <li>Fisher-information is now a $k\times k$ matrix.
-            <ul>
-              <li>TODO image</li>
-            </ul>
-          </li>
-          <li>Then Jeffrey’s prior is defined as
-$\pi(\theta)\propto|\det(i(\theta))|^{1/2}$</li>
-        </ul>
+      <li>$\delta_1 v=\sqrt{f_{\theta_1+\Delta_1,\theta_2}(x)}-\sqrt{f_{\theta_1,\theta_2}(x)}$</li>
+      <li>$\frac{\operatorname{Area}(B)}{\Delta_1\Delta_2}=\operatorname{Area}\left[\frac{\delta_1 v}{\Delta_1},\frac{\delta_2 v}{\Delta_2}\right]$</li>
+      <li>Assume $\exists v^{(1)}$ such that $\frac{\delta_1 v}{\Delta_1}\to
+v^{(1)}\text{ as }\Delta_1\to 0$ in $L_2$, then
+$\operatorname{Area}\left[\frac{\delta_1 v}{\Delta_1},\frac{\delta_2
+v}{\Delta_2}\right]\to\operatorname{Area}\left[v^{(1)},v^{(2)}\right]$</li>
+      <li>Because $\operatorname{Area}$ is a continuous function of square root, inner
+product, and the norm, then the area will converge too.</li>
+      <li>$v_{\theta_1,\theta_2}\to v_{\theta_1+\delta_1,\delta_2}$</li>
+      <li>Recall that the density is the probability of a small area divided by its
+area.</li>
+      <li>So, the prior we want $\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]$</li>
+      <li>$\operatorname{Vol}=\sqrt{\det(G)}$ where $G$ is the Graham matrix.</li>
+      <li>
+\[\pi(\theta_1,\theta_2)=\operatorname{Area}[v^{(1)},v^{(2)}]=\left|\det \begin{bmatrix}\langle v^{(1)},v^{(1)}\rangle &amp; \langle v^{(1)},v^{(2)}\rangle \\ \langle v^{(2)},v^{(1)}\rangle &amp; \langle v^{(2)},v^{(2)}\rangle  \end{bmatrix}\right|^{1/2}\]
+      </li>
+      <li>
+        <p>$v^{(1)}(x)=L_2$-limit of $\frac{1}{\Delta_1}(\sqrt{f_{\theta_1+\Delta_1,\theta_2}(x)}-\sqrt{f_{\theta_1,\theta_2}(x)})$ converges to $\pdv{\theta_1}\sqrt{f_{\theta_1,\theta_2}(x)}$</p>
+
+\[\begin{aligned}
+\langle v^{(1)},v^{(2)}\rangle
+&amp;=\int_\mathcal{X}
+\left(\pdv{\theta_1}\sqrt{f_\theta(x)}\right)\left(\pdv{\theta_2}\sqrt{f_\theta(x)}\right)\dd x \\
+&amp;=\int_\mathcal{X}
+\left(\frac{1}{2}\cdot\frac{\pdv{\theta_1}f_\theta(x)}{\sqrt{f_\theta(x)}}\right)\left(\frac{1}{2}\cdot\frac{\pdv{\theta_2}f_\theta(x)}{\sqrt{f_\theta(x)}}\right)\dd x \\
+&amp;=\frac{1}{4}\int_\mathcal{X}
+\left(\frac{\pdv{\theta_1}f_\theta(x)}{f_\theta(x)}\right)\left(\frac{\pdv{\theta_2}f_\theta(x)}{f_\theta(x)}\right)\cdot f_\theta(x)\dd x \\
+&amp;=\frac{1}{4} \mathbb{E}\left[\pdv{\theta_1}\log f_\theta(x)\cdot \pdv{\theta_2}\log f_\theta(x)\right]
+\end{aligned}\]
       </li>
     </ul>
   </li>
+  <li>
+    <p>In general, for $\theta$ that is $k$-dimensional, we define the score
+function as:</p>
+
+\[\begin{aligned}
+\dot \ell_\theta&amp;=\begin{bmatrix}
+\pdv{\theta_1}\log f_\theta(x) \\
+\vdots \\
+\pdv{\theta_k}\log f_\theta(x) \\
+\end{bmatrix}
+\end{aligned}\]
+  </li>
+  <li>An important property of the score function is \(\mathbb{E}_\theta\left[\ell_\theta(x)\right]=0\)</li>
+  <li>Fisher-information is now a $k\times k$ matrix, which is the
+variance-covariance matrix of $\dot \ell$:</li>
+</ul>
+
+\[i(\theta)_{i,j}=\mathbb{E}_\theta\left[\dot\ell_i\dot\ell_j\right]\]
+
+<ul>
+  <li>Then Jeffrey’s prior is defined as
+$\pi(\theta)\propto|\det(i(\theta))|^{1/2}$</li>
 </ul>
 
 </article>
