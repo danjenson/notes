@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 3: Decision THeory"
+subtitle: "Lecture 3: Decision Theory"
 ---
 
 - Review of statistical decision theory.
@@ -12,7 +12,7 @@ subtitle: "Lecture 3: Decision THeory"
 - For the Bayesian with prior $\pi(\cdot)$, the solution is easy:
 
 $$
-\delta^*(x)=\arg\min_{a\in\mathcal{A}}\mathbb{E}\left[L(a,\Theta)\mid X=x\right]$
+\delta^*(x)=\arg\min_{a\in\mathcal{A}}\mathbb{E}\left[L(a,\Theta)\mid X=x\right]
 $$
 
 - Example 1:
