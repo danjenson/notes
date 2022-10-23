@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 2: Multinomial, Beta, and Dirichlet"
+subtitle: "Lecture 2: Multinomial, Beta, and Dirichlet (2022-09-29)"
 ---
 
 - Dirichlet is conjugate prior to multinomial and categorical distributions.

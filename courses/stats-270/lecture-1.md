@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 1: Review"
+subtitle: "Lecture 1: Review (2022-09-27)"
 ---
 
 - Review of model, observations, likelihood.

@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 6: Likelihood and Conditionality Principles"
+subtitle: "Lecture 6: Likelihood and Conditionality Principles (2022-10-13)"
 toc: true
 ---
 

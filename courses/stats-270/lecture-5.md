@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 5: Sufficiency"
+subtitle: "Lecture 5: Sufficiency (2022-10-11)"
 toc: true
 ---
 
@@ -19,24 +19,33 @@ toc: true
   - $\forall f,g\in\mathcal{F}\;f_{Y\mid S}(y\mid s)=g_{Y\mid S}(y\mid s)$ if
     $S$ is a sufficient statistic
 - Example 1:
+
   - $$Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}$$ for $i=1,\ldots,n$ are iid
     vectors with $$\operatorname{Normal}\left(\begin{bmatrix} 0 \\
-  0\end{bmatrix},\begin{bmatrix}1 & p \\ p & 1\end{bmatrix}\right)$$ density:
+  0\end{bmatrix},\begin{bmatrix}1 & \rho \\ \rho & 1\end{bmatrix}\right)$$ density:
     $p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,
   - $$
     f(z)=\left(\frac{1}{2\pi\sqrt{1-\rho^2}}\right)\exp
     \left(-\frac{1}{2}\cdot\frac{1}{1-\rho^2}\left(\underbrace{\sum_{i=1}^n x_i^2 +
     \sum_{i=1}^n y_i^2}_{s_2} - 2\rho \underbrace{\sum_{i=1}^n x_iy_i}_{s_1}\right)\right)
     $$
-  - $$
-    f_{Z\mid S}(z\mid
-    s)=\frac{f_Z(z)}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}f_Z(z)\dd
-    z}=\frac{1}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}1\dd
-    z}=\frac{1}{\operatorname{Area}(\{S_1(z)=s_1,S_2(z)=s_2\})}
-    $$
-    - $f_{Z,S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
-      density to be non-zero. {% sidenote 'fzs' 'what does this mean?' %}
-    - **This does not depend on $\rho$, so $S$ is sufficient.**
+  - Note that in the following, when integrating over the region where the
+    sufficient statistics equal $s_1$ and $s_2$, $f_{Z\mid S}(z\mid s)$ is constant. To
+    verify this, simply look at the preceding likelihood above.
+
+  $$
+  \begin{aligned}
+  f_{Z\mid S}(z\mid s)
+  &=\frac{f_Z(z)}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}f_Z(z)\dd z} \\
+  &=\frac{1}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}1\dd z} \\
+  &=\frac{1}{\operatorname{Area}(\{S_1(z)=s_1,S_2(z)=s_2\})}
+  \end{aligned}
+  $$
+
+  - $f_{Z\mid S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
+    density to be non-zero. In other words, $Z$ is a more detailed event of $S$.
+  - To see this, use the actual likelihood density above.
+  - **This does not depend on $\rho$, so $S$ is sufficient.**
   - If $$\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
   \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
   \mu_2\end{bmatrix},\begin{bmatrix}1 & \rho \\ \rho & 1\end{bmatrix}\right)$$

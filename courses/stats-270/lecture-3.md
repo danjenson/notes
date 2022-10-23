@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 3: Decision Theory"
+subtitle: "Lecture 3: Decision Theory (2022-10-04)"
 ---
 
 - Review of statistical decision theory.

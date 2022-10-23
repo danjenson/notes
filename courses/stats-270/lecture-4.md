@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 4: Decision Theory continued..."
+subtitle: "Lecture 4: Decision Theory continued... (2022-10-06)"
 toc: true
 ---
 
@@ -55,7 +55,7 @@ toc: true
 
 # Admissibility and the risk set
 
-- An admissible rule is optimal in taht it cannot be improved across all
+- An admissible rule is optimal in that it cannot be improved across all
   $\theta\in\Omega$.
 - The lower quadrant of $\vec{x}$: $Q_\vec{x}=\\{\vec{y}\in \mathbb{R}^k: y_i\le x_j,\; j=1,\ldots,k\\}$
 - If $\vec{y}\ne \vec{x}$ where $\vec{x}=\vec{r}^\delta$,

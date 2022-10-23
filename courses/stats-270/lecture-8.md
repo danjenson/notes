@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 8: Jeffrey's Prior and the Score Function"
+subtitle: "Lecture 8: Jeffrey's Prior and the Score Function (2022-10-20)"
 toc: true
 ---
 

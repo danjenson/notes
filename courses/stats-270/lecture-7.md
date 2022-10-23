@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 7: Non-informative Priors"
+subtitle: "Lecture 7: Non-informative Priors (2022-10-18)"
 toc: true
 ---
 

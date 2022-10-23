@@ -86,7 +86,7 @@
   <a href=".">STATS 270: Bayesian Statistics</a>
 </h1>
  
-<h2 class="subtitle">Lecture 5: Sufficiency</h2>
+<h2 class="subtitle">Lecture 5: Sufficiency (2022-10-11)</h2>
  <ul id="toc" class="section-nav">
 <li class="toc-entry toc-h1"><a href="#sufficiency-principle">Sufficiency principle</a></li>
 <li class="toc-entry toc-h1"><a href="#bayesian-inference-automatically-satisfies-the-sufficiency-principle">Bayesian Inference Automatically Satisfies the Sufficiency Principle</a></li>
@@ -113,29 +113,36 @@ $S$ is the same for all $f\in\mathcal{F}$.
 $S$ is a sufficient statistic</li>
     </ul>
   </li>
-  <li>Example 1:
+  <li>
+    <p>Example 1:</p>
+
     <ul>
       <li>\(Z=\begin{bmatrix}x_i \\ y_i\end{bmatrix}\) for $i=1,\ldots,n$ are iid
 vectors with \(\operatorname{Normal}\left(\begin{bmatrix} 0 \\
-0\end{bmatrix},\begin{bmatrix}1 &amp; p \\ p &amp; 1\end{bmatrix}\right)\) density:
+0\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\) density:
 $p(x,y)=\frac{1}{2\pi\sqrt{1-p^2}}\exp\left(-\frac{1}{2(1-p^2)}(x^2+y^2-2\rho xy)\right)$,</li>
       <li>
 \[f(z)=\left(\frac{1}{2\pi\sqrt{1-\rho^2}}\right)\exp
 \left(-\frac{1}{2}\cdot\frac{1}{1-\rho^2}\left(\underbrace{\sum_{i=1}^n x_i^2 +
 \sum_{i=1}^n y_i^2}_{s_2} - 2\rho \underbrace{\sum_{i=1}^n x_iy_i}_{s_1}\right)\right)\]
       </li>
-      <li>
-\[f_{Z\mid S}(z\mid
-s)=\frac{f_Z(z)}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}f_Z(z)\dd
-z}=\frac{1}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}1\dd
-z}=\frac{1}{\operatorname{Area}(\{S_1(z)=s_1,S_2(z)=s_2\})}\]
-        <ul>
-          <li>$f_{Z,S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
-density to be non-zero. <label for="fzs" class="margin-toggle sidenote-number"></label><input type="checkbox" id="fzs" class="margin-toggle"><span class="sidenote">what does this mean? </span>
-</li>
-          <li><strong>This does not depend on $\rho$, so $S$ is sufficient.</strong></li>
-        </ul>
-      </li>
+      <li>Note that in the following, when integrating over the region where the
+sufficient statistics equal $s_1$ and $s_2$, $f_{Z\mid S}(z\mid s)$ is constant. To
+verify this, simply look at the preceding likelihood above.</li>
+    </ul>
+
+\[\begin{aligned}
+f_{Z\mid S}(z\mid s)
+&amp;=\frac{f_Z(z)}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}f_Z(z)\dd z} \\
+&amp;=\frac{1}{\int_{\{S_1(z)=s_1,S_2(z)=s_2\}}1\dd z} \\
+&amp;=\frac{1}{\operatorname{Area}(\{S_1(z)=s_1,S_2(z)=s_2\})}
+\end{aligned}\]
+
+    <ul>
+      <li>$f_{Z\mid S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
+density to be non-zero. In other words, $Z$ is a more detailed event of $S$.</li>
+      <li>To see this, use the actual likelihood density above.</li>
+      <li><strong>This does not depend on $\rho$, so $S$ is sufficient.</strong></li>
       <li>If \(\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
 \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
 \mu_2\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\)
