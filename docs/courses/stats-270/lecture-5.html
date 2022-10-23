@@ -104,8 +104,10 @@ $f\in\mathcal{F}$</li>
     </ul>
   </li>
   <li>
-<strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
-$S$ is the same for all $f\in\mathcal{F}$.
+<strong>Definition</strong>: $S$ is a sufficient statistic if the conditional distribution
+of $Y$ given $S$ is the same for all $f\in\mathcal{F}$ where $\mathcal{F}$ is
+<em>any</em> family of densities; there does not need to be a particular parametric
+family.
     <ul>
       <li>$f_{Y\mid S}(y\mid s)$</li>
       <li>$g_{Y\mid S}(y\mid s)$</li>
@@ -141,7 +143,6 @@ f_{Z\mid S}(z\mid s)
     <ul>
       <li>$f_{Z\mid S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
 density to be non-zero. In other words, $Z$ is a more detailed event of $S$.</li>
-      <li>To see this, use the actual likelihood density above.</li>
       <li><strong>This does not depend on $\rho$, so $S$ is sufficient.</strong></li>
       <li>If \(\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
 \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
@@ -163,7 +164,8 @@ then the sufficient statistic would be:</li>
 then there exists a $k-1$ dimensional sufficient statistic.</li>
       <li>To construct it, let $\bar{f}(x)=\frac{1}{k}\sum_{i=1}^k f_i(x)$, without
 loss of generality, we can assume $\bar{f}(x)&gt;0\;\forall x\in\mathcal{Y}$
-because that would imply that all densities are 0.</li>
+because that would imply that all densities for that $x$ are 0, so that $x$
+point can be excluded from the sample space.</li>
       <li>Define $S_1(y)=\frac{f_1(y)}{\bar{f}(y)}$ and
 $S_k(y)=\frac{f_k(y)}{\bar{f}_k(y)}$. So, assume $\bar{f}(x)&gt;0\;\forall
 x\in\mathcal{Y}$.</li>
@@ -184,12 +186,12 @@ f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\}\]
           </li>
           <li>
             <p>Let $A\subset\mathcal{Y}_s$, then we can show it no longer depends on
-$j$:</p>
+$f_j$, i.e. it no longer depends on which density you pick:</p>
 
 \[\begin{aligned}
   \Pr_{f_j}(Y\in A\mid S=s)
   &amp;=\Pr_{f_j}(Y\in A\mid Y\in \mathcal{Y}_s)
-  \\ &amp;=\frac{\int_A f_i(y)\dd y}{\int_{\mathcal{Y}_s}f_i(y)\dd y}
+  \\ &amp;=\frac{\int_A f_j(y)\dd y}{\int_{\mathcal{Y}_s}f_j(y)\dd y}
   \\ &amp;=\frac{\int_A s_j\bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}s_j\bar{f}(y)\dd y}
   \\ &amp;=\frac{\int_A \bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}\bar{f}(y)\dd y}
 \end{aligned}\]
@@ -202,14 +204,6 @@ $j$:</p>
   <li>
     <p>Numerical example:
 <label for="line-partition" class="margin-toggle">⊕</label><input type="checkbox" id="line-partition" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-5/line-partition.png"><br>Line partitioned by $S$</span></p>
-
-    <ul>
-      <li>Observing $S$ allows us to pick out one of the subintervals.</li>
-      <li>Under any $f_j(\cdot)$, $Y$ is uniformly distributed within that
-subinterval.</li>
-      <li>
-        <p>What is important about the sufficient statistic is its ability to
-partition, not the actual value.</p>
 
 \[\begin{aligned}
 \mathcal{Y}&amp;=[0,1]
@@ -231,9 +225,17 @@ partition, not the actual value.</p>
  \\ &amp;\text{Another sufficient:}
 \\ S_1&amp;=1\quad S_2=2\quad S_3=3
 \end{aligned}\]
-      </li>
-    </ul>
   </li>
+  <li>Observing $S$ allows us to pick out one of the subintervals.</li>
+  <li>Once you pick out a value of $S_j$, you’ve identified a subinterval. And
+within that subinterval, each of the densities is different, but uniform. In
+other words, the conditional density is the same for each density given the
+sufficient statistic.</li>
+  <li>Under any $f_j(\cdot)$, $Y$ is uniformly distributed within that
+subinterval.</li>
+  <li>What is important about the sufficient statistic is its ability to
+partition, not the actual value. This shows that the sufficient statistic need
+not be unique.</li>
   <li>Sufficiency depends on the partition of the sample space, and not on the
 statistic itself.
 <label for="y-partition" class="margin-toggle">⊕</label><input type="checkbox" id="y-partition" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-5/y-partition.png"><br>Partition of sample space.</span>

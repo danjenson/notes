@@ -12,8 +12,10 @@ toc: true
   - $Y\in\mathcal{Y}$: $y$ is distributed according to a density
     $f\in\mathcal{F}$
   - Let $S$ be a statistic, i.e. $S=S(Y): \mathcal{Y}\to\mathcal{S}$
-- **Definition**: $S$ is a sufficient statistic if the conditional distribution of $Y$ given
-  $S$ is the same for all $f\in\mathcal{F}$.
+- **Definition**: $S$ is a sufficient statistic if the conditional distribution
+  of $Y$ given $S$ is the same for all $f\in\mathcal{F}$ where $\mathcal{F}$ is
+  _any_ family of densities; there does not need to be a particular parametric
+  family.
   - $f_{Y\mid S}(y\mid s)$
   - $g_{Y\mid S}(y\mid s)$
   - $\forall f,g\in\mathcal{F}\;f_{Y\mid S}(y\mid s)=g_{Y\mid S}(y\mid s)$ if
@@ -44,7 +46,6 @@ toc: true
 
   - $f_{Z\mid S}=f_Z$ since $Z$ must be compatible with $S$ in order for the
     density to be non-zero. In other words, $Z$ is a more detailed event of $S$.
-  - To see this, use the actual likelihood density above.
   - **This does not depend on $\rho$, so $S$ is sufficient.**
   - If $$\begin{bmatrix}x_i \\ y_i\end{bmatrix}\sim
   \operatorname{Normal}\left(\begin{bmatrix}\mu_1 \\
@@ -62,7 +63,8 @@ $$
     then there exists a $k-1$ dimensional sufficient statistic.
   - To construct it, let $\bar{f}(x)=\frac{1}{k}\sum_{i=1}^k f_i(x)$, without
     loss of generality, we can assume $\bar{f}(x)>0\;\forall x\in\mathcal{Y}$
-    because that would imply that all densities are 0.
+    because that would imply that all densities for that $x$ are 0, so that $x$
+    point can be excluded from the sample space.
   - Define $S_1(y)=\frac{f_1(y)}{\bar{f}(y)}$ and
     $S_k(y)=\frac{f_k(y)}{\bar{f}_k(y)}$. So, assume $\bar{f}(x)>0\;\forall
     x\in\mathcal{Y}$.
@@ -77,13 +79,13 @@ $$
       f_i(y)=s_j\bar{f}(y), j=1,\ldots,k\}
       $$
     - Let $A\subset\mathcal{Y}_s$, then we can show it no longer depends on
-      $j$:
+      $f_j$, i.e. it no longer depends on which density you pick:
 
       $$
       \begin{aligned}
         \Pr_{f_j}(Y\in A\mid S=s)
         &=\Pr_{f_j}(Y\in A\mid Y\in \mathcal{Y}_s)
-        \\ &=\frac{\int_A f_i(y)\dd y}{\int_{\mathcal{Y}_s}f_i(y)\dd y}
+        \\ &=\frac{\int_A f_j(y)\dd y}{\int_{\mathcal{Y}_s}f_j(y)\dd y}
         \\ &=\frac{\int_A s_j\bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}s_j\bar{f}(y)\dd y}
         \\ &=\frac{\int_A \bar{f}(y)\dd y}{\int_{\mathcal{Y}_s}\bar{f}(y)\dd y}
       \end{aligned}
@@ -94,35 +96,39 @@ $$
 - Numerical example:
   {% marginfigure 'line-partition' 'courses/stats-270/figures/lecture-5/line-partition.png' 'Line partitioned by $S$' %}
 
-  - Observing $S$ allows us to pick out one of the subintervals.
-  - Under any $f_j(\cdot)$, $Y$ is uniformly distributed within that
-    subinterval.
-  - What is important about the sufficient statistic is its ability to
-    partition, not the actual value.
+  $$
+  \begin{aligned}
+  \mathcal{Y}&=[0,1]
+  \\ \mathcal{F}&=\{f_1,f_2,f_3\}
+  \\ f_1&=1\;\forall y\in [0,1]
+  \\ f_2&=\begin{cases}1/2 & y\in[0,1/2] \\ 3/2 & y\in[1/2,1]\end{cases}
+  \\ f_3&=\begin{cases}1/4 & y\in[0,1/4] \\ 5/4 & y\in[1/4,1]\end{cases}
+  \\ \bar{f}&=\begin{cases}14/24 & y\in [0,1/4] \\ 22/24 & y\in [1/4,1/2]
+  \\ 30/24 & y\in[1/2,1]\end{cases}
+  \\ S&=\begin{bmatrix}f_1 / \bar{f} \\ f_2 / \bar{f}\end{bmatrix}\text{ (3rd is
+   determined by first 2)}
+   \\ S_1&=\begin{bmatrix}12/7 \\ 6/7\end{bmatrix}
+   \quad S_2=\begin{bmatrix}12/11 \\ 6/11\end{bmatrix}
+   \quad S_3=\begin{bmatrix}12/15 \\ 6/15\end{bmatrix}
+   \\ &\text{Also sufficient:}
+   \\ S_1&=\begin{bmatrix}0 \\ 0\end{bmatrix}
+   \quad S_2=\begin{bmatrix}0 \\ 1\end{bmatrix}
+   \quad S_3=\begin{bmatrix}1 \\ 0\end{bmatrix}
+   \\ &\text{Another sufficient:}
+  \\ S_1&=1\quad S_2=2\quad S_3=3
+  \end{aligned}
+  $$
 
-    $$
-    \begin{aligned}
-    \mathcal{Y}&=[0,1]
-    \\ \mathcal{F}&=\{f_1,f_2,f_3\}
-    \\ f_1&=1\;\forall y\in [0,1]
-    \\ f_2&=\begin{cases}1/2 & y\in[0,1/2] \\ 3/2 & y\in[1/2,1]\end{cases}
-    \\ f_3&=\begin{cases}1/4 & y\in[0,1/4] \\ 5/4 & y\in[1/4,1]\end{cases}
-    \\ \bar{f}&=\begin{cases}14/24 & y\in [0,1/4] \\ 22/24 & y\in [1/4,1/2]
-    \\ 30/24 & y\in[1/2,1]\end{cases}
-    \\ S&=\begin{bmatrix}f_1 / \bar{f} \\ f_2 / \bar{f}\end{bmatrix}\text{ (3rd is
-     determined by first 2)}
-     \\ S_1&=\begin{bmatrix}12/7 \\ 6/7\end{bmatrix}
-     \quad S_2=\begin{bmatrix}12/11 \\ 6/11\end{bmatrix}
-     \quad S_3=\begin{bmatrix}12/15 \\ 6/15\end{bmatrix}
-     \\ &\text{Also sufficient:}
-     \\ S_1&=\begin{bmatrix}0 \\ 0\end{bmatrix}
-     \quad S_2=\begin{bmatrix}0 \\ 1\end{bmatrix}
-     \quad S_3=\begin{bmatrix}1 \\ 0\end{bmatrix}
-     \\ &\text{Another sufficient:}
-    \\ S_1&=1\quad S_2=2\quad S_3=3
-    \end{aligned}
-    $$
-
+- Observing $S$ allows us to pick out one of the subintervals.
+- Once you pick out a value of $S_j$, you've identified a subinterval. And
+  within that subinterval, each of the densities is different, but uniform. In
+  other words, the conditional density is the same for each density given the
+  sufficient statistic.
+- Under any $f_j(\cdot)$, $Y$ is uniformly distributed within that
+  subinterval.
+- What is important about the sufficient statistic is its ability to
+  partition, not the actual value. This shows that the sufficient statistic need
+  not be unique.
 - Sufficiency depends on the partition of the sample space, and not on the
   statistic itself.
   {% marginfigure 'y-partition' 'courses/stats-270/figures/lecture-5/y-partition.png'
