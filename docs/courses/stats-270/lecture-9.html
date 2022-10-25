@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-9.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 9: Hierarchical & Empirical Bayes</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#example-1">Example 1:</a></li>
+<li class="toc-entry toc-h2"><a href="#baseball-example-efron--morris-1975-jasa">Baseball Example (Efron &amp; Morris, 1975, JASA)</a></li>
+<li class="toc-entry toc-h2"><a href="#example-1-cont">Example 1 cont…</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="example-1">
+<a class="anchor" href="#example-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 1:</h2>
+
+<ul>
+  <li>$j=1,\ldots, J$</li>
+  <li>$Y_{ij}\sim \operatorname{Normal}\left(\theta_j,\sigma^2\right)$ iid</li>
+  <li>Let \(\bar{y}_{\cdot j}=\frac{1}{n_j}\sum_{i=1}^{n_j}y_{ij}\)
+$\sigma^2_j=\theta^2/n_j$</li>
+  <li>
+\[\mathcal{L}(\theta; x)=\prod_{j=1}^J
+\frac{1}{\sqrt{2\pi\sigma_j^2}}\exp\left(-\frac{1}{2\sigma^2_j}(\bar{y_{\cdot j}-\theta_j})^2\right)\]
+  </li>
+  <li>If $n_j » J$, then we treat $\sigma^2,\theta_1,\ldots,\theta_J$ as
+independent parameters, and can use Jeffrey’s prior.</li>
+  <li>This leads to using \(\bar{y}_{\cdot j}\) to estimate $\theta_j$ and
+\(\sum_{i=1}^J \left(\sum_j^{n_j}(y_{ij}-\bar{y}_{ij})^2\right)\) for inference
+of $\sigma^2$ with degrees of freedom (df) = $\sum_{i=1}^J (n_j-1)$.</li>
+  <li>This returns the same estimate as MLE, UMVUE (?)</li>
+  <li>But if $J$ is large, then \(\mathbb{E}_\theta\lVert \hat{\theta}^{\text{MLE}}\rVert^2 = \sum_{i=1}^J(\theta_j^2 + \sigma^2_j) &gt;
+lVert \theta\rVert^2\)
+    <ul>
+      <li>Always biased and it can be substantial if $J»n$</li>
+    </ul>
+  </li>
+  <li>For simplicity, assume $\sigma^2$ is known.</li>
+  <li>Stein (1955) showed that with respect to the squared error loss,
+$\hat{\theta}^{\text{MLE}}$ is inadmissible if $J»3$.</li>
+  <li>Later, Janes &amp; Stein (1961) gave a simple estimate that dominates $\hat{\theta}^{\text{MLE}}$.</li>
+  <li>$\hat{\theta}_{JS}=(1-\hat{B})\hat{\theta}^{\text{MLE}}$ with
+$\hat{B}=(J-2)\frac{\sigma^2}{n}\cdot\frac{1}{S}=\frac{J-2}{J}\cdot\frac{\sigma^2/n}{S/J}$.
+    <ul>
+      <li>$S=\sum_{i=1}^J\bar{y}_{\cdot j}^2$</li>
+      <li>$\frac{S}{J}=\frac{\sum_{j=1}^J\theta_j^2}{J}+\frac{\sum_{j=1}^J\sigma^2/n}{J}=$signal + noise.</li>
+      <li>$\frac{\sigma^2/n}{S/J}$ is the noise fraction. If this is large, $\hat{B}$
+is large.</li>
+      <li>
+<strong>shrinkage</strong> $(1-\hat{B})$ is large if noise/signal ratio is large.</li>
+    </ul>
+  </li>
+  <li>When $J$ is large, Jeffrey’s prior actually puts in some strong information.
+This is hard to avoid in general if $\Omega$ is high dimensional.</li>
+  <li>We need to put some structure on the parameters, i.e. they are no longer
+independent. In many applications, it is reasonable to assume that $\theta_j$s are
+drawn from a distribution, the same distribution.</li>
+  <li>This means that $\theta_1,\ldots,\theta_j$ are iid from some distribution.</li>
+</ul>
+
+<h2 id="baseball-example-efron--morris-1975-jasa">
+<a class="anchor" href="#baseball-example-efron--morris-1975-jasa" aria-hidden="true"><span class="octicon octicon-link"></span></a>Baseball Example (Efron &amp; Morris, 1975, JASA)</h2>
+
+<ul>
+  <li>18 major league players (1970)</li>
+  <li>Player, first 45 at bat, remainder of season
+    <ul>
+      <li>Clemente, 0.400, 0.346</li>
+      <li>TODO</li>
+    </ul>
+  </li>
+  <li>Let $x_i$ be the batting average in the first 45 games, then $nx_i\sim
+\operatorname{Binomial}\left(n,p_i\right)$ (n=45). You are interested in
+estimating $p_i$.</li>
+  <li>Let $y=\sqrt{n}\arcsin(2x-1)=f(x)$; $\theta=f(p)$.</li>
+  <li>Then, $y_i=f(x_i)\sim \operatorname{Normal}\left(\theta_i,1\right)$.
+    <ul>
+      <li>Designed to transform binomial into normal approximation.</li>
+      <li>This approximation is very good unless $p_i$ is close to 0 or 1.</li>
+    </ul>
+  </li>
+  <li>Reasonable to assume that the $\theta$s are drawn from some population.</li>
+</ul>
+
+<h2 id="example-1-cont">
+<a class="anchor" href="#example-1-cont" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 1 cont…</h2>
+
+<ul>
+  <li>$\bar{y}_{\cdot j}\mid\theta_j\sim
+\operatorname{Normal}\left(\theta_j,\sigma^2/n_j\right)$ where
+$\sigma^2/n_j=\sigma^2_j$.</li>
+  <li>Assume $\theta_j \sim \operatorname{Normal}\left(\mu,\tau^2\right)$ where
+$\mu$ and $\tau^2$ are hyper-parameters.</li>
+  <li>You can set priors on these and they are called <strong>hierarchical priors</strong>.</li>
+  <li>How do you do inference?</li>
+  <li>Joint posterior \(p(\mu,\tau,\theta \mid \mathbf{\bar{y}})\propto
+p(\mu,\tau)p(\theta\mid\mu,\tau)p(\mathbf{\bar{y}}\mid\theta)\). Then,
+assuming $\mu$ is uniformly distributed:</li>
+  <li>
+\[p(\mu,\tau,\theta\mid \mathbf{\bar{y}})\propto p(\tau)\prod_{j=1}^J \operatorname{Normal}\left(\theta_j\mid \mu,\tau^2\right)\prod_{j=1}^J \operatorname{Normal}\left(\bar{y}_{\cdot j}\mid \theta_j,\sigma_j^2\right)\]
+  </li>
+</ul>
+
+<p>i) Conditional distribution of $\theta\mid\mu,\tau^2,\mathbf{\bar{y}}\sim \operatorname{Normal}\left(\hat{\theta}_j,v_j^2\right)$</p>
+
+\[\begin{aligned}
+\bar{y}_{\cdot j}
+&amp;\sim\operatorname{Normal}\left(\theta_j,\sigma_j^2\right) \\
+\theta_j
+&amp;\sim \operatorname{Normal}\left(\mu,\tau^2\right) \\
+\hat{\theta}_j
+&amp;=\frac{\frac{1}{\sigma_j^2}\bar{y}_{\cdot j}+\frac{1}{\tau^2}\mu}{\frac{1}{\sigma_j^2}+\frac{1}{\tau^2}} \\
+&amp;=\frac{\tau^2\bar{y}_{\cdot j}+\sigma_j^2\mu}{\tau^2+\sigma_j^2} \\
+\frac{1}{v_j}
+&amp;=\frac{1}P\sigma_j^2+\frac{1}{\tau^2} \\
+\end{aligned}\]
+
+<ul>
+  <li>To infer hyper-parameters, consider \(p(\mu,\tau\mid
+\mathbf{\bar{y}})=p(\tau\mid \mathbf{\bar{y}})\cdot p(\mu\mid
+\tau,\mathbf{\bar{y}})\).</li>
+  <li>From \(\bar{y}_{\cdot j}\sim \operatorname{Normal}\left(\theta_j,\sigma_j^2\right)=\theta_j+\varepsilon_j$ when $\varepsilon_j\sim \operatorname{Normal}\left(0,\sigma_j^2\right)\)</li>
+  <li>So, $\bar{y}_{\cdot j}\sim \operatorname{Normal}\left(\mu,\sigma_j^2+\tau^2\right)$ but $\theta_j\sim \operatorname{Normal}\left(\mu,\tau^2\right)$, i.e. $\theta$s are gone.</li>
+</ul>
+
+<p>ii) $\mu\mid\tau,\mathbf{\bar{y}}\sim \operatorname{Normal}\left(\hat{mu},\nu(\tau)\right)$</p>
+
+\[\begin{aligned}
+\hat{mu}(\tau)
+&amp;=\left(\sum_{j=1}^J \frac{1}{\sigma_j^2+\tau^2}\bar{y}_{\cdot j}\right)/\left(\sum_{j=1}^J \frac{1}{\sigma_j^2+\tau^2}\right) \\
+\frac{1}{\nu(\tau)}
+&amp;= \sum_{j=1}^J\frac{1}{\sigma_j^2+\tau^2} \\
+\end{aligned}\]
+
+<p>iii) The following is a function of $\tau$ alone.
+<label for="no-mu" class="margin-toggle sidenote-number"></label><input type="checkbox" id="no-mu" class="margin-toggle"><span class="sidenote">why isn’t this conditional on mu? </span></p>
+
+\[\begin{aligned}
+
+p(\tau\mid \mathbf{\bar{y}})
+&amp;=\frac{p(\mu,\tau\mid \mathbf{\bar{y}})}{p(\mu\mid\tau,\mathbf{\bar{y}})} \text{true for any $\mu$.} \\
+&amp;\propto \frac{p(\tau)\prod_{j=1}^J \operatorname{Normal}\left(\bar{y}_{\cdot j}\mid\mu,\sigma_j^2+\tau^2\right)}{\operatorname{Normal}\left(\mu\mid \hat{\mu}, \nu(\tau)\right)}
+\end{aligned}\]
+
+<ul>
+  <li>E &amp; M point out that $\hat{\theta}_{JS}$ is related to Hierarchical Bayes.</li>
+  <li>Assume $n_j=n$, so $\theta_j\mid \mu,\tau,\mathbf{\bar{y}}\sim \operatorname{Normal}\left(\hat{\theta}_j,\nu_j\right)$</li>
+  <li>\(\hat{\theta_j}=\frac{\tau^2 \bar{y}_{\cdot j}+\left(\frac{\sigma^2}{n}\right)\mu}{\tau^2+\sigma^2/n}=(1-B)\bar{y}_{\cdot j}+B\mu\), \(B=\frac{\theta^2/n}{\theta^2/n+\tau^2}\)</li>
+  <li>$\frac{1}{\nu_j}=\frac{n}{\sigma^2}+\frac{1}{\tau^2}$.</li>
+  <li>Let $\mu=0$, then $\bar{y}_{\cdot j}\sim \operatorname{Normal}\left(0,\sigma^2/n +\tau^2\right)$</li>
+  <li>So $S=\sum_{j=1}^J\bar{y}_{\cdot j}^2\sim \left(\sigma^2/n+\tau^2\right)\cdot\chi_J^2$.</li>
+  <li>Using the $\chi_J^2$ distribution, we can derive an unbiased estimate for $B$.</li>
+  <li>$\hat{B}=(J-2)\frac{\sigma^2/n}{S}$, then
+$\hat{\theta_j}=(1-\hat{B})\bar{y}_{\cdot j}$, which is the same as
+$\hat{\theta}^{\text{JS}}$!</li>
+  <li>This is called Empirical Bayes: combines Hierarchical Bayes with empirical
+estimates of hyper-parameters.</li>
+  <li>James is Willard D. James: Professor of Mathematics and CS at Cal State Long
+Beach (1967-1989).</li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

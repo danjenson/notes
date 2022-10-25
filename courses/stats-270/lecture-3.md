@@ -99,7 +99,7 @@ $$
   $\theta$, for all $\delta$. If $\delta^\*$ is a Bayes rule with respect to
   $\pi(\cdot)$. satisfying the following, then $\delta^\*$ is admissible:
   1. Support of the prior $\pi(\cdot)$ is the whole $\Omega$.
-  2. $\int \pi(\theta)^{\delta^\*}(\theta)\dd\theta < \infty$.
+  2. $\int \pi(\theta)r^{\delta^\*}(\theta)\dd\theta < \infty$.
 - **Proof**: First note that $E(L)=E(E(L\mid X))=E(E(L\mid\Theta))$, then:
 
   $$

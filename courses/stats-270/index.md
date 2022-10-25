@@ -11,3 +11,4 @@ title: "STATS 270: Bayesian Statistics"
 - [Lecture 6: Likelihood & Conditionality Principles](lecture-6)
 - [Lecture 7: Non-informative Priors (Jeffery's Prior)](lecture-7)
 - [Lecture 8: Jeffrey's Prior and the Score Function](lecture-8)
+- [Lecture 9: Hierarchical & Empirical Bayes](lecture-9)
