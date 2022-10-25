@@ -12,7 +12,7 @@ $$
 \newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}
 $$
 
-## Example 1:
+## Example 1
 
 - $j=1,\ldots, J$
 - $Y_{ij}\sim \operatorname{Normal}\left(\theta_j,\sigma^2\right)$ iid
