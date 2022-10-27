@@ -71,7 +71,8 @@ p(\sigma,\tau)
 \end{aligned}
 $$
 
-- TODO plot
+{% marginfigure 'beta-parameterization' 'courses/stats-270/figures/lecture-10/beta-parameterization.png' 'Beta Parameterization.' %}
+
 - Assuming $\beta_1,\beta_2$ is known, although it was tested for 4 pairs of
   values: (10,0), (15,0), (5,5), and (5,1).
 - The posterior given known papers is available in closed form:
@@ -90,7 +91,7 @@ $$
   and correct, even for external papers.
 - The Poisson ultimately becomes inadequate, so they switch to the negative
   binomial.
-- TODO plot
+  {% marginfigure 'log-odds' 'courses/stats-270/figures/lecture-10/log-odds.png' 'Log-odds under Beta parameterizations.' %}
 - Using the negative binomial, they find that all 12 disputed papers were by
   Madison.
 - The log-odds strongly favor Madison.
