@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-10.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 10: Hierarchical Bayes & The Federalist Papers (2022-10-27)</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#federalist-papers">Federalist Papers</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="federalist-papers">
+<a class="anchor" href="#federalist-papers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Federalist Papers</h2>
+
+<ul>
+  <li>David Wallace of UChicago and Frederick Mosteller applied hierarchical Bayes
+to the Federalist papers.</li>
+  <li>77 newspaper essays</li>
+  <li>63 have known authorship</li>
+  <li>12 have disputed authorship (Hamilton vs. Madison)</li>
+  <li>Techniques:
+    <ul>
+      <li>Using words as discriminators</li>
+    </ul>
+  </li>
+  <li>Let $x$ be the count of a word in paper length $w$, modeled as a
+$\operatorname{Poisson}\left(w\mu\right),\mu=mu_H\text{ or }\mu=mu_M$
+    <ul>
+      <li>$\log(p\mid\mu)=x\cdot\log(w\mu)-w\mu$</li>
+      <li>If we have $n$ independent words, then the log-likelihood ratio is:
+$\sum_{i=1}^n \left[x_i\log(\mu_{iH}/\mu_{iM})-w(\mu_{iH}-\mu_{iM})\right]$</li>
+      <li>If this is positive, it favors Hamilton.</li>
+      <li>This should provide good discriminative power if there are enough words.</li>
+    </ul>
+  </li>
+  <li>What are the difficulties?
+    <ul>
+      <li>Selection of words.
+        <ol>
+          <li>Low frequency words create noise.</li>
+          <li>Some introduce bias, i.e. content is related to the paper/context.</li>
+        </ol>
+      </li>
+      <li>Independence of words.</li>
+    </ul>
+  </li>
+  <li>Selection:
+    <ul>
+      <li>Identified 70 high frequency, non-contextual words.</li>
+      <li>Added discriminatory words from screening.</li>
+      <li>Added discriminatory words from 70,000 words of texts (50% from each author.)</li>
+    </ul>
+  </li>
+  <li>Second difficulty: unknown parameters. Solution: use hierarchical Bayes.</li>
+  <li>
+\[P(X=4\mid H)=\int\int P(X=4\mid H,\mu_h)p(\mu_H,\mu_M)\dd\mu_H\dd\mu_M\]
+  </li>
+  <li>You use the joint distribution because the means are likely not independent.</li>
+  <li>Similar calculation for $P(x=4\mid M)$.</li>
+  <li>At the end you want the ratio $P(X=4\mid H)/P(X=4\mid M)$</li>
+  <li>Posterior given known papers $X_H$ and $X_M$: $p(\mu_H,\mu_M\mid X_H,\X_M)$.
+Note that the rates might be dependent in this joint distribution.</li>
+  <li>Let $\sigma=\mu_H+\mu_M$, $\tau=\frac{\mu_H}{\mu_H+\mu_M}$. The parameter of
+interest is $\tau$.</li>
+  <li>“For authors writing on the same topics at the same period, we suppose that the
+prior distribution for $\tau$ for any word should be nearly symmetric and
+unimodal. The spread may depend on $\sigma$.”</li>
+  <li>“We like to have prior distributions based on data, even feebly.”</li>
+  <li>To do this, M &amp; W plotted the rates of 90 unselected words in known papers by
+Hamilton and Madison.</li>
+  <li>The data suggest the priors</li>
+</ul>
+
+\[\begin{aligned}
+\sigma
+&amp;\sim \operatorname{Uniform}\left(\cdot,\cdot\right) \\
+\tau\mid\sigma
+&amp;\sim \operatorname{Beta}\left(\gamma,\gamma\right) \\
+\gamma
+&amp;=\beta_1+\beta_2\sigma \\
+p(\sigma,\tau)
+&amp;\propto \tau^{\beta_1+\beta_2\sigma}(1-\tau)^{\beta_1+\beta_2\sigma} \\
+\mathbb{E}\left[\tau\mid\sigma\right]
+&amp;=\frac{1}{2} \\
+\operatorname{var}\left[\tau\mid\sigma\right]
+&amp;=\frac{1/4}{2\gamma+1}
+\end{aligned}\]
+
+<ul>
+  <li>TODO plot</li>
+  <li>Assuming $\beta_1,\beta_2$ is known, although it was tested for 4 pairs of
+values: (10,0), (15,0), (5,5), and (5,1).</li>
+  <li>The posterior given known papers is available in closed form:</li>
+</ul>
+
+\[\begin{aligned}
+p(\mu_H,\mu_M\mid X_H,X_M)
+&amp;= Cp(\mu_H,\mu_M\mid\beta_1,\beta_2)p(X_H\mid \mu_H)p(X_M\mid\mu_M)
+\end{aligned}\]
+
+<ul>
+  <li>The odds of Hamilton vs Madison for each disputed paper is evaluated by
+integrating out $\mu_H$ and $\mu_M$ in the $P(X=4\mid H)$ expressions using
+the above calculated prior.</li>
+  <li>They calculate the log-odds on known papers, and the results are quite strong
+and correct, even for external papers.</li>
+  <li>The Poisson ultimately becomes inadequate, so they switch to the negative
+binomial.</li>
+  <li>TODO plot</li>
+  <li>Using the negative binomial, they find that all 12 disputed papers were by
+Madison.</li>
+  <li>The log-odds strongly favor Madison.</li>
+  <li>The publication of the results had a huge splash.</li>
+  <li>Main contributions:
+    <ul>
+      <li>Pioneering use of Hierarchical Bayes analysis in the context of a real
+problem.</li>
+      <li>Discussion of the shrinkage effect, towards $\tau=1/2$.</li>
+      <li>Laplace approximation in Bayesian computation: \(\int\int p(x\mid\theta,
+H)p(\theta\mid X_H,X_M)\dd\theta\). This is a 4-dimensional integral under the
+Negative Binomial.</li>
+      <li>“The negative binomial introduces many complications that strongly affected
+our allocation of efforts, but few new ideas.”</li>
+      <li>In a parallel analysis using the Frequentist approach, they made pioneering
+use of “machine learning” concepts such as training data, calibration, marker
+(feature) selection, etc.</li>
+    </ul>
+  </li>
+  <li>The paper is called <em>Deciding Authorship</em> by Wallace and Mosteller.</li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
