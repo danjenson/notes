@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-11.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 11: Metropolis-Hastings Algorithm</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#metropolis-algorithm">Metropolis Algorithm</a></li>
+<li class="toc-entry toc-h2"><a href="#formalization">Formalization</a></li>
+<li class="toc-entry toc-h2"><a href="#mcmc">MCMC</a></li>
+<li class="toc-entry toc-h2"><a href="#review-of-markov-chains">Review of Markov Chains</a></li>
+<li class="toc-entry toc-h2"><a href="#metropolis-hastings-algorithm">Metropolis-Hastings Algorithm</a></li>
+<li class="toc-entry toc-h2"><a href="#example">Example</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="metropolis-algorithm">
+<a class="anchor" href="#metropolis-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Metropolis Algorithm</h2>
+
+<ul>
+  <li>Consider a disputed paper of length $W=2000$. Fixed word $n$, let $y$ be the
+count of this word in the paper.</li>
+</ul>
+
+\[\begin{aligned}
+e^{\lambda n}
+&amp;= \frac{P(y\mid H)}{P(y\mid M)} \\
+&amp;= \frac{\int P(y\mid \mu_H)P(\mu_H,\mu_M\mid\vec{x}\dd \mu_H\dd\mu_M}{P(y\mid \mu_M)P(\mu_H,\mu_M\mid\vec{x}\dd \mu_H\dd\mu_M} \\
+\vec{x}
+&amp;= \left\{x_{ij}, i=M\text{ or }H,j=1,\ldots,J_i\right\} \\
+J_i
+&amp;= \text{number of known papers by author }i \\
+\end{aligned}\]
+
+<ul>
+  <li>Summing over $N$ words would give $e^{\sum_{i=1}^n\lambda n}$</li>
+  <li>$P(y\mid H)=\int h(\mu_H)\pi(\mu_H,\mu_M)\dd
+\mu_H\dd\mu_M=\mathbb{E}_{\pi}\left[h(\mu_M)\right]$ where
+$\pi(\mu_H,\mu_M)=P(\mu_H,\mu_M\mid \vec{x}$ and
+$h(\mu)=\frac{(2\mu)^y}{y!}e^{-2\mu}$ (2 because the rate is per 1000 and
+there are 2000 words).</li>
+  <li>Recall that $\sigma=\mu_H+\mu_M$ and $\lambda=\frac{\mu_H}{\mu_H+\mu_M}$,
+assuming $\sigma\sim \operatorname{Uniform}\left(\cdot,\cdot\right)$ and
+$\tau\sim \operatorname{Beta}\left(\gamma,\gamma\right)$ and
+$\gamma=\beta_1+\beta_2\sigma$.</li>
+  <li>
+    <p>The joint density (which is the posterior) is then</p>
+  </li>
+  <li>TODO finish</li>
+</ul>
+
+\[\begin{aligned}
+\pi(\mu_H,\mu_M)
+&amp;= c\left[\left(\frac{\mu_H}{\mu_H+\mu_M}\right)\left(\frac{\mu_M}{\mu_H+\mu_M}\right)\right]^{\beta_1+\beta_2(\mu_H+\mu_M-1)}\cdot \left[\frac{\mu_H}{(\mu_H+\mu_M)^2}\right]
+\left[\mu_H^{\left(\sum_{i=1}^{J_i} x_{H_j}e^{- \sum_{i=1}^{J_i}w_{H_j}}\right)}\right]
+\cdot\left[\mu_H^{\left(\sum_{i=1}^{J_i} x_{M_j}e^{- \sum_{i=1}^{J_i}w_{M_j}}\right)}\right]
+\end{aligned}\]
+
+<ul>
+  <li>Now consider the Negative Binomial, which will have more variance in
+proportion to the value of $\delta$:</li>
+</ul>
+
+\[\begin{aligned}
+P_{nb}(y\mid w\mu, w\delta)
+&amp;=\frac{\Gamma(x+k)}{x!\Gamma(k)}(w\delta)^x(1+w\delta)^{-(x+k)} \\
+k &amp;= \frac{\mu}{\delta} \\
+\mathbb{E}\left[Y\right]
+&amp;= w\mu  \\
+\operatorname{var}\left[Y\right]
+&amp;= w\mu(1+w\delta)
+\end{aligned}\]
+
+<ul>
+  <li>Now there is no simplification due to sufficient statistics (there are no
+sufficient statistics other than the entire data), and the integral is
+4-dimensional.</li>
+  <li>$\mathbb{E}_{\pi}\left[h(\mu_H,\delta_H; \mu_M,\delta_M)\right]$</li>
+  <li>Now you need MCMC to evaluate this integral. (H&amp;M didn’t have MCMC, and ended
+up solving it by asymptotic expansion).</li>
+</ul>
+
+<h2 id="formalization">
+<a class="anchor" href="#formalization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Formalization</h2>
+
+<ul>
+  <li>Suppose we have prior $\pi_0(\theta)$ where $\theta\in \mathbb{R}^k$ and $k$
+can be large.</li>
+  <li>The posterior is $\pi(\theta)\propto\pi_0(\theta)f_\theta(y)$ and can be
+evaluated at any point $\theta$.</li>
+  <li>To study it, you can
+    <ul>
+      <li>Plot it</li>
+      <li>Numerically integrate to get $\mathbb{E}_{\pi}\left[g(\theta)\right]$ (if
+$g(\theta)$ is the indicator function, you get the posterior).</li>
+      <li>These won’t work if $\theta$ is high-dimensional.</li>
+    </ul>
+  </li>
+  <li>Instead, we use sampling to extract information from the posterior.
+    <ul>
+      <li>Generate a sequence of values,
+$\theta^{(1)},\theta^{(2)},\ldots,\theta^{(n)}$, each having $\pi(\theta)$ as
+its density.</li>
+      <li>Estimate $\mathbb{E}<em>{\pi}\left[g(\theta)\right]=\int
+\pi(\theta)g(\theta)\dd\theta$ by $\frac{1}{n}\sum</em>{i=1}^n g(\theta^{(i)})$</li>
+      <li>By the Law of Large numbers the sample average will converge to the
+population average with iid samples.</li>
+    </ul>
+  </li>
+  <li>iid sampling is difficult in general, but if we allow the sample to have
+Markov dependency, then there are good algorithms to achieve this.</li>
+</ul>
+
+<h2 id="mcmc">
+<a class="anchor" href="#mcmc" aria-hidden="true"><span class="octicon octicon-link"></span></a>MCMC</h2>
+
+<ul>
+  <li>
+<strong>Goal</strong>: generate $x_1, x_2,\ldots x_n$ by evolving a Markov Chain so that
+$x_t\sim P(\cdot\mid x_{t-1})$ so that:
+    <ol>
+      <li>\(x_t\sim \pi(\cdot)\) when $t$ is large.</li>
+      <li>For any “nice” function $h$, we have \(\underbrace{\frac{1}{n}\sum_{i=1}^n h(x_t)}_{\text{time average}}\to
+\mathbb{E}_{\pi}\left[h(x)\right]=\underbrace{\int h(x)\pi(x)\dd
+x}_{\text{space average}}\)</li>
+    </ol>
+  </li>
+</ul>
+
+<h2 id="review-of-markov-chains">
+<a class="anchor" href="#review-of-markov-chains" aria-hidden="true"><span class="octicon octicon-link"></span></a>Review of Markov Chains</h2>
+
+<ul>
+  <li>Book: Durrett, Chapter 5</li>
+  <li>Let $x_0,x_1,\ldots,x_n$ be a Markov chain with state space $\mathcal{X}$
+(assume $\mathcal{X}$ is countable) and transition kernel
+$k(x,y)=P(X_{t+1}=y\mid X_t=x)$</li>
+  <li>Definitions:
+    <ul>
+      <li>$y$ is reachable from another state $x$ if $P_x(\text{waiting time to hit }y)&lt;\infty$.</li>
+      <li>$x$ is recurrent if $P_x(\text{waiting time to return to }x&lt;\infty)=1$.</li>
+      <li>$P_x(T_x&lt;\infty)=1$ where $T_x$ is the waiting time to return to $x$.</li>
+    </ul>
+  </li>
+  <li>A recurrent state $x$ is a positive recurrent state if $\mathbb{E}_{x}\left[T_x\right]&lt;\infty$.</li>
+  <li>A density $\pi(\cdot)$ on $\mathcal{X}$ is “invariant” if $\sum_{x}
+\underbrace{\pi(x)}<em>{\text{density for }x_t} k(x,y)=\underbrace{\pi(y)}</em>{\text{density for }x_{t+1}}\;\forall y\in \mathcal{X}$
+    <ul>
+      <li>$\pi$ is the invariant density (not all densities will have this behavior).</li>
+    </ul>
+  </li>
+  <li>
+<strong>Basic theorem</strong>: If \(\{X_n\}_{n=1}\) is irreducible, i.e. every state is
+reachable from every other state, then the following are equivalent
+conditions:
+    <ol>
+      <li>Some $x$ is positive recurrent.</li>
+      <li>All $x$ are positive recurrent.</li>
+      <li>There is a unique invariant distribution $\pi$, i.e. $\pi(y)\propto
+\frac{1}{\mathbb{E}_{y}\left[T_y\right]}$.</li>
+    </ol>
+  </li>
+  <li>Also, for any $h(\cdot)$, $\frac{1}{n}\sum_{i=1}^n h(X_t)\to
+\mathbb{E}_{\pi}\left[h(X)\right]$ (time average converges to space average),
+regardless of where you start/initial value.</li>
+  <li>How do we construct a Markov chain that is guaranteed to have $\pi(\cdot)$ as
+its invariant density?
+    <ul>
+      <li>Answer: satisfy detailed balance.</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Detailed balance</strong>:</p>
+
+    <ul>
+      <li>let $\pi(\cdot)$ be a density and $k(x,y)$ be a transition kernel, then
+$(\pi, k)$ satisfy detailed balance if</li>
+    </ul>
+
+\[\begin{aligned}
+\pi(x)k(x,y)
+&amp;=\pi(y)k(y,x)\;\forall x,y
+\end{aligned}\]
+  </li>
+  <li>If detailed balance holds, then we get $\pi(\cdot)$ is invariant under the
+transition kernel $k$.</li>
+  <li>
+<strong>Proof</strong>:</li>
+</ul>
+
+\[\begin{aligned}
+\int\pi(x)k(x,y)\dd x
+&amp;= \int \pi(y)k(y,x)\dd x \\
+&amp;= \pi(y)\int k(y,x)\dd x \\
+&amp;= \pi(y)\cdot 1 \\
+\end{aligned}\]
+
+<h2 id="metropolis-hastings-algorithm">
+<a class="anchor" href="#metropolis-hastings-algorithm" aria-hidden="true"><span class="octicon octicon-link"></span></a>Metropolis-Hastings Algorithm</h2>
+
+<ul>
+  <li>Let $q(x,y)$ be a “proposal” transition kernel.</li>
+  <li>For $t=1,2,\ldots$
+    <ol>
+      <li>Draw $y$ from the proposal $q(x_{t-1}, y)$ (let $x=x_{t-1}$)</li>
+      <li>Compute the MH ratio, $r=\min \left[1, \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right]$.</li>
+      <li>Draw \(U\sim \operatorname{Uniform}\left(0,1\right)$, set $x_t=\begin{cases}
+  y &amp; \text{if }u &lt; r \\
+  x_{t-1} &amp;\text{otherwise} \\
+\end{cases}\quad\)
+In other words, accept the proposal value with probability $r$. And we
+claim that this Markov chain satisfies detailed balance.</li>
+    </ol>
+  </li>
+  <li>Note: only need to evaluate $\pi(\cdot)$ up to a proportionality constant.</li>
+</ul>
+
+<h2 id="example">
+<a class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h2>
+
+<ul>
+  <li>Proposal distribution is a random walk.</li>
+  <li>$\pi(y)=e^{-\lambda}\frac{\lambda^x}{x!}$ for $x=0,1,2,\ldots$</li>
+  <li>Let \(q(x,y)=\begin{cases}
+y=\begin{cases}
+x+1 &amp; \text{ with p}=1/2 \\
+x-1 &amp; \text{ with p}=1/2
+\end{cases} &amp; \text{if }x &gt; 0 \\
+y=x+1 &amp;\text{with p}=1 \text{ if }x=0 \\
+\end{cases}\)</li>
+  <li>Ratio of target: $\frac{\pi(y)}{\pi(x)}=\frac{\lambda^y x!}{\lambda^x y!}$</li>
+  <li>Ratio of proposal: if $x,y\ge 1$, then $\frac{q(y,x)}{q(x,y)}=1$.
+    <ul>
+      <li>If $x=0,y=1$, then ratio is $1/2$.</li>
+      <li>If $x=1,y=0$, then ratio is $2$.</li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>

@@ -13,3 +13,4 @@ title: "STATS 270: Bayesian Statistics"
 - [Lecture 8: Jeffrey's Prior and the Score Function](lecture-8)
 - [Lecture 9: Hierarchical & Empirical Bayes](lecture-9)
 - [Lecture 10: Hierarchical Bayes & The Federalist Papers](lecture-10)
+- [Lecture 11: Metropolis-Hastings Algorithm](lecture-11)
