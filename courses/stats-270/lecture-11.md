@@ -170,12 +170,13 @@ $$
   \end{cases}\quad$$
   - In other words, accept the proposal value with probability $r$. And we
     claim that this Markov chain satisfies detailed balance.
-- Note: only need to evaluate $\pi(\cdot)$ up to a proportionality constant.
+- Note: only need to evaluate $\pi(\cdot)$ up to a proportionality constant
+  because the normalization constant is cancelled out in the MH ratio.
 
 ## Example
 
 - Proposal distribution is a random walk.
-- $\pi(y)=e^{-\lambda}\frac{\lambda^x}{x!}$ for $x=0,1,2,\ldots$
+- $\pi(x)=e^{-\lambda}\frac{\lambda^x}{x!}$ for $x=0,1,2,\ldots$
 - Let $$q(x,y)=\begin{cases}
   y=\begin{cases}
   x+1 & \text{ with p}=1/2 \\

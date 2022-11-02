@@ -300,7 +300,8 @@ claim that this Markov chain satisfies detailed balance.</li>
       </li>
     </ol>
   </li>
-  <li>Note: only need to evaluate $\pi(\cdot)$ up to a proportionality constant.</li>
+  <li>Note: only need to evaluate $\pi(\cdot)$ up to a proportionality constant
+because the normalization constant is cancelled out in the MH ratio.</li>
 </ul>
 
 <h2 id="example">
@@ -308,7 +309,7 @@ claim that this Markov chain satisfies detailed balance.</li>
 
 <ul>
   <li>Proposal distribution is a random walk.</li>
-  <li>$\pi(y)=e^{-\lambda}\frac{\lambda^x}{x!}$ for $x=0,1,2,\ldots$</li>
+  <li>$\pi(x)=e^{-\lambda}\frac{\lambda^x}{x!}$ for $x=0,1,2,\ldots$</li>
   <li>Let \(q(x,y)=\begin{cases}
 y=\begin{cases}
 x+1 &amp; \text{ with p}=1/2 \\
