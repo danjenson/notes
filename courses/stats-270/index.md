@@ -14,3 +14,4 @@ title: "STATS 270: Bayesian Statistics"
 - [Lecture 9: Hierarchical & Empirical Bayes](lecture-9)
 - [Lecture 10: Hierarchical Bayes & The Federalist Papers](lecture-10)
 - [Lecture 11: Metropolis-Hastings Algorithm](lecture-11)
+- [Lecture 12: Metropolis-Hastings Proof & Gibbs Sampling & Ising Model](lecture-12)

@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-12.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 12: Metropolis-Hastings Proof & Gibbs Sampling & Ising Model</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#federalist-paper-example">Federalist Paper Example</a></li>
+<li class="toc-entry toc-h2"><a href="#gibbs-sampling">Gibbs Sampling</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#random-scan-gibbs">Random Scan Gibbs</a></li>
+<li class="toc-entry toc-h3"><a href="#example">Example</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#ising-model">Ising Model</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#efficiency">Efficiency</a></li>
+</ul>
+</li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="federalist-paper-example">
+<a class="anchor" href="#federalist-paper-example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Federalist Paper Example</h2>
+
+\[\begin{aligned}
+p(y\mid H)
+&amp;=\int h(\mu_H)\pi(\mu_H,\mu_M)\dd\mu_M\dd\mu_H \\
+\pi(\mu_H,\mu_M)
+&amp;=
+c\cdot\frac{1}{\operatorname{Beta}\left(\beta_1+\beta_2\sigma,\beta_1+\beta_2\sigma\right)}\left[\left(\frac{\mu_H\mu_M}{\sigma^2}\right)^{\beta_1+\beta_2\sigma}\frac{\mu_H}{\sigma^2}\right]\cdot \left[\mu_H^{\sum_{i=1}^n x_{H_j}}e^{\sum_{i=1}^n w_{H_j}\mu_H}\right]\cdot \left[\mu_M^{\sum_{i=1}^n x_{M_j}}e^{\sum_{i=1}^n w_{M_j}\mu_M}\right] \\
+\end{aligned}\]
+
+<ul>
+  <li>Let the proposal transition be a uniform darw from a box centered on the
+current $\mu=(\mu_H,\mu_M)$</li>
+  <li>TODO drawing</li>
+</ul>
+
+\[\begin{aligned}
+q(u\to u')
+&amp;=\begin{cases}
+  \frac{1}{4\delta^2}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }\mu_H,\mu_M&gt;\delta \\
+  \frac{1}{2\delta(\mu_{H}+\delta)}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }0&lt;\mu_H&lt;\delta,\mu_M&gt;\delta \\
+  \frac{1}{2\delta(\mu_{M}+\delta)}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }0&lt;\mu_M&lt;\delta,\mu_H&gt;\delta \\
+\end{cases} \\
+r
+&amp;=\min \left(1,\frac{\pi(u')}{\pi(u)}\cdot \frac{q(u'\to u)}{q(u\to u')}\right)
+\\
+\end{aligned}\]
+
+<ul>
+  <li>Accept $u’$ with probability $r$.</li>
+  <li>This is a Markov chain and would have the stationary distribution $\pi$.</li>
+  <li>
+<strong>Theorem</strong>: Metropolis-Hastings algorithm gives a Markov Chain satisfying detailed balance
+with respect to $\pi(\cdot)$.</li>
+  <li>
+<strong>Proof</strong>: We want to show that detailed balance holds.
+    <ul>
+      <li>If $x=y$, this is trivially satisfied, so assume $x\ne y$.</li>
+    </ul>
+  </li>
+</ul>
+
+\[\begin{aligned}
+\pi(x)k(x,y)
+&amp;=\pi(y)k(y,x) \\
+k(x,y)
+&amp;= q(x,y)\cdot\min \left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right) \\
+\end{aligned}\]
+
+<ul>
+  <li>(a) If both sides are non-negative, $\pi(x)q(x,y)&gt;0$ and $\pi(y)q(y,x)&gt;0$ then</li>
+</ul>
+
+\[\begin{aligned}
+\pi(x)k(x,y)
+&amp;=\pi(x)q(x,y)\min \left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right) \\
+&amp;=\min \left(\pi(x)q(x,y),\pi(y)q(x,y)\right) \\
+&amp;=\pi(y)k(x,y) \\
+\end{aligned}\]
+
+<ul>
+  <li>(b) If $\pi(y)q(y,x)=0$</li>
+</ul>
+
+\[\begin{aligned}
+\pi(x)k(x,y)
+&amp;=\pi(x)q(x,y)\min \left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right) \\
+\pi(y)k(y,x)
+\end{aligned}\]
+
+<ul>
+  <li>TODO finish</li>
+  <li>We still need irreducibility. How can we think about this?</li>
+  <li>Let $\mathcal{X}$ be a nice bounded and connected region in $\mathbb{R}^k$.</li>
+  <li>Suppose $\pi(x)&gt;0\;\forall x\in \mathcal{X}$. If the proposal $q(x\to y)$
+satisfies $q(x\to y)&gt;0$ and $q(y\to x)&gt;0$, then states are all reachable from
+one another under the proposal distribution.</li>
+  <li>TODO drawing</li>
+  <li>Consider a possible path from $x\to y$.
+    <ul>
+      <li>Under $q$, this path has probability $q(x,u)\cdot q(u,y)&gt;0$</li>
+      <li>Then the probability under MH chain for this path is $q(x,u)\min
+\left(1,\frac{\pi(u)q(u,x)}{\pi(x)q(x,u)}\cdot q(u,y)\min \left(1,\frac{\pi(y)q(y,u)}{\pi(u)q(u,y)}\right)\right)$, which is still greater than 0.</li>
+      <li>Under the proposal distribution, the chain should be irreducible.</li>
+    </ul>
+  </li>
+  <li>Suppose \(S=\{x: \pi(x)&gt;0\}=S_1\cup S_2\), i.e. $S_1$ and $S_2$ are not
+connected regions.</li>
+  <li>TODO drawing</li>
+  <li>In this example, the proposal distribution has to be able to cross from one
+region to another, i.e. the “jumps” have to be large enough.</li>
+</ul>
+
+<h2 id="gibbs-sampling">
+<a class="anchor" href="#gibbs-sampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gibbs Sampling</h2>
+
+<ul>
+  <li>Consider proposal move that involves changing one coordinate of $x$.
+$\vec{x}=(x_1,\ldots,x_i,\ldots,x_d)$.</li>
+  <li>Let $\vec{x}_i(y)=(x_1,\ldots,x_i=y,\ldots,x_d)$, i.e. changing the $i$th
+component to $y$.</li>
+  <li>Let $\vec{x}_{-i}\in \mathbb{R}^{d-1}$, i.e. delete the $i$th component of $\vec{x}$
+delete the $i$th component of $\vec{x}$.</li>
+  <li>Construct $q(x,y)$ in two steps:
+    <ol>
+      <li>Choose a coordinate $i$</li>
+      <li>Draw \(y\sim q_i(x_i\to y)\). Set \(\vec{y}=\vec{x}_i(y)\). This is
+\(q(\vec{x}_i\to \vec{y}\mid \vec{x_{-1}})\).</li>
+    </ol>
+  </li>
+  <li>The MH ratio is then (TODO correct vectors)</li>
+</ul>
+
+\[\begin{aligned}
+\frac{\pi(\vec{y})q(\vec{y},\vec{x})}{\pi(\vec{x})q(\vec{x},\vec{y})}
+&amp;= \frac{\pi(\vec{x}_i(y))}{\pi(\vec{x})}\cdot \frac{q_i(\vec{y}\to\vec{x}_i)}{q_i(\vec{x}_i\to \vec{y})} \\
+&amp;= \frac{\pi_i(\vec{y}\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})}{\pi_i(\vec{x}_i\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})} \\
+\end{aligned}\]
+
+<ul>
+  <li>This suggests that setting
+\(q_i(x_i\to\vec{y})=\pi_i(y\mid\vec{x}_{-1})\) makes the ratio always 1, so
+you always accept the sample.</li>
+  <li>
+<strong>Gibbs sampling</strong>: Sample from $\pi_i(\cdot\mid \vec{x}_{-i})$ iteratively.</li>
+</ul>
+
+<h3 id="random-scan-gibbs">
+<a class="anchor" href="#random-scan-gibbs" aria-hidden="true"><span class="octicon octicon-link"></span></a>Random Scan Gibbs</h3>
+
+<ul>
+  <li>$\vec{x}^{(t)}$ denotes the current value of $\vec{x}$.</li>
+</ul>
+
+<ol>
+  <li>Select $i$ randomly from \(\{1,2,\ldots,d\}\) randomly.</li>
+  <li>Draw $y$ from the conditional distribution $\pi_i(y\mid \vec{x}_{-i})$ and
+set \(\vec{x}_i^{(t+1)}(y)\), \(\vec{x}_{-i}^{(t+1)}=\vec{x}_{-i}^{(t)}\).</li>
+</ol>
+
+<ul>
+  <li>
+<strong>Proof</strong>: This satisfies Detailed Balance because</li>
+</ul>
+
+\[\begin{aligned}
+\pi(\vec{x})k(\vec{x},\vec{y})
+&amp;=\pi(\vec{x})\cdot\frac{1}{d}\cdot\pi_i(y\mid\vec{x}_{-i}) \\
+&amp;=\frac{\pi(\vec{x})\pi(\vec{y})}{d\cdot\pi(\vec{y}_{-i})} \\
+&amp;= \pi(\vec{x}_{-i})
+\end{aligned}\]
+
+<ul>
+  <li>This operation is symmetric in $\vec{x}$ and $\vec{y}$.</li>
+  <li>In practice, we don’t use random scan, we use systematic scan, i.e. for
+$i=1,2,\ldots,d$, draw \(\vec{x}_i^{(t+1)}\sim \pi_i(\cdot\mid
+x_1^{(t+1)},\ldots,x_{i-1}^{(t+1)},x_{i+1}^{(t)},\ldots,x_d^{(t)})\), i.e. you
+are always using the “latest” data.</li>
+</ul>
+
+<h3 id="example">
+<a class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+
+<ul>
+  <li>\(\vec{x}=(x_1,x_2)\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 1\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\), then
+    <ul>
+      <li>$x_1\mid x_2\sim \operatorname{Normal}\left(\rho x_2,1-\rho^2 \right)$</li>
+      <li>$x_2\mid x_1\sim \operatorname{Normal}\left(\rho x_2,1-\rho^2 \right)$ TODO FINISH</li>
+    </ul>
+  </li>
+  <li>Systematic scan is not a special case of MH because the following is not
+symmetric in $\vec{x}$ and $\vec{y}$. So, detailed balance is not satisfied in
+$\vec{x}\to\vec{y}$.</li>
+</ul>
+
+\[\begin{aligned}
+\pi(x)k(x,y)
+&amp;=\pi(x_1,x_2)\pi(y_1\mid x_2)\pi(y_2\mid y_1)
+\end{aligned}\]
+
+<ul>
+  <li>
+<strong>Theorem</strong>: If $\pi(\vec{x})&gt;0$ for all $\vec{x}\in \mathbb{Z}^d$, then
+systematic scan Gibbs is a valid MCMC in the sense that the time average
+converges to the space average.</li>
+  <li>
+<strong>Proof</strong>:
+    <ol>
+      <li>Irreducibility $\pi(\cdot)&gt;0$. TODO drawing</li>
+      <li>Each single coordinate update in the scan satisfies detailed balance. Each
+step leaves $\pi(\cdot)$ invariant. Hence the basic theorem of Markov Chain
+applies.</li>
+    </ol>
+  </li>
+</ul>
+
+<h2 id="ising-model">
+<a class="anchor" href="#ising-model" aria-hidden="true"><span class="octicon octicon-link"></span></a>Ising Model</h2>
+
+\[\begin{aligned}
+x_i
+&amp;\in\{-1,1\} \\
+\vec{x}
+&amp;=(x_1,\ldots,x_d) \\
+\pi(\vec{x})
+&amp;\propto \exp\left(-\beta \sum_{i=1}^n x_i x_{i+1}\right) \\
+\pi_i(x_i\mid \vec{x}_{-i})
+&amp;\propto \exp\left(\beta(x_1x_2 + x_2x_3+\cdots+x_{i-1}x_i+x_ix_{i+1}+x_{i+1}x_{i+2}\cdots\right) \\
+&amp;\propto \exp\left(\beta (x_{i-1}x_i + x_ix_{i+1})\right) \\
+&amp;= \exp\left(\beta x_i(x_{i-1}+x_{i+1})\right) \\
+\pi_i(x_i\mid \vec{x}_{-i})
+&amp;= \frac{1}{Z_i}\exp\left(\beta x_i(x_{i-1}+x_{i+1})\right) \\
+Z_i
+&amp;= \exp\left(\beta(x_{i-1}+x_{i+1})\right)+\exp\left(-\beta(x_{i-1}+x_{i+1})\right) \\
+\end{aligned}\]
+
+<ul>
+  <li>If $\pi(\vec{x})\propto \exp\left(-\sum_{c\in\mathcal{C}} v_c(x_c)\right)$
+where $\mathcal{C}$ is a set of local neighborhoods.</li>
+  <li>TODO drawing</li>
+  <li>TODO finish</li>
+</ul>
+
+<h3 id="efficiency">
+<a class="anchor" href="#efficiency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Efficiency</h3>
+
+\[\begin{aligned}
+X\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 0 \end{bmatrix},\begin{bmatrix}1 &amp;
+\rho \\ \rho &amp; 1\end{bmatrix}\right) \\
+\operatorname{var}\left[X\right]
+&amp;= 1-\rho^2 \\
+\text{step size}
+&amp;= \sqrt{1-\rho^2} \\
+\end{aligned}\]
+
+<ul>
+  <li>TODO drawing</li>
+  <li>Sometimes a Markov chain can satisfy the theorem but it will take too long to
+simulate (in our lifetimes).</li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
