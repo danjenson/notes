@@ -139,7 +139,7 @@
 <li class="toc-entry toc-h3"><a href="#estimating-entropies-conditional-entropies-and-mutual-information">Estimating Entropies, Conditional Entropies and Mutual Information</a></li>
 </ul>
 </li>
-<li class="toc-entry toc-h2"><a href="#gflownets-on-sets-grahs-and-to-marginalize-joint-distributions">GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions</a>
+<li class="toc-entry toc-h2"><a href="#gflownets-on-sets-graphs-and-to-marginalize-joint-distributions">GFlowNets on Sets, Graphs, and to Marginalize Joint Distributions</a>
 <ul>
 <li class="toc-entry toc-h3"><a href="#set-gflownets">Set GFlowNets</a></li>
 <li class="toc-entry toc-h3"><a href="#gflownet-on-graphs">GFLowNet on Graphs</a></li>
@@ -218,7 +218,7 @@ and ends in $s_f$, i.e. $\tau=(s_0,s_1,\ldots,s_n,s_{n+1}=s_f)$.</li>
 i.e. $\{s : s\to s_f\in\mathbb{A}\}$; a terminating state may have
 other children from the sink state</li>
   <li>
-<strong>Terminating edge</strong>: Any edge between a terminating state an the sink, i.e.
+<strong>Terminating edge</strong>: Any edge between a terminating state and the sink, i.e.
 $s\to s_f$.</li>
   <li>
 <strong>Markovian flow</strong>: A flow is Markovian if $P(s\to
@@ -671,7 +671,7 @@ of rewards.</li>
 <a class="anchor" href="#gflownets-and-flow-matching-losses" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets and flow-matching losses</h3>
 
 <ul>
-  <li>Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ with $s_0$, $s_f$, and $R: \mathcal{S}^f\to \mathbb{R}^+$, we say that $(\mathcal{O},\Pi,\mathcal{H})$ is a <strong>flow parameritization</strong> of $(G,R)$ if:
+  <li>Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ with $s_0$, $s_f$, and $R: \mathcal{S}^f\to \mathbb{R}^+$, we say that $(\mathcal{O},\Pi,\mathcal{H})$ is a <strong>flow parameterization</strong> of $(G,R)$ if:
     <ol>
       <li>$\mathcal{O}$ is a non-empty set.</li>
       <li>$\Pi$ is a function mapping each object $o\in \mathcal{O}$ to an element
@@ -834,7 +834,7 @@ $L:\mathcal{O}\times \mathcal{T}\to \mathbb{R}^+$ such that:</li>
 edge-decomposable loss, this would be
 $\min_{o\in\mathcal{O}}\mathbb{E}_{(s\to s’)\sim\pi_T}\left[L(o,s\to
 s’)\right]$ where $\pi_T$ is any full support probability distribution on
-$\mathbb{A}$. <label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): why doesnt $\pi_T\propto R(s)$ </span>
+$\mathbb{A}$. <label for="q" class="margin-toggle"> ⊕</label><input type="checkbox" id="q" class="margin-toggle"><span class="marginnote">TODO(danj): why doesn’t $\pi_T\propto R(s)$ </span>
 </li>
 </ul>
 
@@ -1086,8 +1086,8 @@ $(G_x,R_x)$ for every $x\in\mathcal{X}$.
   </li>
   <li>$(\mathcal{O},\Pi,\mathcal{H})$ form a <strong>conditional flow parameterization</strong>
 of $(\mathcal{X},\mathcal{G},\mathcal{R})$.</li>
-  <li>$o_x=o(x)\in\mathcal{O}$ represent conditional paramterizations.</li>
-  <li>$\pi_x\coloneqq\Pi_x(o_x)$ is a distribution over $\mathcal{T}_x$, the set oc
+  <li>$o_x=o(x)\in\mathcal{O}$ represent conditional parameterizations.</li>
+  <li>$\pi_x\coloneqq\Pi_x(o_x)$ is a distribution over $\mathcal{T}_x$, the set of
 complete trajectories in $G_x$, which implicitly defines a terminating state
 probability measure in $G_x$:</li>
 </ul>
@@ -1281,8 +1281,8 @@ F\left(s_0\right)-E_X\left[\frac{F^{\prime}\left(s_0 \mid X\right)}{F\left(s_0
 a sampling mechanism exists.</li>
 </ul>
 
-<h2 id="gflownets-on-sets-grahs-and-to-marginalize-joint-distributions">
-<a class="anchor" href="#gflownets-on-sets-grahs-and-to-marginalize-joint-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions</h2>
+<h2 id="gflownets-on-sets-graphs-and-to-marginalize-joint-distributions">
+<a class="anchor" href="#gflownets-on-sets-graphs-and-to-marginalize-joint-distributions" aria-hidden="true"><span class="octicon octicon-link"></span></a>GFlowNets on Sets, Graphs, and to Marginalize Joint Distributions</h2>
 
 <h3 id="set-gflownets">
 <a class="anchor" href="#set-gflownets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Set GFlowNets</h3>
@@ -1521,7 +1521,7 @@ Trajectory Balance loss.</li>
 <ul>
   <li>Extends GFN framework to learn a policy $\pi$ for an agent in an environment
 that could be deterministic or stochastic.</li>
-  <li>The general idea is to compose teh state spaces into even and odd states and
+  <li>The general idea is to compose the state spaces into even and odd states and
 have the policy govern one set of transitions and the environment the other.</li>
 </ul>
 
@@ -1547,10 +1547,10 @@ all the transitions into the sink node from each of the visited states.</li>
 <a class="anchor" href="#multi-flows-distributional-gflownets-unsupervised-gflownets-and-pareto-gflownets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Multi-Flows, Distributional GFlowNets, Unsupervised GFlowNets and Pareto GFlowNets</h2>
 
 <ul>
-  <li>Imagine each particle in the flow has a color or label, and youc an account
+  <li>Imagine each particle in the flow has a color or label, and you can account
 for the different flows of all label types in a GFN.</li>
   <li>
-<strong>Proposition 61</strong>: Shows how to convert an outcome-conditioned GFLowNet into
+<strong>Proposition 61</strong>: Shows how to convert an outcome-conditioned GFlowNet into
 one that samples according to a given reward function given a posteriori,
 without having to retrain the network.</li>
   <li>Defines the <strong>Pareto additive terminal reward functions</strong> and the <strong>Pareto

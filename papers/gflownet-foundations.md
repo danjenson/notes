@@ -39,7 +39,7 @@ associated distributions, including conditional and marginal distributions.
 - **Terminating state**: Any state that is a parent of the sink state, $s_f$,
   i.e. $\\{s : s\to s_f\in\mathbb{A}\\}$; a terminating state may have
   other children from the sink state
-- **Terminating edge**: Any edge between a terminating state an the sink, i.e.
+- **Terminating edge**: Any edge between a terminating state and the sink, i.e.
   $s\to s_f$.
 - **Markovian flow**: A flow is Markovian if $P(s\to
   s'\mid\tau)=P(s\to s'\mid s)=P_F(s'\mid s)$ for any $s\neq s_0$,
@@ -440,7 +440,7 @@ $$
 
 ### GFlowNets and flow-matching losses
 
-- Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ with $s_0$, $s_f$, and $R: \mathcal{S}^f\to \mathbb{R}^+$, we say that $(\mathcal{O},\Pi,\mathcal{H})$ is a **flow parameritization** of $(G,R)$ if:
+- Given a pointed DAG $G=(\mathcal{S},\mathbb{A})$ with $s_0$, $s_f$, and $R: \mathcal{S}^f\to \mathbb{R}^+$, we say that $(\mathcal{O},\Pi,\mathcal{H})$ is a **flow parameterization** of $(G,R)$ if:
   1. $\mathcal{O}$ is a non-empty set.
   1. $\Pi$ is a function mapping each object $o\in \mathcal{O}$ to an element
      $\Pi(o)\in\Delta(\mathcal{T})$, the set of probability distributions on
@@ -588,7 +588,7 @@ $$
   edge-decomposable loss, this would be
   $\min_{o\in\mathcal{O}}\mathbb{E}_{(s\to s')\sim\pi_T}\left[L(o,s\to
   s')\right]$ where $\pi_T$ is any full support probability distribution on
-  $\mathbb{A}$. {% marginnote 'q' 'TODO(danj): why doesnt $\pi_T\propto R(s)$' %}
+  $\mathbb{A}$. {% marginnote 'q' "TODO(danj): why doesn't $\pi_T\propto R(s)$" %}
 
 ##### Edge-flow Paramterization, State-decomposable Loss
 
@@ -791,8 +791,8 @@ $$
   - $\mathcal{H}:x\in\mathcal{X}\mapsto \mathcal{H}\_x$
 - $(\mathcal{O},\Pi,\mathcal{H})$ form a **conditional flow parameterization**
   of $(\mathcal{X},\mathcal{G},\mathcal{R})$.
-- $o_x=o(x)\in\mathcal{O}$ represent conditional paramterizations.
-- $\pi_x\coloneqq\Pi_x(o_x)$ is a distribution over $\mathcal{T}_x$, the set oc
+- $o_x=o(x)\in\mathcal{O}$ represent conditional parameterizations.
+- $\pi_x\coloneqq\Pi_x(o_x)$ is a distribution over $\mathcal{T}_x$, the set of
   complete trajectories in $G_x$, which implicitly defines a terminating state
   probability measure in $G_x$:
 
@@ -968,7 +968,7 @@ $$
 - This can be approximated by Monte-Carlo averaging with draws from $P(X)$, if
   a sampling mechanism exists.
 
-## GFlowNets on Sets, Grahs, and to Marginalize Joint Distributions
+## GFlowNets on Sets, Graphs, and to Marginalize Joint Distributions
 
 ### Set GFlowNets
 
@@ -1156,7 +1156,7 @@ $$
 
 - Extends GFN framework to learn a policy $\pi$ for an agent in an environment
   that could be deterministic or stochastic.
-- The general idea is to compose teh state spaces into even and odd states and
+- The general idea is to compose the state spaces into even and odd states and
   have the policy govern one set of transitions and the environment the other.
 
 ## Appendix C. Expected Downstream Reward and Reward-Maximizing Policy
@@ -1173,9 +1173,9 @@ $$
 
 ## Multi-Flows, Distributional GFlowNets, Unsupervised GFlowNets and Pareto GFlowNets
 
-- Imagine each particle in the flow has a color or label, and youc an account
+- Imagine each particle in the flow has a color or label, and you can account
   for the different flows of all label types in a GFN.
-- **Proposition 61**: Shows how to convert an outcome-conditioned GFLowNet into
+- **Proposition 61**: Shows how to convert an outcome-conditioned GFlowNet into
   one that samples according to a given reward function given a posteriori,
   without having to retrain the network.
 - Defines the **Pareto additive terminal reward functions** and the **Pareto
