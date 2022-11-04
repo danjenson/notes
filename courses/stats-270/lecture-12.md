@@ -106,7 +106,7 @@ $$
   1. Choose a coordinate $i$.
   2. Draw $$y\sim q_i(x_i\to y)$$. Set $$\vec{y}=\vec{x}_i(y)$$. This is
      $$q(x_i\to y\mid \vec{x_{-1}})$$.
-- The MH ratio is then (TODO correct vectors)
+- The MH ratio is then
 
 $$
 \begin{aligned}
