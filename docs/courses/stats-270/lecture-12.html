@@ -117,31 +117,32 @@ c\cdot\frac{1}{\operatorname{Beta}\left(\beta_1+\beta_2\sigma,\beta_1+\beta_2\si
 \end{aligned}\]
 
 <ul>
-  <li>Let the proposal transition be a uniform darw from a box centered on the
-current $\mu=(\mu_H,\mu_M)$</li>
-  <li>TODO drawing</li>
+  <li>Let the proposal transition be a uniform draw from a box centered on the
+current $\mu=(\mu_H,\mu_M)$
+<label for="box-walk" class="margin-toggle">⊕</label><input type="checkbox" id="box-walk" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/box-walk.png"><br>Random walk in box.</span>
+</li>
 </ul>
 
 \[\begin{aligned}
 q(u\to u')
 &amp;=\begin{cases}
-  \frac{1}{4\delta^2}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }\mu_H,\mu_M&gt;\delta \\
-  \frac{1}{2\delta(\mu_{H}+\delta)}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }0&lt;\mu_H&lt;\delta,\mu_M&gt;\delta \\
-  \frac{1}{2\delta(\mu_{M}+\delta)}\mathbb{1}_\text{box}\left[u\right] &amp; \text{if }0&lt;\mu_M&lt;\delta,\mu_H&gt;\delta \\
+  \frac{1}{4\delta^2}\mathbb{1}_\text{box}\left[\mu'\right] &amp; \text{if }\mu_H,\mu_M&gt;\delta \\
+  \frac{1}{2\delta(\mu_{H}+\delta)}\mathbb{1}_\text{box}\left[\mu'\right] &amp; \text{if }0&lt;\mu_H&lt;\delta,\mu_M&gt;\delta \\
+  \frac{1}{2\delta(\mu_{M}+\delta)}\mathbb{1}_\text{box}\left[\mu'\right] &amp; \text{if }0&lt;\mu_M&lt;\delta,\mu_H&gt;\delta \\
 \end{cases} \\
 r
-&amp;=\min \left(1,\frac{\pi(u')}{\pi(u)}\cdot \frac{q(u'\to u)}{q(u\to u')}\right)
+&amp;=\min \left(1,\frac{\pi(\mu')}{\pi(\mu)}\cdot \frac{q(\mu'\to \mu)}{q(\mu\to \mu')}\right)
 \\
 \end{aligned}\]
 
 <ul>
-  <li>Accept $u’$ with probability $r$.</li>
+  <li>Accept $\mu’$ with probability $r$.</li>
   <li>This is a Markov chain and would have the stationary distribution $\pi$.</li>
   <li>
 <strong>Theorem</strong>: Metropolis-Hastings algorithm gives a Markov Chain satisfying detailed balance
 with respect to $\pi(\cdot)$.</li>
   <li>
-<strong>Proof</strong>: We want to show that detailed balance holds.
+<strong>Proof</strong>: We want to show that detailed balance holds: $\pi(x)k(x,y)=\pi(y)k(y,x)$.
     <ul>
       <li>If $x=y$, this is trivially satisfied, so assume $x\ne y$.</li>
     </ul>
@@ -149,8 +150,6 @@ with respect to $\pi(\cdot)$.</li>
 </ul>
 
 \[\begin{aligned}
-\pi(x)k(x,y)
-&amp;=\pi(y)k(y,x) \\
 k(x,y)
 &amp;= q(x,y)\cdot\min \left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right) \\
 \end{aligned}\]
@@ -172,31 +171,33 @@ k(x,y)
 
 \[\begin{aligned}
 \pi(x)k(x,y)
-&amp;=\pi(x)q(x,y)\min \left(1,\frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right) \\
+&amp;=\pi(x)q(x,y)\min \left(1,\frac{\overbrace{\pi(y)q(y,x)}^{0}}{\pi(x)q(x,y)}\right)=0 \\
 \pi(y)k(y,x)
+&amp;=\underbrace{\pi(y)q(y,x)}_{0}\min \left[1,\frac{\pi(x)q(x,y)}{\underbrace{\pi(y)q(y,x)}_{0}}\right]=0 \\
 \end{aligned}\]
 
 <ul>
-  <li>TODO finish</li>
   <li>We still need irreducibility. How can we think about this?</li>
   <li>Let $\mathcal{X}$ be a nice bounded and connected region in $\mathbb{R}^k$.</li>
   <li>Suppose $\pi(x)&gt;0\;\forall x\in \mathcal{X}$. If the proposal $q(x\to y)$
-satisfies $q(x\to y)&gt;0$ and $q(y\to x)&gt;0$, then states are all reachable from
-one another under the proposal distribution.</li>
-  <li>TODO drawing</li>
+satisfies $q(x\to y)&gt;0$ and $q(y\to x)&gt;0$, then all states are reachable from
+one another.
+<label for="x-u-y" class="margin-toggle">⊕</label><input type="checkbox" id="x-u-y" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/x-u-y.png"><br>Path from $x\to u\to y$.</span>
+</li>
   <li>Consider a possible path from $x\to y$.
     <ul>
       <li>Under $q$, this path has probability $q(x,u)\cdot q(u,y)&gt;0$</li>
       <li>Then the probability under MH chain for this path is $q(x,u)\min
-\left(1,\frac{\pi(u)q(u,x)}{\pi(x)q(x,u)}\cdot q(u,y)\min \left(1,\frac{\pi(y)q(y,u)}{\pi(u)q(u,y)}\right)\right)$, which is still greater than 0.</li>
+\left(1,\frac{\pi(u)q(u,x)}{\pi(x)q(x,u)}\right)\cdot q(u,y)\min \left(1,\frac{\pi(y)q(y,u)}{\pi(u)q(u,y)}\right) &gt; 0$</li>
       <li>Under the proposal distribution, the chain should be irreducible.</li>
     </ul>
   </li>
-  <li>Suppose \(S=\{x: \pi(x)&gt;0\}=S_1\cup S_2\), i.e. $S_1$ and $S_2$ are not
-connected regions.</li>
-  <li>TODO drawing</li>
-  <li>In this example, the proposal distribution has to be able to cross from one
-region to another, i.e. the “jumps” have to be large enough.</li>
+  <li>Suppose \(S=\{x: \pi(x)&gt;0\}=S_1\cup S_2\), i.e. $S_1$ and $S_2$ are
+connected regions, but $S$ is not connected.
+<label for="region-s" class="margin-toggle">⊕</label><input type="checkbox" id="region-s" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/region-s.png"><br>Regions $S_1$ and $S_2$.</span>
+</li>
+  <li>In this example, the proposal distribution has to be able to “jump” from one
+region to another, i.e. the “jumps” must be large enough.</li>
 </ul>
 
 <h2 id="gibbs-sampling">
@@ -204,16 +205,15 @@ region to another, i.e. the “jumps” have to be large enough.</li>
 
 <ul>
   <li>Consider proposal move that involves changing one coordinate of $x$.
-$\vec{x}=(x_1,\ldots,x_i,\ldots,x_d)$.</li>
+$\vec{x}$ is $d$-dimensional: $\vec{x}=(x_1,\ldots,x_i,\ldots,x_d)$.</li>
   <li>Let $\vec{x}_i(y)=(x_1,\ldots,x_i=y,\ldots,x_d)$, i.e. changing the $i$th
 component to $y$.</li>
-  <li>Let $\vec{x}_{-i}\in \mathbb{R}^{d-1}$, i.e. delete the $i$th component of $\vec{x}$
-delete the $i$th component of $\vec{x}$.</li>
+  <li>Let $\vec{x}_{-i}\in \mathbb{R}^{d-1}$, i.e. delete the $i$th component of $\vec{x}$.</li>
   <li>Construct $q(x,y)$ in two steps:
     <ol>
-      <li>Choose a coordinate $i$</li>
+      <li>Choose a coordinate $i$.</li>
       <li>Draw \(y\sim q_i(x_i\to y)\). Set \(\vec{y}=\vec{x}_i(y)\). This is
-\(q(\vec{x}_i\to \vec{y}\mid \vec{x_{-1}})\).</li>
+\(q(x_i\to y\mid \vec{x_{-1}})\).</li>
     </ol>
   </li>
   <li>The MH ratio is then (TODO correct vectors)</li>
@@ -221,16 +221,18 @@ delete the $i$th component of $\vec{x}$.</li>
 
 \[\begin{aligned}
 \frac{\pi(\vec{y})q(\vec{y},\vec{x})}{\pi(\vec{x})q(\vec{x},\vec{y})}
-&amp;= \frac{\pi(\vec{x}_i(y))}{\pi(\vec{x})}\cdot \frac{q_i(\vec{y}\to\vec{x}_i)}{q_i(\vec{x}_i\to \vec{y})} \\
-&amp;= \frac{\pi_i(\vec{y}\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})}{\pi_i(\vec{x}_i\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})} \\
+&amp;= \frac{\pi(\vec{x}_i(y))}{\pi(\vec{x})}\cdot \frac{q_i(y\to x_i)}{q_i(x_i\to y)} \\
+\frac{\pi(\vec{x}_i(y))}{\pi(\vec{x})}
+&amp;= \frac{\pi_i(y\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})}{\pi_i(x_i\mid \vec{x}_{-i})\cdot \pi(\vec{x}_{-i})}
+= \frac{\pi_i(y\mid \vec{x}_{-i})}{\pi_i(x_i\mid \vec{x}_{-i})} \\
 \end{aligned}\]
 
 <ul>
   <li>This suggests that setting
-\(q_i(x_i\to\vec{y})=\pi_i(y\mid\vec{x}_{-1})\) makes the ratio always 1, so
+\(q_i(x_i\to y)=\pi_i(y\mid\vec{x}_{-1})\) makes the ratio always 1, so
 you always accept the sample.</li>
   <li>
-<strong>Gibbs sampling</strong>: Sample from $\pi_i(\cdot\mid \vec{x}_{-i})$ iteratively.</li>
+<strong>Gibbs sampling</strong>: sample from $\pi_i(\cdot\mid \vec{x}_{-i})$ iteratively.</li>
 </ul>
 
 <h3 id="random-scan-gibbs">
@@ -241,7 +243,7 @@ you always accept the sample.</li>
 </ul>
 
 <ol>
-  <li>Select $i$ randomly from \(\{1,2,\ldots,d\}\) randomly.</li>
+  <li>Select $i$ from \(\{1,2,\ldots,d\}\) randomly.</li>
   <li>Draw $y$ from the conditional distribution $\pi_i(y\mid \vec{x}_{-i})$ and
 set \(\vec{x}_i^{(t+1)}(y)\), \(\vec{x}_{-i}^{(t+1)}=\vec{x}_{-i}^{(t)}\).</li>
 </ol>
@@ -254,8 +256,8 @@ set \(\vec{x}_i^{(t+1)}(y)\), \(\vec{x}_{-i}^{(t+1)}=\vec{x}_{-i}^{(t)}\).</li>
 \[\begin{aligned}
 \pi(\vec{x})k(\vec{x},\vec{y})
 &amp;=\pi(\vec{x})\cdot\frac{1}{d}\cdot\pi_i(y\mid\vec{x}_{-i}) \\
+&amp;=\frac{\pi(\vec{x})\pi(\vec{y})}{d\cdot\pi(\vec{x}_{-i})} \\
 &amp;=\frac{\pi(\vec{x})\pi(\vec{y})}{d\cdot\pi(\vec{y}_{-i})} \\
-&amp;= \pi(\vec{x}_{-i})
 \end{aligned}\]
 
 <ul>
@@ -273,7 +275,7 @@ are always using the “latest” data.</li>
   <li>\(\vec{x}=(x_1,x_2)\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 1\end{bmatrix},\begin{bmatrix}1 &amp; \rho \\ \rho &amp; 1\end{bmatrix}\right)\), then
     <ul>
       <li>$x_1\mid x_2\sim \operatorname{Normal}\left(\rho x_2,1-\rho^2 \right)$</li>
-      <li>$x_2\mid x_1\sim \operatorname{Normal}\left(\rho x_2,1-\rho^2 \right)$ TODO FINISH</li>
+      <li>$x_2\mid x_1\sim \operatorname{Normal}\left(\rho x_1,1-\rho^2 \right)$</li>
     </ul>
   </li>
   <li>Systematic scan is not a special case of MH because the following is not
@@ -294,7 +296,9 @@ converges to the space average.</li>
   <li>
 <strong>Proof</strong>:
     <ol>
-      <li>Irreducibility $\pi(\cdot)&gt;0$. TODO drawing</li>
+      <li>Irreducibility $\pi(\cdot)&gt;0$.
+<label for="conditional-sampling" class="margin-toggle">⊕</label><input type="checkbox" id="conditional-sampling" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/conditional-sampling.png"><br>Conditional sampling the system.</span>
+</li>
       <li>Each single coordinate update in the scan satisfies detailed balance. Each
 step leaves $\pi(\cdot)$ invariant. Hence the basic theorem of Markov Chain
 applies.</li>
@@ -323,17 +327,18 @@ Z_i
 \end{aligned}\]
 
 <ul>
+  <li>I.e. $x_i=1$ or $x_i=-1$.</li>
   <li>If $\pi(\vec{x})\propto \exp\left(-\sum_{c\in\mathcal{C}} v_c(x_c)\right)$
-where $\mathcal{C}$ is a set of local neighborhoods.</li>
-  <li>TODO drawing</li>
-  <li>TODO finish</li>
+where $\mathcal{C}$ is a set of local neighborhoods.
+<label for="ising-neighborhoods" class="margin-toggle">⊕</label><input type="checkbox" id="ising-neighborhoods" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/ising-neighborhoods.png"><br>Ising neighborhoods.</span>
+</li>
 </ul>
 
 <h3 id="efficiency">
 <a class="anchor" href="#efficiency" aria-hidden="true"><span class="octicon octicon-link"></span></a>Efficiency</h3>
 
 \[\begin{aligned}
-X\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 0 \end{bmatrix},\begin{bmatrix}1 &amp;
+X&amp;\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 0 \end{bmatrix},\begin{bmatrix}1 &amp;
 \rho \\ \rho &amp; 1\end{bmatrix}\right) \\
 \operatorname{var}\left[X\right]
 &amp;= 1-\rho^2 \\
@@ -342,9 +347,9 @@ X\sim \operatorname{Normal}\left(\begin{bmatrix}0 \\ 0 \end{bmatrix},\begin{bmat
 \end{aligned}\]
 
 <ul>
-  <li>TODO drawing</li>
-  <li>Sometimes a Markov chain can satisfy the theorem but it will take too long to
-simulate (in our lifetimes).</li>
+  <li>Sometimes a Markov chain can satisfy the theorem but it will take too long to simulate.
+<label for="rho-steps" class="margin-toggle">⊕</label><input type="checkbox" id="rho-steps" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-12/rho-steps.png"><br>Small steps with high $\rho$.</span>
+</li>
 </ul>
 
 </article>
