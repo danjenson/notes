@@ -95,8 +95,8 @@ $$
 
 $$
 \begin{aligned}
-p(\tau,\mu_1,\mu_1\mid\vec{x})&\propto\underbrace{\frac{1}{\tau^2}}_{\text{Jeffrey's Prior}}\cdot\underbrace{\frac{1}{\tau^n}\exp\left(-\frac{1}{2\tau}\left[\sum_{i=1}^n(x_i-\bar{x})^2+\sum_{i=1}^n(y_i-\mu_2)\right]\right)}_{\text{likelihood}} \\
-p(\tau,\mu_1,\mu_1\mid\vec{x})&\propto\frac{1}{\tau^2}\cdot\frac{1}{\tau^n}\exp\left(-\frac{1}{2\tau}\left[\underbrace{\sum_{i=1}^n(x_i-\bar{x})^2+\sum_{i=1}^n(y_i-\bar{y})}_{S\text{ (corrected sum of squares)}}+n(\bar{x}-\mu_1)^2+n(\bar{y}-\mu_2)^2\right]\right) \\
+p(\tau,\mu_1,\mu_1\mid\vec{x})&\propto\underbrace{\frac{1}{\tau^2}}_{\text{Jeffrey's Prior}}\cdot\underbrace{\frac{1}{\tau^n}\exp\left(-\frac{1}{2\tau}\left[\sum_{i=1}^n(x_i-\mu_1)^2+\sum_{i=1}^n(y_i-\mu_2)\right]\right)}_{\text{likelihood}} \\
+p(\tau,\mu_1,\mu_1\mid\vec{x})&\propto\frac{1}{\tau^2}\cdot\frac{1}{\tau^n}\exp\left(-\frac{1}{2\tau}\left[\underbrace{\sum_{i=1}^n(x_i-\bar{x})^2+\sum_{i=1}^n(y_i-\bar{y})^2}_{S\text{ (corrected sum of squares)}}+n(\bar{x}-\mu_1)^2+n(\bar{y}-\mu_2)^2\right]\right) \\
 p(\tau\mid\vec{x})&\propto\frac{1}{\tau^{n+2}}\exp\left(-\frac{1}{2\tau}S\right)\underbrace{\int_{-\infty}^\infty
 \exp\left(-\frac{n}{2\tau}(\bar{x}-\mu_1)^2\right)\dd
 \mu_1}_{\sqrt{2\pi\tau/n}}\underbrace{\int_{-\infty}^\infty
@@ -106,10 +106,25 @@ p(\tau\mid\vec{x})&\propto\frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2\tau}S\right)
 \end{aligned}
 $$
 
+- The trick above comes from the analysis of variance:
+
+$$
+\begin{aligned}
+&\sum_{i=1}^n (x_i-\mu)^2 \\
+&= \sum_{i=1}^n (x_i^2-2x_i\mu + \mu_2) \\
+&= \sum_{i=1}^n (x_i^2) - 2n\bar{x}\mu + n\mu^2 \\
+&= \sum_{i=1}^n (x_i^2) - 2n\bar{x}\mu + n\mu^2 + 2n\bar{x} - 2n\bar{x} \\
+&= \sum_{i=1}^n (x_i^2) - 2n\bar{x}^2 + n\bar{x}^2  + n\mu_2 - 2n\bar{x}\mu + n\bar{x}^2  \\
+&= \sum_{i=1}^n (x_i^2) - 2(n\bar{x})\bar{x} + n\bar{x}^2  + n(\mu^2 - 2\bar{x}\mu + \bar{x}^2)  \\
+&= \sum_{i=1}^n (x_i^2 - 2x_i\bar{x} + \bar{x}^2)  + n(\mu^2 -\bar{x})^2  \\
+&= \sum_{i=1}^n (x_i - \bar{x})^2  + n(\mu^2 -\bar{x})^2 \\
+\end{aligned}
+$$
+
 - Let $r=\frac{S}{\tau}$, i.e. $\tau=\frac{S}{r}$, and Jacobian is $\frac{S}{r^2}$.
 - This is a scaled inverse $\chi^2$ with $2n$ degrees of freedom.
 - $p(r\mid\vec{x})\propto
-  \frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2}r\cdot\frac{S}{r^2}\right)\propto r^{n-1}\exp\left(-\frac{1}{2}r\right)\sim\operatorname{Gamma}\left(n,\frac{1}{2}\right)=\chi_{2n}^2$.
+  \frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2}r\right)\cdot\frac{S}{r^2}\propto r^{n-1}\exp\left(-\frac{1}{2}r\right)\sim\operatorname{Gamma}\left(n,\frac{1}{2}\right)=\chi_{2n}^2$.
 - Thus, conditional on $\vec{x}$, $r=\frac{S}{\tau}\sim\chi_{2n}^2$
   (scale-inverse $\chi^2$).
 - But conditional on $\vec{\theta}$, $r\sim\chi_{2n-2}^2$ (when you correct for
@@ -123,7 +138,7 @@ $$
 $$
 \begin{aligned}
 p(\tau,\mu_1,\mu_2\mid\vec{x})
-&\propto\frac{1}{\tau^{n+2}}\exp\left(-\frac{1}{2\tau}\left[S+n(\bar{x}-\mu_1)^2+n(\bar{y}+\mu_2)^2\right]\right) \\
+&\propto\frac{1}{\tau^{n+2}}\exp\left(-\frac{1}{2\tau}\left[S+n(\bar{x}-\mu_1)^2+n(\bar{y}-\mu_2)^2\right]\right) \\
 p(\tau,\mu_1\mid\vec{x})
 &\propto\frac{1}{\tau^{n+\frac{3}{2}}}\exp\left(-\frac{1}{2\tau}\left[S+n(\bar{x}-\mu_1)^2\right]\right) \\
 \end{aligned}
@@ -166,7 +181,7 @@ $$
 
 $$\frac{1}{\left(1+\frac{t^2}{\nu}\right)^{\frac{\nu+1}{2}}}$$
 
-- Then, if you set $t=\frac{\sqrt{n}(\bar{x}-\mu_1)}{\sqrt{S/2n}}$ and $\mu=2n$,
+- Then, if you set $t=\frac{\sqrt{n}(\bar{x}-\mu_1)}{\sqrt{S/2n}}$ and $\nu=2n$,
   then $\frac{\sqrt{n}(\bar{x}-\mu_1)}{\sqrt{S/2n}}\sim t_{2n}$.
   - So, the marginal posterior of $\mu_1$ is a t-density with $2n$ degrees of
     freedom, which we suspect is wrong; it should be $2n-2$).
@@ -204,7 +219,7 @@ $$
 \theta
 &= (\tau,\mu_1,\mu_2,\ldots,\mu_n) \\
 S
-&= \sum_{i=1}^n\left[(x_i-\hat{\mu}_i)^2+(y_i\hat{\mu}_i)^2\right]
+&= \sum_{i=1}^n\left[(x_i-\hat{\mu}_i)^2+(y_i-\hat{\mu}_i)^2\right]
 = \frac{1}{2}\sum_{i=1}^n (x_i-y_i) \\
 \hat{\mu}_i
 &= \frac{X_i+Y_i}{2} \\
@@ -223,9 +238,9 @@ i(\theta)&\propto \begin{bmatrix}
 \end{aligned}
 $$
 
-- Note that $$\sum_{i=1}^n\left[(x_i-\hat{\mu}_i)^2+(y_i\hat{\mu}_i)^2\right]
+- Note that $$\sum_{i=1}^n\left[(x_i-\hat{\mu}_i)^2+(y_i-\hat{\mu}_i)^2\right]
 =\frac{1}{2}\sum_{i=1}^n (x_i-y_i)$$ becomes a normal distribution which can be
-  used to derive $R\mid\theta\sim\chi_n^2$.
+  used to derive $R\mid\theta\sim\chi_{n}^2$.
 
 - The same computation gives:
 

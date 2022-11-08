@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 12: Metropolis-Hastings Proof & Gibbs Sampling & Ising Model"
+subtitle: "Lecture 12: Metropolis-Hastings Proof & Gibbs Sampling & Ising Model (2022-11-03)"
 toc: true
 ---
 

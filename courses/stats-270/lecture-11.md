@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 11: Metropolis-Hastings Algorithm"
+subtitle: "Lecture 11: Metropolis-Hastings Algorithm (2022-11-01)"
 toc: true
 ---
 
