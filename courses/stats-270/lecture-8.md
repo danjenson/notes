@@ -126,7 +126,7 @@ $$
 - $p(r\mid\vec{x})\propto
   \frac{1}{\tau^{n+1}}\exp\left(-\frac{1}{2}r\right)\cdot\frac{S}{r^2}\propto r^{n-1}\exp\left(-\frac{1}{2}r\right)\sim\operatorname{Gamma}\left(n,\frac{1}{2}\right)=\chi_{2n}^2$.
 - Thus, conditional on $\vec{x}$, $r=\frac{S}{\tau}\sim\chi_{2n}^2$
-  (scale-inverse $\chi^2$).
+  and $\tau\sim \operatorname{Inv}-\chi_{2n}^2$).
 - But conditional on $\vec{\theta}$, $r\sim\chi_{2n-2}^2$ (when you correct for
   the mean, you lose 2 degrees of freedom).
 - This suggests that the degrees of freedom in the posterior derived from
