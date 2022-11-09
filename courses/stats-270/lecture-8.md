@@ -113,7 +113,7 @@ $$
 &\sum_{i=1}^n (x_i-\mu)^2 \\
 &= \sum_{i=1}^n (x_i^2-2x_i\mu + \mu_2) \\
 &= \sum_{i=1}^n (x_i^2) - 2n\bar{x}\mu + n\mu^2 \\
-&= \sum_{i=1}^n (x_i^2) - 2n\bar{x}\mu + n\mu^2 + 2n\bar{x} - 2n\bar{x} \\
+&= \sum_{i=1}^n (x_i^2) - 2n\bar{x}\mu + n\mu^2 + 2n\bar{x}^2 - 2n\bar{x}^2 \\
 &= \sum_{i=1}^n (x_i^2) - 2n\bar{x}^2 + n\bar{x}^2  + n\mu_2 - 2n\bar{x}\mu + n\bar{x}^2  \\
 &= \sum_{i=1}^n (x_i^2) - 2(n\bar{x})\bar{x} + n\bar{x}^2  + n(\mu^2 - 2\bar{x}\mu + \bar{x}^2)  \\
 &= \sum_{i=1}^n (x_i^2 - 2x_i\bar{x} + \bar{x}^2)  + n(\mu^2 -\bar{x})^2  \\
