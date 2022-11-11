@@ -54,7 +54,7 @@
 
   <link
     rel="canonical"
-    href="https://danjenson.github.io/notes/courses/stats-270/"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-13.html"
   />
 </head>
 
@@ -82,22 +82,31 @@
 </header>
 
     <article class="group">
-<h1 class="title">STATS 270: Bayesian Statistics</h1>
-  <ul>
-  <li><a href="typed-notes">Notes on “Old lectures by Wong and Shen”</a></li>
-  <li><a href="lecture-1">Lecture 1: Review</a></li>
-  <li><a href="lecture-2">Lecture 2: Multinomial, Beta, and Dirichlet</a></li>
-  <li><a href="lecture-3">Lecture 3: Decision Theory</a></li>
-  <li><a href="lecture-4">Lecture 4: Decision Theory continued…</a></li>
-  <li><a href="lecture-5">Lecture 5: Sufficiency</a></li>
-  <li><a href="lecture-6">Lecture 6: Likelihood &amp; Conditionality Principles</a></li>
-  <li><a href="lecture-7">Lecture 7: Non-informative Priors (Jeffery’s Prior)</a></li>
-  <li><a href="lecture-8">Lecture 8: Jeffrey’s Prior and the Score Function</a></li>
-  <li><a href="lecture-9">Lecture 9: Hierarchical &amp; Empirical Bayes</a></li>
-  <li><a href="lecture-10">Lecture 10: Hierarchical Bayes &amp; The Federalist Papers</a></li>
-  <li><a href="lecture-11">Lecture 11: Metropolis-Hastings Algorithm</a></li>
-  <li><a href="lecture-12">Lecture 12: Metropolis-Hastings Proof &amp; Gibbs Sampling &amp; Ising Model</a></li>
-  <li><a href="lecture-13">Lecture 13: Data Augmentation and Latent Variables</a></li>
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 13: Data Augmentation and Latent Variables (2022-11-10)</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#data-augmentation-and-latent-variables">Data Augmentation and Latent Variables</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="data-augmentation-and-latent-variables">
+<a class="anchor" href="#data-augmentation-and-latent-variables" aria-hidden="true"><span class="octicon octicon-link"></span></a>Data Augmentation and Latent Variables</h2>
+
+<ul>
+  <li>This lecture was a collection of examples that were provided as typed pdf.</li>
+  <li>The key idea was when you are trying to augment your dataset, introduce a
+latent variable that makes it easier to calculate your parameter $\theta$.
+Then iterate (1) sampling that latent variable conditional on your data and the
+parameters and (2) sampling the parameters based on the data and latent
+variable.</li>
+  <li>One nice property to look for is data independence given your
+parameters.</li>
+  <li>There is an extended example about protein binding sites in the pdf.</li>
 </ul>
 
 </article>
