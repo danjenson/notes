@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-14.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 14: Gradient & Hamiltonian Monte Carlo Moves (2022-11-15)</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h2"><a href="#gradient-moves">Gradient Moves</a></li>
+<li class="toc-entry toc-h2"><a href="#hamiltonian-moves-hmc">Hamiltonian Moves (HMC)</a></li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h2 id="gradient-moves">
+<a class="anchor" href="#gradient-moves" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gradient Moves</h2>
+
+<ul>
+  <li>$f(x)=\frac{1}{c}\exp\left(-U(x)\right)$ where $x\in \mathbb{R}^d$ and $U(x)$
+is called the potential energy.</li>
+  <li>Equivalent to negative log likelihood up to a constant.</li>
+  <li>Gradient moves:
+    <ul>
+      <li>Given the current value of $x$</li>
+      <li>Let $g(x)=\nabla\log f(x)=-\nabla U(x)$</li>
+      <li>Move to \(y=x+\underbrace{\delta g(x)}_{\text{gradient shift of step size
+}\delta} +\underbrace{\epsilon Z}_{\text{random walk with step size
+}\epsilon}\) where $Z\sim \operatorname{Normal}\left(0,I_d\right)$</li>
+    </ul>
+  </li>
+  <li>Langevin move:
+    <ul>
+      <li>$\epsilon=\sqrt{2\delta}$ or $\delta=\frac{1}{2}\epsilon^2$</li>
+      <li>As $\delta\to 0$, then this approximates the evolution of a stochastic
+differential equation (SDE) which gives $f(\cdot)$ as its equilibrium
+distribution. This is true without the rejection step.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Potential difficulty under MH:</p>
+
+    <ul>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>In a region where $</td>
+              <td>g(x)</td>
+              <td>$ is large.</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+      <li>We want to take a reasonably large step in $g(x)$ direction.</li>
+      <li>You’re unlikely to step back with the random walk when the gradient is
+large.</li>
+      <li>This means that the reverse probability is small, making the acceptance
+probability very small.</li>
+      <li>If you use a large Gaussian, then you are ignoring the gradient information.</li>
+      <li>There is a tension between reversibility for detailed balance and wanting to
+use the gradient to get to high probability regions.</li>
+      <li>E.g. \(U(x)=-\frac{1}{2}x^2,\delta g(x)+\epsilon Z=-\delta x +\epsilon Z\)
+        <ul>
+          <li>For acceptance, you need \(\delta|x|\approx\sqrt{\delta}\implies
+\delta\sim\frac{1}{|x|^2}\) (a small step size).
+<label for="gradient-gaussian" class="margin-toggle">⊕</label><input type="checkbox" id="gradient-gaussian" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-14/gradient-gaussian.png"><br>Gradient+Gaussian steps.</span>
+</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>One idea is to use a reversible gradient move.
+    <ul>
+      <li>
+\[y=x+\delta z_0 g(x)+\epsilon Z\]
+      </li>
+      <li>$z_0$ is either 1 or 0 with $0.5$ probability each.</li>
+      <li>This enables you to jump forward and backward with equal probability.
+<label for="reversible-gradient" class="margin-toggle">⊕</label><input type="checkbox" id="reversible-gradient" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-14/reversible-gradient.png"><br>Reversible-Gradient steps.</span>
+</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="hamiltonian-moves-hmc">
+<a class="anchor" href="#hamiltonian-moves-hmc" aria-hidden="true"><span class="octicon octicon-link"></span></a>Hamiltonian Moves (HMC)</h2>
+
+<ul>
+  <li>Radford, Neal, “MCMC Using Hamiltonian Dynamics”</li>
+  <li>Want to sample from the Boltzmann distribution.</li>
+  <li>In statistics, $T=1$, $U(q)=-\log$posterior density.</li>
+  <li>In physics, $T$ is the temperature of the system and $U$ is the potential
+energy, and $Z_T$ is called the partition function (a function of $T$).</li>
+</ul>
+
+\[\begin{aligned}
+p(q)
+&amp;=\frac{1}{Z_T}\exp\left(-U(q)/T\right) \\
+q
+&amp;=\begin{bmatrix}q_1\\ \vdots \\ q_d\end{bmatrix}
+\end{aligned}\]
+
+<ul>
+  <li>How is this related to dynamics?</li>
+  <li>Recall that in classical mechanics, force is given by $-\nabla U(q)$.</li>
+  <li>Newtons equations of motion: $m \frac{d^2 q(t)}{dt^2}=-\nabla U(q)$.
+    <ul>
+      <li>2nd order differential equation.</li>
+    </ul>
+  </li>
+  <li>Hamilton reformulated this as a first order system.</li>
+  <li>Let:</li>
+</ul>
+
+\[\begin{aligned}
+p
+&amp;=\begin{bmatrix}p_1\\ \vdots \\ p_d\end{bmatrix}=\text{momentum vector} \\
+k(p)
+&amp;=\frac{1}{2}\sum_{i=1}^d \frac{p_i^2}{m_i}=\text{kinetic energy} \\
+H(q, p)
+&amp;= U(q)+K(p)=\text{Hamiltonian function or total energy}
+\end{aligned}\]
+
+<ul>
+  <li>This implies:</li>
+</ul>
+
+\[\begin{aligned}
+\dv{q_i}{f}
+&amp;=\frac{1}{m_i}p_i \\
+\dv{p_i}{f}
+&amp;= -\pdv{U}{q_i} \\
+\end{aligned}\]
+
+<ul>
+  <li>In 1816-1898, Boltzmann argued that in the long run, the relative frequency in
+phase \(\Omega=\{(q,p)\}\), when marginalized to $\vec{q}$, it is described by
+$p(q)\propto \exp\left(-\frac{U(q)}{T}\right)$. This is an ergodic hypothesis.
+(G.D. Birhoff 1931 gave a proof.)</li>
+  <li>In fact, Birhoff’s work suggested that, in thermal equilibrium at temperature
+$T$, the joint distribution of $(q, p)$ is given by</li>
+</ul>
+
+\[\begin{aligned}
+p(q,p)
+&amp;=\frac{1}{c}\exp\left(-\frac{1}{T}H(q,p)\right) \\
+&amp;=\underbrace{\left(\frac{1}{Z_T}\exp\left(\frac{-U(q)}{T}\right)\right)}_{\text{potential energy}}\underbrace{\left(\frac{1}{c}\exp\left(-\frac{1}{T}\sum_{i=1}^d \frac{p_i^2}{2m_i}\right)\right)}_{\text{kinetic energy}} \\
+p_i&amp;\sim \text{independent}\operatorname{Normal}\left(0,m_i T\right) \\
+\vec{q}&amp;\sim \operatorname{Boltzman dist}\propto \exp\left(\frac{-U(q)}{T}\right) \\
+\end{aligned}\]
+
+<ul>
+  <li>We mimic this by a Markov Chain with HMC proposal.</li>
+  <li>Assume for simplicity:
+    <ul>
+      <li>$T=1$</li>
+      <li>Current state is $(q, p)$</li>
+    </ul>
+  </li>
+  <li>
+    <p>Then:</p>
+
+    <ol>
+      <li>Use $(q^{(0)}, p^{(0)})$, $p_i^{(0)}\sim
+\operatorname{Normal}\left(0,m_i\right)$ for $i=1,\ldots,d$.</li>
+      <li>Use $(q^{(0), p^{(0)}})$ as an initial value, and evolve the system using
+the Hamiltonian dynamic for a duration $\ell$, to get $(q^{(1)},p^{(1)})$.</li>
+      <li>
+        <p>Propose to move to a new point $(q^{(1)},-p^{(1)})$. Accept with
+probability:</p>
+
+\[\begin{aligned}
+ r
+&amp;=\min\left[1,
+\frac{\exp\left(-H(q^{(1)},-p^{(1)})\right)}{\exp\left(-H(p^{(0)},q^{(0)})\right)}\right]
+\end{aligned}\]
+      </li>
+    </ol>
+  </li>
+  <li>To implement step 2, we divide $[0, \ell]$ into steps of size $\epsilon$.</li>
+  <li>
+    <p>Use “leapfrog” algorithm as follows
+$\left(t=0,\epsilon,2\epsilon,\ldots,\frac{\ell}{\epsilon}\right)$:</p>
+
+    <ul>
+      <li>Given $(q(t),p(t))$</li>
+    </ul>
+
+\[\begin{aligned}
+p_i \left(t+\frac{\epsilon}{2}\right)
+&amp;=p_i(t)-\left(\epsilon\right)\cdot\pdv{U}{q_i}(q(t)) \\
+q_i \left(t+\frac{\epsilon}{2}\right)
+&amp;=q_i(t)-\left(\epsilon\right)\cdot\pdv{p_i\left(t+\frac{\epsilon}{2}\right)}{m_i} \\
+p_i \left(t+\epsilon\right)
+&amp;=p_i(t+\frac{\epsilon}{2})-\left(\frac{\epsilon}{2}\right)\cdot\pdv{U}{q_i}(q(t+\epsilon)) \\
+\end{aligned}\]
+
+    <ul>
+      <li>Repeat this for $L=\frac{\ell}{\epsilon}$ steps.</li>
+    </ul>
+  </li>
+  <li>
+<strong>Theorem</strong>: HMC transition with “leapfrog” implementation leaves
+$p(q,p)=\frac{1}{c}\exp\left(-H(q,p)\right)$ invariant.</li>
+  <li>
+<strong>Proof</strong>: Define a transformation $(p^{(0)},q^{(0)})\to_S(q^{(1)},-p^{(1)})$
+    <ol>
+      <li>$S$ is 1-1 in $\Omega$.</li>
+      <li>$S$ preserves volume because it is a composition of “shear”
+transformations.
+<label for="shear" class="margin-toggle">⊕</label><input type="checkbox" id="shear" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-14/shear.png"><br>HMC shear transformations.</span>
+</li>
+    </ol>
+  </li>
+</ul>
+
+<figure class="fullwidth"><img src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-14/detailed-balance.png"><figcaption>Detailed balance.</figcaption></figure>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
