@@ -17,3 +17,4 @@ title: "STATS 270: Bayesian Statistics"
 - [Lecture 12: Metropolis-Hastings Proof & Gibbs Sampling & Ising Model](lecture-12)
 - [Lecture 13: Data Augmentation and Latent Variables](lecture-13)
 - [Lecture 14: Gradient & Hamiltonian Monte Carlo Moves](lecture-14)
+- [Lecture 15: Mode Mixing Problem](lecture-15)
