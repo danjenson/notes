@@ -161,5 +161,5 @@ $$
      transformations.
      {% marginfigure 'shear' 'courses/stats-270/figures/lecture-14/shear.png' 'HMC shear transformations.' %}
 
-{% fullwidth 'courses/stats-270/figures/lecture-14/detailed-balance.png'
+{% maincolumn 'courses/stats-270/figures/lecture-14/detailed-balance.png'
 'Detailed balance.' %}
