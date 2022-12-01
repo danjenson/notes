@@ -163,7 +163,7 @@ $$
 - Let $q(x,y)$ be a "proposal" transition kernel.
 - For $t=1,2,\ldots$
   1. Draw $y$ from the proposal $q(x_{t-1}, y)$ (let $x=x_{t-1}$)
-  2. Compute the MH ratio, $r=\min \left[1, \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right]$.
+  2. Compute the MH ratio, $r=\min \left[1, \frac{\pi(y)q(x,y)}{\pi(x)q(y,x)}\right]$.
   3. Draw $$U\sim \operatorname{Uniform}\left(0,1\right)$$, set $$x_t=\begin{cases}
     y & \text{if }u < r \\
     x_{t-1} &\text{otherwise} \\

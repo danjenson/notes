@@ -288,7 +288,7 @@ transition kernel $k$.</li>
   <li>For $t=1,2,\ldots$
     <ol>
       <li>Draw $y$ from the proposal $q(x_{t-1}, y)$ (let $x=x_{t-1}$)</li>
-      <li>Compute the MH ratio, $r=\min \left[1, \frac{\pi(y)q(y,x)}{\pi(x)q(x,y)}\right]$.</li>
+      <li>Compute the MH ratio, $r=\min \left[1, \frac{\pi(y)q(x,y)}{\pi(x)q(y,x)}\right]$.</li>
       <li>Draw \(U\sim \operatorname{Uniform}\left(0,1\right)\), set \(x_t=\begin{cases}
   y &amp; \text{if }u &lt; r \\
   x_{t-1} &amp;\text{otherwise} \\
