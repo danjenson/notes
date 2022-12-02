@@ -108,7 +108,7 @@
 
 <ul>
   <li>Target density: $p(x)$</li>
-  <li>Proposal distribution: $q(x)$</li>
+  <li>Proposal/trial density: $q(x)$</li>
   <li>Assume both $p, q$ can be evaluated</li>
 </ul>
 
@@ -116,10 +116,10 @@
 <a class="anchor" href="#simple-importance-sampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simple Importance Sampling</h3>
 
 <ul>
-  <li>Draw $x_i$ for $i=1,\ldots,n$ from $q()$</li>
+  <li>Draw $x_i\sim q$ for $i=1,\ldots,n$</li>
   <li>Compute $w_i=w(x_i)$ then \(w(x)=
 \begin{cases}
-&amp;=p(x)/q(x) &amp;\text{if} q(x) &gt; 0 \\
+&amp;=p(x)/q(x) &amp;\text{if } q(x) &gt; 0 \\
 &amp;=0 &amp;\text{otherwise}
 \end{cases}\)</li>
   <li>The set $(x_i, w_i)$ for $i=1,\ldots,n$ is a weighted sample.</li>
@@ -163,14 +163,19 @@ weighted sample \(\hat{\alpha}=\frac{1}{n}\sum_{i=1}^n h(x_i)w_i\).</li>
 &amp;\le \frac{\mathbb{E}\left[(h(x)w(x))^2\right]}{n} \\
 &amp;\le \frac{M^2 \mathbb{E}\left[(w(x))^2\right]}{n} \\
 &amp;= \frac{M^2(\sigma^2_w+1)}{n} \\
-\mathbb{E}\left[w(x)\right]
+\mathbb{E}\left[(w(x))^2\right]
 &amp;= \operatorname{var}\left[w(x)\right]+\left(\mathbb{E}\left[w(x)\right]\right)^2 \\
-&amp;= \sigma_w^2 + 1
+&amp;= \sigma_w^2 + 1 \\
+\mathbb{E}\left[w(x)\right]
+&amp;=\int_q \frac{p(x)}{q(x)}q(x)\dd x \\
+&amp;=\int_{q&gt;0}p(x)\dd x \\
+&amp;=\int_{p&gt;0}p(x)\dd x \\
+&amp;=1
 \end{aligned}\]
 
+<p><label for="p-inside-q" class="margin-toggle">⊕</label><input type="checkbox" id="p-inside-q" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-16/p-inside-q.png"><br>p inside q.</span></p>
+
 <ul>
-  <li>TODO finish</li>
-  <li>TODO drawing</li>
   <li>The renormalized case:</li>
 </ul>
 
@@ -200,8 +205,7 @@ r(s,w)
 &amp;=\alpha+\alpha\cdot\frac{\sigma_w^2}{n}-\frac{1}{n}\cdot\rho\cdot\sigma_w\cdot\sigma_s \\
 \operatorname{var}\left[\hat{\alpha}\right]
 &amp;\approx
-TODO finish
-\operatorname{var}\left[\bar{s}-\alpha\bar{w}\right]=\operatorname{var}\left[\widebar{s-\alpha w}\right] \\
+\operatorname{var}\left[\bar{s}-\alpha\bar{w}\right]=\operatorname{var}\left[\operatorname{mean}(s-\alpha w)\right]=\frac{\operatorname{var}\left[s-\alpha w\right]}{n} \\
 &amp;= \frac{\operatorname{var}\left[s-\alpha w\right]}{n} \\
 &amp;= \frac{1}{n}\mathbb{E}\left[((h(x)-\alpha)w(x))^2\right] \\
 &amp;\le \frac{4M^2 \mathbb{E}\left[w^2\right]}{n} \\
@@ -215,7 +219,7 @@ n_\operatorname{eff}
   <li>
     <p>Compare this with the case when $x_i\sim p(\cdot)$, then
 $\operatorname{var}\left[\frac{1}{n}\sum_{i=1}^n h(x_i)\right]\le
-\frac{\operatorname{var}\left[h(x)\right]}{n}$ TODO finsih</p>
+\frac{\operatorname{var}\left[h(x)\right]}{n}\le\frac{M^2}{n}$</p>
   </li>
   <li>
 <strong>Lemma</strong>: $\sigma_w^2$ is the coefficient of variation of
@@ -236,11 +240,12 @@ c
 &amp;=\frac{\operatorname{var}\left[c u\right]}{\mathbb{E}^2\left[c u\right]} \\
 &amp;=\frac{\operatorname{var}\left[w\right]}{\mathbb{E}^2\left[w\right]} \\
 &amp;=\frac{\sigma_w^2}{1} \\
-&amp;=
+&amp;=\sigma_w^2
 \end{aligned}\]
 
 <ul>
-  <li>TODO finish</li>
+  <li>In practice, compute $u_i$ for $i=1,\ldots,n$ and find its coefficient of
+variation (sd / mean).</li>
   <li>Remarks:
     <ul>
       <li>Importance sampling is useful when $x$ is of low dimension and you can guess
@@ -283,16 +288,17 @@ w(x_i)}=\frac{\sum_{i=1}^n h(x_i)u_i}{\sum_{i=1}^n u_i}$</li>
 <a class="anchor" href="#example-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 1</h3>
 
 <ul>
-  <li>$p(Y_i=1-p(Y_i=0)=\frac{e^{\theta x_i}}{1+e^{\theta x_i}}$ for
+  <li>$p(Y_i=1)=1-p(Y_i=0)=\frac{e^{\theta x_i}}{1+e^{\theta x_i}}$ for
 $i=1,\ldots,n=100$</li>
   <li>$\pi(\theta)\sim \operatorname{Normal}\left(0,100\right)$</li>
-  <li>Target density \(p(\theta\mid \{(x_i,y_i)\}_{i=1}^100)=cf(\theta)\)</li>
+  <li>Target density \(p(\theta\mid \{(x_i,y_i)\}_{i=1}^{100})=cf(\theta)\)</li>
   <li>Likelihood: \(f(\theta)=\exp\left(-\frac{\theta^2}{100}+\theta\cdot \sum_{i=1}^n X_iY_i-\sum_{i=1}^n \log(1+e^{\theta x_i})\right)\)</li>
-  <li>What kind of trial (proposal) distribution do you wan to use?
+  <li>What kind of trial (proposal) distribution do you want to use?
     <ul>
       <li>Use the prior? If $q$ is the prior density, then sampling is very
-inefficient.</li>
-      <li>TODO: add image</li>
+inefficient.
+<label for="bad-sample-prior" class="margin-toggle">⊕</label><input type="checkbox" id="bad-sample-prior" class="margin-toggle"><span class="marginnote"><img class="fullwidth" src="https://media.githubusercontent.com/media/danjenson/notes/main/courses/stats-270/figures/lecture-16/bad-sample-prior.png"><br>Sampling from prior is inefficient.</span>
+</li>
       <li>Better way:
         <ul>
           <li>Note that log(f) is a convex, so find $\hat{\theta}_\operatorname{MLE}$

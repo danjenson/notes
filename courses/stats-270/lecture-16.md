@@ -15,16 +15,16 @@ $$
 ## Importance Sampling
 
 - Target density: $p(x)$
-- Proposal distribution: $q(x)$
+- Proposal/trial density: $q(x)$
 - Assume both $p, q$ can be evaluated
 
 ### Simple Importance Sampling
 
-- Draw $x_i$ for $i=1,\ldots,n$ from $q()$
+- Draw $x_i\sim q$ for $i=1,\ldots,n$
 - Compute $w_i=w(x_i)$ then $$
 w(x)=
 \begin{cases}
-&=p(x)/q(x) &\text{if} q(x) > 0 \\
+&=p(x)/q(x) &\text{if } q(x) > 0 \\
 &=0 &\text{otherwise}
 \end{cases}
 $$
@@ -58,14 +58,19 @@ $$
 &\le \frac{\mathbb{E}\left[(h(x)w(x))^2\right]}{n} \\
 &\le \frac{M^2 \mathbb{E}\left[(w(x))^2\right]}{n} \\
 &= \frac{M^2(\sigma^2_w+1)}{n} \\
-\mathbb{E}\left[w(x)\right]
+\mathbb{E}\left[(w(x))^2\right]
 &= \operatorname{var}\left[w(x)\right]+\left(\mathbb{E}\left[w(x)\right]\right)^2 \\
-&= \sigma_w^2 + 1
+&= \sigma_w^2 + 1 \\
+\mathbb{E}\left[w(x)\right]
+&=\int_q \frac{p(x)}{q(x)}q(x)\dd x \\
+&=\int_{q>0}p(x)\dd x \\
+&=\int_{p>0}p(x)\dd x \\
+&=1
 \end{aligned}
 $$
 
-- TODO finish
-- TODO drawing
+{% marginfigure 'p-inside-q' 'courses/stats-270/figures/lecture-16/p-inside-q.png' 'p inside q.' %}
+
 - The renormalized case:
 
 $$
@@ -95,8 +100,7 @@ $$
 &=\alpha+\alpha\cdot\frac{\sigma_w^2}{n}-\frac{1}{n}\cdot\rho\cdot\sigma_w\cdot\sigma_s \\
 \operatorname{var}\left[\hat{\alpha}\right]
 &\approx
-TODO finish
-\operatorname{var}\left[\bar{s}-\alpha\bar{w}\right]=\operatorname{var}\left[\widebar{s-\alpha w}\right] \\
+\operatorname{var}\left[\bar{s}-\alpha\bar{w}\right]=\operatorname{var}\left[\operatorname{mean}(s-\alpha w)\right]=\frac{\operatorname{var}\left[s-\alpha w\right]}{n} \\
 &= \frac{\operatorname{var}\left[s-\alpha w\right]}{n} \\
 &= \frac{1}{n}\mathbb{E}\left[((h(x)-\alpha)w(x))^2\right] \\
 &\le \frac{4M^2 \mathbb{E}\left[w^2\right]}{n} \\
@@ -109,7 +113,7 @@ $$
 
 - Compare this with the case when $x_i\sim p(\cdot)$, then
   $\operatorname{var}\left[\frac{1}{n}\sum_{i=1}^n h(x_i)\right]\le
-  \frac{\operatorname{var}\left[h(x)\right]}{n}$ TODO finsih
+  \frac{\operatorname{var}\left[h(x)\right]}{n}\le\frac{M^2}{n}$
 
 - **Lemma**: $\sigma_w^2$ is the coefficient of variation of
   $u(x)=\frac{f(x)}{g(x)}$
@@ -128,11 +132,12 @@ c
 &=\frac{\operatorname{var}\left[c u\right]}{\mathbb{E}^2\left[c u\right]} \\
 &=\frac{\operatorname{var}\left[w\right]}{\mathbb{E}^2\left[w\right]} \\
 &=\frac{\sigma_w^2}{1} \\
-&=
+&=\sigma_w^2
 \end{aligned}
 $$
 
-- TODO finish
+- In practice, compute $u_i$ for $i=1,\ldots,n$ and find its coefficient of
+  variation (sd / mean).
 - Remarks:
   - Importance sampling is useful when $x$ is of low dimension and you can guess
     when $p(x)$ is large.
@@ -160,15 +165,15 @@ $$
 
 ### Example 1
 
-- $p(Y_i=1-p(Y_i=0)=\frac{e^{\theta x_i}}{1+e^{\theta x_i}}$ for
+- $p(Y_i=1)=1-p(Y_i=0)=\frac{e^{\theta x_i}}{1+e^{\theta x_i}}$ for
   $i=1,\ldots,n=100$
 - $\pi(\theta)\sim \operatorname{Normal}\left(0,100\right)$
-- Target density $$p(\theta\mid \{(x_i,y_i)\}_{i=1}^100)=cf(\theta)$$
+- Target density $$p(\theta\mid \{(x_i,y_i)\}_{i=1}^{100})=cf(\theta)$$
 - Likelihood: $$f(\theta)=\exp\left(-\frac{\theta^2}{100}+\theta\cdot \sum_{i=1}^n X_iY_i-\sum_{i=1}^n \log(1+e^{\theta x_i})\right)$$
-- What kind of trial (proposal) distribution do you wan to use?
+- What kind of trial (proposal) distribution do you want to use?
   - Use the prior? If $q$ is the prior density, then sampling is very
     inefficient.
-  - TODO: add image
+    {% marginfigure 'bad-sample-prior' 'courses/stats-270/figures/lecture-16/bad-sample-prior.png' 'Sampling from prior is inefficient.' %}
   - Better way:
     - Note that log(f) is a convex, so find $\hat{\theta}_\operatorname{MLE}$
       and $\sigma^2=-\frac{1}{\pdv[2]{\theta}\mathcal{L}_n(\theta)}$
