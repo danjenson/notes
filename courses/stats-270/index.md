@@ -21,3 +21,4 @@ title: "STATS 270: Bayesian Statistics"
 - [Lecture 16: Importance Sampling](lecture-16)
 - [Lecture 17: Sequential Importance Sampling & Non-Linear Time Series](lecture-17)
 - [Lecture 18: Approximate Bayesian Inference (ABC)](lecture-18)
+- [Lecture 19: Doob's Theorem on Bayesian Consistency](lecture-19)
