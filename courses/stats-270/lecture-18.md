@@ -1,7 +1,7 @@
 ---
 title: "STATS 270: Bayesian Statistics"
 title_url: "."
-subtitle: "Lecture 18: DNN (2022-12-06)"
+subtitle: "Lecture 18: Approximate Bayesian Inference (ABC) (2022-12-06)"
 toc: true
 ---
 
