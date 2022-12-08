@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    STATS 270: Bayesian Statistics
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/stats-270/lecture-17.html"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">
+  <a href=".">STATS 270: Bayesian Statistics</a>
+</h1>
+ 
+<h2 class="subtitle">Lecture 17: Sequential Importance Sampling & Non-linear Time Series (2022-12-01)</h2>
+ <ul id="toc" class="section-nav">
+<li class="toc-entry toc-h3"><a href="#example-1">Example 1</a></li>
+<li class="toc-entry toc-h2"><a href="#use-sequential-importance-sampling-sis">Use Sequential Importance Sampling (SIS)</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#example-1-continued">Example 1 continued…</a></li>
+</ul>
+</li>
+<li class="toc-entry toc-h2"><a href="#importance-resampling">Importance Resampling</a>
+<ul>
+<li class="toc-entry toc-h3"><a href="#example-2-time-series">Example 2 (Time Series)</a></li>
+</ul>
+</li>
+</ul>\[\newcommand{\op}{\operatorname}
+\newcommand{\var}[1]{\op{var}\left[#1\right]}
+\newcommand{\sd}[1]{\op{sd}\left[#1\right]}
+\newcommand{\cov}[2]{\op{cov}\left[#1, #2\right]}\]
+
+<h3 id="example-1">
+<a class="anchor" href="#example-1" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 1</h3>
+
+<ul>
+  <li>
+    <p>Our goal is to generate $k$ weighted samples from
+distribution $\mathscr{D}(\vec{Z}_n\mid\vec{Y}_n)$.</p>
+
+\[\begin{aligned}
+x_i
+&amp;\sim \operatorname{Normal}\left(\mu,\Sigma\right) \\
+x_i
+&amp;=(z_i,y_i)\quad y_i\text{ is observed, and }z_i\text{ is unobserved} \\
+n
+&amp;=269\rightarrow 88\text{ complete, }40\text{ missing 6th component} \\
+\vec{X}_i
+&amp;=(x_1,\ldots,x_i)\quad\text{partial dataset containing up to index }i \\
+\vec{Z}_i
+&amp;=(z_1,\ldots, z_i) \\
+\vec{Y}_i
+&amp;=(y_1,\ldots,y_i) \\
+\end{aligned}\]
+  </li>
+  <li>Denote $(\vec{Z}_n^{(1)},w^{(1)}),\ldots,(\vec{Z}_n^{(k)},w^{(k)})$.</li>
+  <li>Then \(\mathscr{D}(\mu,\Sigma\mid \vec{Y}_n)=\sum_{k=1}^K
+\alpha_k\mathscr{D}(\mu\Sigma\mid \vec{X}_n^{(k)})\) where \(\alpha_k\propto \frac{w^{(k)}}{\sum_{k=1}^K w_n^{(k)}}\).</li>
+</ul>
+
+<h2 id="use-sequential-importance-sampling-sis">
+<a class="anchor" href="#use-sequential-importance-sampling-sis" aria-hidden="true"><span class="octicon octicon-link"></span></a><strong>Use Sequential Importance Sampling (SIS)</strong>
+</h2>
+
+<p>$\mathscr{D}(\vec{Z}_n\mid\vec{Y}_n)=\pi_n(\vec{Z}_n)$</p>
+
+<ul>
+  <li>Set $\pi_i(\vec{Z}_i)=\mathscr{D}(\vec{Z}_i\mid\vec{Y}_i)$ - $\pi_1(\vec{Z}_1)=\mathscr{D}(z_1\mid y_1)$ - $\pi_2(\vec{Z}_2)=\mathscr{D}(z_1,z_2\mid y_1,y_2)$ - $\pi_3(\vec{Z}_3)=\mathscr{D}(z_1,z_2,z_3\mid y_1,y_2,y_3)$ - $\ldots$</li>
+  <li>Suppose we know how to sample from \(\pi_{i-1}(\vec{Z}_{i-1})\), i.e. we have
+\((\vec{Z}_{i-1}, w_{i-1})\) from \(\pi_{i-1}(\vec{Z}_{i-1})\), i.e.
+$\vec{Z}_{i-1}$ is drawn from trial density, \(q_{i-1}(\vec{Z}_{i-1})\) and
+\(w_{i-1}\propto\frac{\pi_{i-1}(\vec{Z}_{i-1})}{q_{i-1}(\vec{Z}\_{i-1})}\)</li>
+  <li>We extend it to $(\vec{Z}_i,w_i)$ by one of two methods:
+    <ol>
+      <li>Method A (preferable if feasible because it uses more data/information)
+        <ul>
+          <li>Draw \(\vec{Z}_i\) from \(\mathscr{D}(\vec{Z}_i\mid
+  \vec{Z}_{i-1},\vec{Y}_{i-1}, y_i)\)</li>
+          <li>Update weight: \(w_i=w_{i-1}p(\vec{Y}_i\mid
+\vec{Z}_{i-1},\vec{Y}_{i-1})=w_{i-1}p(y_i\mid\vec{X}_{i-1})\)</li>
+        </ul>
+      </li>
+      <li>Method B
+        <ul>
+          <li>Draw \(\vec{Z}_i\) from \(\mathscr{D}(z_i\mid \vec{X}_{i-1})\)</li>
+          <li>Set $w_i=w_{i-1}p(y_i\mid\vec{X}_{i-1}, z_i)$</li>
+        </ul>
+      </li>
+    </ol>
+  </li>
+  <li>
+    <p><strong>Proof of Correctness</strong>:</p>
+
+    <ol>
+      <li>Method A</li>
+    </ol>
+
+    <ul>
+      <li>$w_i$ should be
+\(\propto\frac{\pi_i(\vec{Z}_i)}{q_{i-1}(\vec{Z}_{i-1})p(z_i\mid \vec{X}_{i-1},y_i)}\)</li>
+      <li>
+        <p>Now,</p>
+
+\[\begin{aligned}
+\pi_i(\vec{Z}_i)
+&amp;=p(\vec{Z}_i\mid\vec{Y}_i) \\
+&amp;\propto p(\vec{Z}_i\mid \vec{Y}_i) \\
+&amp;=p(\vec{X}_i) \\
+&amp;=p(\vec{X}_{i-1})p(z_i,y_i\mid \vec{X}_{i-1}) \\
+&amp;\propto \underbrace{p(\vec{Z}_{i-1}\mid\vec{Y}_{i-1})}_{\pi_{i-1}(\vec{Z}_{i-1})}\left[p(z_i\mid\vec{X}_{i-1},y_i)p(y_i\mid\vec{X}_{i-1})\right] \\
+\end{aligned}\]
+      </li>
+      <li>Hence, \(w_i\propto\frac{\pi_{i-1}(\vec{Z}_{i-1})p(z_i\mid\vec{X}_{i-1},y_i)p(y_i\mid\vec{X}_{i-1})}{\pi_{i-1}(\vec{Z}_{i-1})p(z_i\mid\vec{X}_{i-1},y_i)}\propto w_{i-1}p(y_i\mid\vec{X}_{i-1})\)</li>
+      <li>The proof is similar for method B.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="example-1-continued">
+<a class="anchor" href="#example-1-continued" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 1 continued…</h3>
+
+<ul>
+  <li>Applying Method A</li>
+  <li>To do this, we need some facts about the multivariate normal</li>
+  <li>\(\mathscr{D}(x_i\mid \vec{X}_{i-1})\) is multivariate t-distribution
+    <ul>
+      <li>Chapter 3 in Bayesian Data Analysis</li>
+    </ul>
+  </li>
+  <li>
+<strong>Definition</strong>: A random variable $x\in \mathbb{R}^d$ is
+$t_d(\mu,\Sigma_{d\times d},\nu)$ distribution if it has density
+\(\frac{\Gamma\left(\frac{\nu+1}{2}\right)}{\Gamma\left(\frac{\nu}{2}\right)\left(\nu\pi\right)^{\frac{d}{2}}\sqrt{\det(\Sigma)}}\left(1+\frac{1}{\nu}(\vec{x}-\vec{\mu})^\intercal\Sigma^{-1}(\vec{x}-\vec{\mu})\right)^{-(\nu+p)/2}\)</li>
+  <li>Then if $x=\begin{bmatrix}Y\ Z\end{bmatrix}$ and $\vec{Y}\in \mathbb{R}^{d_1}$ and
+$\vec{Z}\in \mathbb{R}^{d_2}$ where $d_1+d_2=d$ then we have $Y\sim
+t_{d_1}(\mu_1,\Sigma_{1,1},\nu)$ with \(\vec{\mu}=\begin{bmatrix}\mu_1 \\\mu_2\end{bmatrix},\Sigma=\begin{bmatrix}\Sigma_{1,1} &amp; \Sigma_{1,2} \\ \Sigma_{2,1} &amp; \Sigma_{2,2}\end{bmatrix}\)</li>
+  <li>$\vec{Z}\mid\vec{Y}=y\sim t_{d_2}(\mu_{2\mid 1},c\Sigma_{2\mid1},\nu+d_1)$
+where $\mu_{2\mid1}=\mu_2+\Sigma_{2,1}\Sigma_{1,1}^{-1}(y-\mu_1),\Sigma_{2\mid
+1}=\Sigma_{2,2}-\Sigma_{2,1}\Sigma_{1,1}^{-1}\Sigma_{1,2}$ and
+$c=\frac{\nu+(y-\mu_1)^\intercal\Sigma_{1,1}^{-1}(y-\mu_1)}{\nu+d_1}$</li>
+  <li>$x=\mu +\frac{1}{\sqrt{V}}U$ where $V\sim \operatorname{Gamma}\left(\frac{\nu}{2},\frac{\nu}{2}\right)$ and $U\sim \operatorname{Normal}\left(0,\Sigma\right)$</li>
+  <li>Using these facts about the multivariate t-distribution, you can implemented
+method A.</li>
+  <li>The of the imputation is very important $\rightarrow$ process data points with least
+missingness first.</li>
+</ul>
+
+<h2 id="importance-resampling">
+<a class="anchor" href="#importance-resampling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Importance Resampling</h2>
+
+<ul>
+  <li>The SIS algorithm builds K segments in parallel</li>
+  <li>$(\vec{Z}_1^{(1)},w_1^{(1)})\to(\vec{Z}_2^{(1)},w_2^{(1)})\to(\vec{Z}_3^{(1)},w_3^{(1)})\cdots(\vec{Z}_i^{(1)},w_i^{(1)})\cdots$</li>
+  <li>$(\vec{Z}_1^{(2)},w_1^{(2)})\to(\vec{Z}_2^{(2)},w_2^{(2)})\to(\vec{Z}_3^{(2)},w_3^{(2)})\cdots(\vec{Z}_i^{(2)},w_i^{(2)})\cdots$</li>
+  <li>$\ldots$</li>
+  <li>$(\vec{Z}_1^{(K)},w_1^{(K)})\to(\vec{Z}_2^{(K)},w_2^{(K)})\to(\vec{Z}_3^{(K)},w_3^{(K)})\cdots(\vec{Z}_i^{(K)},w_i^{(K)})\cdots$</li>
+  <li>This is a weighted sample of from $\pi_i(\vec{Z}_i)$
+    <ul>
+      <li>To know if this is a good weighted sample, compute
+\(k_{\text{eff}}=\frac{k}{1+(cv)^2}\) where $cv=$ coefficient of variation of the
+weights. This will fail when some points have very large weights and other
+have much lower weights.</li>
+      <li>If $k_\text{eff}$ is small, then do importance resampling.</li>
+      <li>Resample \(\{\vec{Z}_{i-1}^{(k)},k=1,\ldots, K\}\) using the Importance
+Sampling weights to get a new set of samples, now equally weighted.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="example-2-time-series">
+<a class="anchor" href="#example-2-time-series" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example 2 (Time Series)</h3>
+
+<ul>
+  <li>Consider a non-linear system described by the following equations:</li>
+</ul>
+
+\[\begin{aligned}
+z_{t+1}
+&amp;=f_t(z_t,u_t) \\
+y_t
+&amp;=h_t(z_t)+v_t \\
+u_t
+&amp;\sim \phi(\cdot)\;\text{i.i.d.} \\
+v_t
+&amp;\sim \psi(\cdot)\;\text{i.i.d.}
+\end{aligned}\]
+
+<ul>
+  <li>Imagine the $z_t$s are unobserved latent states and $y_t$s are observed data
+generated from $z_t$.</li>
+  <li>Based on $\vec{y}_t$, how can we infer $\vec{z}_t$s?</li>
+  <li>Paper by Gordon, Salman, and Smith (1993) proposed the particle filter to do
+this inference.</li>
+  <li>Let $\vec{Z}_t=(z_1,\ldots,z_t)$ be a weighted sample from
+$p(\vec{Z}_t\mid\vec{Y}_t)$.
+    <ul>
+      <li>Apply method B to impute the next state.
+        <ul>
+          <li>Draw \(z_{t+1}\mid\vec{Z}_t,\vec{Y}_t\) (draw \(u_t\sim\phi(\cdot)\) and set
+\(z_{t+1}=f_t(z_t,u_t)\)</li>
+          <li>Then \(w_{t+1}=w_tp(y_{t+1}\mid \vec{Z}_t,\vec{Y}_t,z_{t+1})=w_t\phi(y_{t+1}-h_t(z_{t+1}))\)</li>
+          <li>Do importance re-sampling every step (this is a special case of SIS).</li>
+          <li>You can do this online.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+</article>
+    <span class="print-footer"
+  >STATS 270: Bayesian Statistics - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2022 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
