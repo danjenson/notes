@@ -13,7 +13,7 @@ title: Papers
 - [HOList: An Environment for Machine Learning of Higher-Order Theorem Proving](holist): Presents an open source environment for higher-order theorem proving and a reinforcement learning based model trained on it.
 - [How to Read a Paper](how-to-read-a-paper)
 - [Layer Normalization](layer-normalization)
-- [Learning to Prove Theorems via Interacting with Proof Assistants](learning-to-prove-theorems-via-interacting-with-proof-assistants)
+- [Learning to Prove Theorems via Interacting with Proof Assistants](learning-to-prove-theorems-via-interacting-with-proof-assistants): Introduces CoqGym for training deep learning models using the interactive theorem prover Coq. It also introduces ASTactic, a deep neural network that generates tactics and hence proofs in Coq using a top-down TreeLTSM.
 - [Learning to Reason in Large Theories without Imitation](learning-to-reason-in-large-theories-without-imitation)
 - [Magnetic control of tokamak plasmas through deep reinforcement learning](magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
 - [Multi-Objective Bayesian Optimization over High-Dimensional Search Spaces](mulit-objective-bayesian-optimization-over-high-dimensional-search-spaces)
