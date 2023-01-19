@@ -6,7 +6,7 @@ title: Papers
 - [Deep Recurrent Q-Learning with Double Q-Learning](deep-recurrent-q-learning-with-double-q-learning): Using the same network to select and evaluate the maximum value action in a given state leads to overestimation. This paper corrects that by training separate networks for selection and evaluation and periodically swapping them.
 - [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](dropout)
 - [Dueling Network Architectures for Deep Reinforcement Learning](dueling-network-architectures-for-deep-reinforcement-learning): This paper improves performance on the Atari benchmark by training two models -- one for the value of a state and another for the advantage ($$Q_\pi(s,a) - V_\pi(s)$$ for a given policy). This allows sharing the value of a state between many actions and allows training to scale better as the number of actions per state increases.
-- [Efficient Estimation of Word Representations in Vector Space](word2vec)
+- [Efficient Estimation of Word Representations in Vector Space](word2vec): Creating word vectors based on the continuous bag-of-words (CBOW) and skip-gram models dramatically improves performance on word representations in NLP tasks. CBOW predicts the current word from context and skip-gram predicts the context from the current word.
 - [Flow Network based Generative Models for Non Iterative Diverse Candidate Generation](flow-network-based-generative-models-for-non-iterative-diverse-candidate-generation)
 - [GFlowNet Foundations](gflownet-foundations)
 - [Graph Representations for Higher-Order Logic and Theorem Proving](graph-representations-for-higher-order-logic-and-theorem-proving): Use GNNs to embed goals and premises and use it to select tactics and premises at each step.
