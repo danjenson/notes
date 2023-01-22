@@ -12,7 +12,7 @@ title: Papers
 - [Graph Representations for Higher-Order Logic and Theorem Proving](graph-representations-for-higher-order-logic-and-theorem-proving): Use GNNs to embed goals and premises and use it to select tactics and premises at each step.
 - [HOList: An Environment for Machine Learning of Higher-Order Theorem Proving](holist): Presents an open source environment for higher-order theorem proving and a reinforcement learning based model trained on it.
 - [How to Read a Paper](how-to-read-a-paper)
-- [Layer Normalization](layer-normalization)
+- [Layer Normalization](layer-normalization): Layer normalization or normalizing across the input to a given hidden layer is faster and more effective than batch normalization (normalizing by feature across the batch). Both methods combat "covariate shift" and stabilize learning, but layer normalization is more easily applied with varying batch sizes and for RNNs that have indeterminate sequence lengths.
 - [Learning to Prove Theorems via Interacting with Proof Assistants](learning-to-prove-theorems-via-interacting-with-proof-assistants): Introduces CoqGym for training deep learning models using the interactive theorem prover Coq. It also introduces ASTactic, a deep neural network that generates tactics and hence proofs in Coq using a top-down TreeLTSM.
 - [Learning to Reason in Large Theories without Imitation](learning-to-reason-in-large-theories-without-imitation): Premise selection and exploration using TF-IDF outperforms models trained solely on human proofs and approaches hybrid performance.
 - [Magnetic control of tokamak plasmas through deep reinforcement learning](magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
