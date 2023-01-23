@@ -9,6 +9,7 @@ title: Papers
 - [Efficient Estimation of Word Representations in Vector Space](word2vec): Creating word vectors based on the continuous bag-of-words (CBOW) and skip-gram models dramatically improves performance on word representations in NLP tasks. CBOW predicts the current word from context and skip-gram predicts the context from the current word.
 - [Flow Network based Generative Models for Non Iterative Diverse Candidate Generation](flow-network-based-generative-models-for-non-iterative-diverse-candidate-generation)
 - [GFlowNet Foundations](gflownet-foundations)
+- [Global disparities in SARS-Cov-2 genomic surveillance](genomic-surveillance): Details the genomic surveillance across countries and demonstrates that low/middle-income counties sequence at a much lower rate, decreasing their likelihood of catching and addressing a variant before it spreads.
 - [Graph Representations for Higher-Order Logic and Theorem Proving](graph-representations-for-higher-order-logic-and-theorem-proving): Use GNNs to embed goals and premises and use it to select tactics and premises at each step.
 - [HOList: An Environment for Machine Learning of Higher-Order Theorem Proving](holist): Presents an open source environment for higher-order theorem proving and a reinforcement learning based model trained on it.
 - [How to Read a Paper](how-to-read-a-paper)
