@@ -2,7 +2,12 @@
 title: Papers
 ---
 
+- [A large-scale analysis of racial disparities in police stops across the
+  United States](100M): Tests for racial bias using the veil of darkness,
+  outcome, threshold, and difference-in-difference tests and shows consistent
+  bias against Black Americans.
 - [Attention is All You Need](attention-is-all-you-need): Details the transformer architecture and describes the key-value-based attention mechanism.
+- [Continual Learning via Local Module Composition](lcm): This paper explores composing modules with soft attention to solve various tasks where the task type or ID is not available at training or test time. Using a new type of model called Local Module Composition (LMC), they achieve competitive performance to models that have access to an oracle with true task types. One interesting aspect of this model's architecture is that it has functional and structural components and each submodule estimates for each input how relevant that module is to the input and then performs a softmax attention over these likelihood scores between modules.
 - [Deep Recurrent Q-Learning with Double Q-Learning](deep-recurrent-q-learning-with-double-q-learning): Using the same network to select and evaluate the maximum value action in a given state leads to overestimation. This paper corrects that by training separate networks for selection and evaluation and periodically swapping them.
 - [Dropout: A Simple Way to Prevent Neural Networks from Overfitting](dropout): Dropout is a form of regularization for neural networks that prevents overfitting and approximately combines exponentially many different neural network architectures (ensembles). At training time, nodes and their connections are dropped with probability $p$ and then at test time, their weights are multiplied by $p$. The insight was gleaned from analyzing sexual vs asexual reproduction and noting that sexual reproduction has been highly successful in developing advanced organisms, suggesting that complex co-adaptation can harm the adaptability of an organism. Dropout networks take 2-3 times longer to train due to the noisy gradient updates. In a linear regression, dropout can be shown to be equivalent to ridge regression. Dropout combined with maxnorm regularization, large decaying learning rates, and high momentum provides significant boosts over dropout alone, due to more aggressive exploration that is tempered by dropout and maxnorm.
 - [Dueling Network Architectures for Deep Reinforcement Learning](dueling-network-architectures-for-deep-reinforcement-learning): This paper improves performance on the Atari benchmark by training two models -- one for the value of a state and another for the advantage ($$Q_\pi(s,a) - V_\pi(s)$$ for a given policy). This allows sharing the value of a state between many actions and allows training to scale better as the number of actions per state increases.
@@ -16,7 +21,7 @@ title: Papers
 - [Layer Normalization](layer-normalization): Layer normalization or normalizing across the input to a given hidden layer is faster and more effective than batch normalization (normalizing by feature across the batch). Both methods combat "covariate shift" and stabilize learning, but layer normalization is more easily applied with varying batch sizes and for RNNs that have indeterminate sequence lengths.
 - [Learning to Prove Theorems via Interacting with Proof Assistants](learning-to-prove-theorems-via-interacting-with-proof-assistants): Introduces CoqGym for training deep learning models using the interactive theorem prover Coq. It also introduces ASTactic, a deep neural network that generates tactics and hence proofs in Coq using a top-down TreeLTSM.
 - [Learning to Reason in Large Theories without Imitation](learning-to-reason-in-large-theories-without-imitation): Premise selection and exploration using TF-IDF outperforms models trained solely on human proofs and approaches hybrid performance.
-- [Magnetic control of tokamak plasmas through deep reinforcement learning](magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning)
+- [Magnetic control of tokamak plasmas through deep reinforcement learning](magnetic-control-of-tokamak-plasmas-through-deep-reinforcement-learning): This used reinforcement for a continuous control situation to keep plasma in a state that could be used for power generation.
 - [Multi-Objective Bayesian Optimization over High-Dimensional Search Spaces](mulit-objective-bayesian-optimization-over-high-dimensional-search-spaces)
 - [Neurocompositional computing: From the Central Paradox of Cognition to a new generation of AI systems](neurocompositional-computing): The two types of thinking are Compositional and Continuous and incorporating the former will enable neural networks to reason. This discusses a novel embedding using Tensor Product Representations (TPR) that allows continuous vector representations of compositional objects. This leads to a type of computing called Neurally-Encoded Compositionally-Structured Tensor (NECST) computing. The fundamental idea is that structural roles are encoded along with the terms.
 - [Playing Atari with Deep Reinforcement Learning](playing-atari-with-deep-reinforcement-learning): Presents the first Deep Q-Network (DQN) to learn control policies for the Atari benchmark.
@@ -24,4 +29,10 @@ title: Papers
 - [Prioritized Experience Replay](prioritized-experience-replay): Prioritizing the replay buffer by the magnitude of the temporal-difference error leads to better performance.
 - [Rainbow: Combining Improvements in Deep Reinforcement Learning](rainbow)
 - [Tabular Data: Deep Learning is Not All You Need](tabular-data)
-- [The Consciousness Prior](the-consciousness-prior)
+- [The Consciousness Prior](the-consciousness-prior): the consciousness prior
+  can be thought of as a bottleneck that routes information among mental
+  modules. "Whereas the sparse factor graph constraint is about the underlying
+  beliefs about the world (when expressed with the high-level variables), the
+  attention mechanisms used to build conscious thoughts are part of the
+  inference mechanisms used to compute efficiently according to the
+  consciousness prior."
