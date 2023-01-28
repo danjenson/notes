@@ -38,6 +38,8 @@ title: Papers
 - [Seq2Seq Surrogates of Epidemic Models to Facilitate Bayesian
   Inference](seq2seq-bayes): Because epidemic models can scale poorly with the number of parameters, particularly when simulating Individual-Based Model (IBM) frameworks, parameter inference can take a long time. Training a surrogate seq2seq model on longitudinal (daily) data can generate aggregate predictions that can be used for Bayesian inference and faster policy
   exploration.
+- [Structure Learning of Probabilistic Graphical Models: A Comprehensive
+  Survey](sl-pgm-survey): Overview of constraint-based, score-based, and regression-based algorithms for structural learning as of 2007.
 - [Tabular Data: Deep Learning is Not All You Need](tabular-data)
 - [The Consciousness Prior](the-consciousness-prior): the consciousness prior
   can be thought of as a bottleneck that routes information among mental
