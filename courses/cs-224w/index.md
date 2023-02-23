@@ -1,6 +1,8 @@
-# GNNs
+---
+title: "CS 224W: Machine Learning with Graphs"
+---
 
-## Lecture 1: Introduction
+# Lecture 1: Introduction
 
 - How do we take advantage of relational structure for better prediction?
 - Modern deep learning is predicated on simple sequences and grids
@@ -16,7 +18,7 @@
 - **strongly connected**: a path from every node to ever other ndoe
 - **weakly connected**: connected if we disregard edge directions
 
-## Lecture 2: Feature Engineering for ML in Graphs
+# Lecture 2: Feature Engineering for ML in Graphs
 
 - Traditional features for ML in graphs with focus on undirected graphs
 - Node level features:
@@ -43,7 +45,7 @@
 - **graph isomorphism**: two graphs which contain the same number of nodes
   connected in the same way are said to be isomorphic
 
-### Link prediction
+## Link prediction
 
 - For each pair of nodes, predict the score c(x,y) and sort
   by decreasing score, predict the top n pairs as new links, validate with true
@@ -64,7 +66,7 @@
       of nodes; based on powers of adjacency matrix; if you used a discount
       factor, there is a closed form solution
 
-### Graph level features
+## Graph level features
 
 - **Goal**: We want features that characterize the structure of an entire graph.
 - Kernel methods are widely-used for traditional ML for graph-level prediction
@@ -100,13 +102,13 @@
   - After color refinement, Weisfeiler-Lehman (WL) kernel counts number of nodes with
     a given color.
   - WL kernel is the inner product of the color refinement count vectors
-    - O(|E|) running time
-    - O(|V|) number of colors in memory
-    - counting colors takes linear time with respect to |V|
-    - total runtime is linear in |E|
+    - $O(\lvert E\rvert)$ running time
+    - $O(\lvert V\rvert)$ number of colors in memory
+    - counting colors takes linear time with respect to $\lvert V\rvert$
+    - total runtime is linear in $\lvert E\rvert$
     - far more computationally efficient than graphlet kernel
 
-## Lecture 3: Node Embeddings
+# Lecture 3: Node Embeddings
 
 - Graph representation learning eliminates the need to do feature engineering
 - Want to encode nodes so they have certain properties (proximities) in the
@@ -121,7 +123,7 @@
   their network structure; in particular, they are not using node labels for
   features
 
-### How do you define similarity?
+## How do you define similarity?
 
 - Random walks: initiate random walks from all nodes in the graph and then
   $\mathbf{z}_u^\intercal \mathbf{z}_v$ represents the likelihood that nodes u
@@ -134,16 +136,18 @@
     - Expressive: incorporates both local and higher order neighborhood information
     - Efficient: do not need to consider all node pairs when training, only node
       pairs that have co-occurred on random walks
-  - Objective: $\mathcal{L}=\sum_{u\in V}\sum_{v\in N_R(u)}-\log\left(\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}\right)$
+  - Objective: $$\mathcal{L}=\sum_{u\in V}\sum_{v\in N_R(u)}-\log\left(\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}\right)$$
     - $\max_f\sum_{u\in V}\log\Pr(N_R(u)\mid \mathbf{z}_u)$
     - $\mathcal{L}=\sum_{u\in V}\sum_{v\in N_R(u)}-\log\Pr(v\mid
     \mathbf{z}_u)$
-    - $\Pr(v\mid \mathbf{z}+u)=\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in
-    V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}$
+    - $$
+      \Pr(v\mid \mathbf{z}+u)=\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in
+      V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}
+      $$
     - The denominator is expensive, so it can be approximated with noise
       contrastive estimation (NCE), i.e. instead of normalizing with respect to
       all nodes, just normalize against $k$ random negative samples
-    - $\approx \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_v\right)\right)-\sum_{i=1}^k \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_{n_i}\right)\right), n_i \sim P_V$
+    - $$\approx \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_v\right)\right)-\sum_{i=1}^k \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_{n_i}\right)\right), n_i \sim P_V$$
       - k is often chosen to be 5-20 and technically nodes on the random walk
         shouldn't be chosen
   - Update with (stochastic) gradient descent: $\mathbf{z}_u\leftarrow
@@ -177,7 +181,7 @@
   - based on 1-hop and 2-hop random walk probabilities
   - random walks on modified version of original network, i.e. struct2vec, HARP
 
-### Embedding Entire Graphs
+## Embedding Entire Graphs
 
 - Examples:
   - Classifying toxic vs. non-toxic molecules
@@ -188,7 +192,7 @@
     that subgraph) and run graph embedding
     technique
 
-### Matrix Factorization and Node Embeddings
+## Matrix Factorization and Node Embeddings
 
 - **Inner product decoder with node similarity defined by edge connectivity is
   equivalent to matrix factorization of adjacency matrix $\mathbf{A}$**
@@ -207,7 +211,7 @@
   - Link prediction based on $f(\mathbf{z}_i,\mathbf{z}_j)$, where $f$ can be
     concatenate, Hardamard, sum/average, or distance
 
-### Limitations
+## Limitations
 
 - **Cannot obtain embeddings for nodes not in the training set**, i.e. shallow
   embeddings are only transductive
@@ -215,19 +219,158 @@
   capture structural similarity in node embeddings; this can be remedied by methods like
   struct2vec
 
-## Lecture 4: Graph Neural Networks
+# Lecture 4: Graph Neural Networks
 
-## Lecture 5: A General Perspective on GNNs
+- Limitations of shallow embeddings:
+  - $O(\lvert V\rvert d)$ parameters are required
+  - No parameters are shared between nodes
+  - Every node has its own unique embedding
+  - Inherently transductive, i.e. can't generate embeddings for nodes that are
+    not seen during training
+  - Does not incorporate node features
+- GNNs are node encoders based on multiple layers of non-linear transformations
+  based on graph structure; these deep encoders can be combined with node
+  similarity functions
+- GNNs can embed nodes, graphs, and subgraphs
+- GNN tasks:
+  - node classification
+  - link prediction
+  - community detection
+  - network similarity
+- Machine learning can be formulated as an optimization problem:
+  $$\min_\theta\mathcal{L}(\mathbf{y},f(\mathbf{x}))$$ where $\theta$ could be
+  our shallow embeddings $\mathbf{Z}$ and the loss could be L2 loss:
+  $\mathcal{L}(\mathbf{y},f(\mathbf{x}))=\lVert y-f(x)\rVert_2$
+  - other loss functions include L1, Huber loss, max-margin (hinge) loss, cross
+    entropy, etc.
+  - $f$ could be a linear layer, MLP, or other NN like a GNN
+- When there are no node features, you can do a one hot encoding of a nodes
+- Because graphs have no spatial or temporal assignment by default, we should
+  constrain our efforts to methods that are permutation invariant, this means
+  that two "order plans" should be the same for the same graphs with differently
+  labeled nodes/edges
+- If $f(\mathbf{A}_i, \mathbf{X}_i)=f(\mathbf{A}_j, \mathbf{X}_j)$ for any order
+  plan $i$ and $j$, we say that $f$ is a permutation invariant function
+- **Definition**: For any graph function $f:\mathbb{R}^{\lvert V\rvert\times
+  m}\times\mathbb{R}^{\lvert V\rvert \times\lvert V\rvert}\to\mathbb{R}^d$, $f$
+  is **permutation-invariant** if $f(\mathbf{A}, \mathbf{X})=f(\mathbf{P}\mathbf{A}\mathbf{P}^\intercal, \mathbf{P}\mathbf{X})$ for any
+  permutation $\mathbf{P}$, i.e. the value is the same regardless of whether you
+  permute the adjacency matrix and features.
+- For node representation, we learn a function that maps ndoes of $G$ to a
+  matrix $\mathbb{R}^{m\times d}$.
+- If we learn a function $f$ that maps a graph $G=(\mathbf{A},\mathbf{X})$ to a
+  matrix $\mathbb{R}^{m\times d}$ and the output vector of a node at the same
+  position in the graph remains unchanged for any order plan, then $f$ is
+  **permutation equivariant**
+- **Definition**: for any node function $f:\mathbb{R}^{\lvert V\rvert\times
+  m}\times \mathbb{R}^{\lvert V\rvert\times\lvert V\rvert}\to\mathbb{R}^{\lvert
+  V\rvert\times m}$, $f$ is **permutation-equivariant** if
+  $\mathbf{P}f(\mathbf{A},\mathbf{X})=f(\mathbf{PAP}^\intercal, \mathbf{PX})$
+  for any permutation $\mathbf{P}$, i.e. when you shuffle the input the output
+  is shuffled in the same fashion.
+- **Examples**:
+  - $f(\mathbf{A}, \mathbf{X})=\mathbf{1}^\intercal \mathbf{X}$ is
+    permutation-invariant
+    - $f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{1}^\intercal
+    \mathbf{PX}=\mathbf{1}^\intercal \mathbf{X}=f(\mathbf{A}, \mathbf{X})$
+  - $f(\mathbf{A}, \mathbf{X})=\mathbf{X}$ is permutation-equivariant
+    - $f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{PX}=\mathbf{P}f(\mathbf{A}, \mathbf{X})$
+  - $f(\mathbf{A}, \mathbf{X})=\mathbf{AX}$ is permutation-equivariant
+    - $f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{PAP}^\intercal\mathbf{PX}=\mathbf{PAX}=\mathbf{P}f(\mathbf{A}, \mathbf{X})$
+- GNNs consist of multiple permutation equivariant and invariant functions,
+  unlike most deep ML, i.e. MLPs
+- **Idea**: a node's neighborhood defines a computation graph and the goal is to
+  learn how to propagate information across the graph to compute node features
+- **Key idea**: generate node embeddings based on local network neighborhoods,
+  each network neighborhood defines a computation graph (imagine trees rooted at
+  nodes, where the children are the neighbors of nodes)
+- Basic approach: average neighbor messages and apply a NN
+- Given **a node**, the GCN that computes its embedding is **permutation
+  invariant**
+- Considering **all nodes**, the GCN computation is permutation equivariant
+- $\mathbf{h}_v^{(0)}=\mathbf{x}_v$
+- $$\mathbf{h}_v^{(k+1)}=\sigma\left(\mathbf{W}_k \sum_{u \in \mathbf{N}(v)} \frac{\mathbf{h}_u^{(k)}}{|\mathbf{N}(v)|}+\mathbf{B}_k \mathbf{~h}_v^{(k)}\right), \forall k \in\{0 . . K-1\}$$
+  - Train $\mathbf{W}_k$ and $\mathbf{B}_k$ using SGD
+- $\mathbf{z}_v=\mathbf{h}_v^{(K)}$
+- The entire update in matrix form: $$H^{(k+1)}=\sigma\left(\tilde{A} H^{(k)} W_k^{\mathrm{T}}+H^{(k)} B_k^{\mathrm{T}}\right)$$ where $\tilde{\mathbf{A}}=\mathbf{D}^{-1}\mathbf{A}$.
+  - In practice, this implies that efficient sparse matrix multiplication can be
+    used $\tilde{\mathbf{A}}$ is sparse.
+  - **Not all GNNs can be expressed in matrix form when the aggregation function
+    is complex.**
 
-## Lecture 6: GNN Augmentation and Training
+## Unsupervised training
 
-## Lecture 7: Theory of Graph Neural Networks
+- When you don't have labels, you can use the graph structure as supervision
+- If you say that "similar" nodes should have similar embeddings, then
+- $$
+  \mathcal{L}=\sum_{z_u, z_v} \operatorname{CE}\left(y_{u, v}, \operatorname{DEC}\left(z_u, z_v\right)\right)
+  $$
+  - $y_{u,v}=1$ when node $u$ and $v$ are similar
+  - $\operatorname{CE}$ is the cross entropy loss
+  - $\operatorname{DEC}$ is a decoder, such as inner product
+  - node similarity can be based on:
+    - Random walks (node2vec, DeepWalk, struct2vec)
+    - Matrix factorization
+    - Node proximity in the graph
 
-## Lecture 8: Label Propagation on Graphs
+## Supervised Training
 
-## Lecture 9: Machine Learning with Heterogeneous Graphs
+- Directly train for a supervised task like node classification, e.g. is a drug
+  safe or toxic?
+- $$
+  \mathcal{L}=-\sum_{v \in V} y_v \log \left(\sigma\left(\mathrm{z}_v^{\mathrm{T}} \theta\right)\right)+\left(1-y_v\right) \log \left(1-\sigma\left(\mathrm{z}_v^{\mathrm{T}} \theta\right)\right)
+  $$
+  - $y_v$ are labels
+  - $\theta$ are classification weights
+  - $\mathbf{z}_v$ is a node embedding
 
-## Lecture 10: Knowledge Graph Embeddings
+## Model Design
+
+1. Define a neighborhood aggregation function.
+2. Define a loss function on the embeddings.
+3. Train on a set of nodes, i.e. a batch of compute graphs.
+4. Generate embeddings for nodes as needed (even those we never trained on!)
+
+## Inductive Capability
+
+- The model is capable of induction when the same aggregation parameters are
+  shared for all nodes (GraphSAGE), an added benefit is that the number of
+  parameters is sublinear in $\lvert V\rvert$ and we can generalize to unseen
+  nodes.
+- A example is when you train on a protein interaction graph from model organism
+  A and generate embeddings on a newly collected data about organism B
+
+## GNNs vs CNNs
+
+- The key difference is that we can learn an different weight function for each
+  pixel surrounding the target node
+- GNN formulation: $$\mathbf{h}_v^{(l+1)}=\sigma\left(\underbrace{\mathbf{W}_l}_{\text{node agnostic}} \sum_{u \in \mathbf{N}(v)} \frac{\mathbf{h}_u^{(l)}}{\lvert\mathbf{N}(v)\rvert}+\mathbf{B}_l \mathbf{h}_v^{(l)}\right), \forall l \in\{0, \ldots, L-1\}$$
+- CNN formulation: $$\mathbf{h}_v^{(l+1)}=\sigma\left(\sum_{u \in \mathbf{N}(v)} \underbrace{\mathbf{W}_l^u}_{\text{pixel specific}} \mathbf{~h}_u^{(l)}+\mathbf{B}_l \mathbf{~h}_v^{(l)}\right), \forall l \in\{0, \ldots, L-1\}$$
+- A CNN can be seen as a special GNN with fixed neighbor size and ordering
+  - The size of the filter is pre-defined for a CNN
+  - The advantage of GNN is it postprocesses arbitrary graphs with different
+    degrees for each node
+- CNN is not permutation invariant/equivariant, i.e. switching the order of
+  pixels will lead to different outputs
+
+## Summary:
+
+- Use multiple layers for embedding nodes, propagating the previous hidden state
+  to the next layer
+- Mean aggregation for a GCN can be expressed in matrix form
+- GNN is a general architecture of which CNN is a special case
+
+# Lecture 5: A General Perspective on GNNs
+
+# Lecture 6: GNN Augmentation and Training
+
+# Lecture 7: Theory of Graph Neural Networks
+
+# Lecture 8: Label Propagation on Graphs
+
+# Lecture 9: Machine Learning with Heterogeneous Graphs
+
+# Lecture 10: Knowledge Graph Embeddings
 
 - Heterogeneous graphs are graphs with multiple relation types, each of which
   gets different network weights
@@ -326,14 +469,14 @@
     \end{aligned}
     $$
   - can model inverse relations with $\mathbf{r}_1=\overline{\mathbf{r}}_2$
-    - $\mathbf{r}_2 = \argmax_\mathbf{r} Re(<\mathbf{h},\mathbf{r},\overline{\mathbf{t}}>)$
-    - $\mathbf{r}_1 = \argmax_\mathbf{r} Re(<\mathbf{t},\mathbf{r},\overline{\mathbf{h}}>)$
+    - $$\mathbf{r}_2 = \arg\max_\mathbf{r} Re(<\mathbf{h},\mathbf{r},\overline{\mathbf{t}}>)$$
+    - $$\mathbf{r}_1 = \arg\max_\mathbf{r} Re(<\mathbf{t},\mathbf{r},\overline{\mathbf{h}}>)$$
   - can model 1:N relations like DistMult
 - **RotatE**: TransE in Complex space
 
 - General rules:
   - Use TransE if the KG does not have many symmetric relationships
 
-## Lecture 11: Knowledge Graphs
+# Lecture 11: Knowledge Graphs
 
-## Lecture 12: Fast Neural Subgraph Matching and Counting
+# Lecture 12: Fast Neural Subgraph Matching and Counting

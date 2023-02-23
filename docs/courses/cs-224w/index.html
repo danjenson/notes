@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <title>
+    CS 224W: Machine Learning with Graphs
+  </title>
+  <meta
+    name="description"
+    content="A collection of work and research by Daniel jenson."
+  />
+
+  <!-- Google Fonts -->
+  <link
+    href="//fonts.googleapis.com/css?family=Lato:400,400italic"
+    rel="stylesheet"
+    type="text/css"
+  />
+
+  <!-- https://docs.mathjax.org/en/latest/input/tex/extensions/index.html -->
+  <script>
+    MathJax = {
+      loader: {
+        load: [
+          "[tex]/ams",
+          "[tex]/gensymb",
+          "[tex]/mathtools",
+          "[tex]/physics",
+        ],
+      },
+      tex: {
+        packages: { "[+]": ["ams", "gensymb", "mathtools", "physics"] },
+        inlineMath: [
+          ["$", "$"],
+          ["\\(", "\\)"],
+        ],
+      },
+      svg: {
+        fontCache: "global",
+      },
+    };
+  </script>
+  <!-- https://www.mathjax.org/#gettingstarted -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script
+    id="MathJax-script"
+    async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+  ></script>
+  <link rel="stylesheet" type="text/css" href="/notes/assets/css/main.css">
+
+  <link
+    rel="canonical"
+    href="https://danjenson.github.io/notes/courses/cs-224w/"
+  />
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+  <nav class="group">
+     
+    <a href="/notes/books">books</a>
+      
+    <a href="/notes/papers">papers</a>
+      
+    <a href="/notes/courses">courses</a>
+      
+    <a href="/notes/mindmaps">mindmaps</a>
+     
+    <button
+      type="button"
+      id="theme-toggle"
+      onclick="modeSwitcher()"
+      style="cursor: pointer"
+    ></button>
+  </nav>
+  <script src="/notes/assets/js/theme-toggle.js"></script>
+</header>
+
+    <article class="group">
+<h1 class="title">CS 224W: Machine Learning with Graphs</h1>
+  <h1 id="lecture-1-introduction">Lecture 1: Introduction</h1>
+
+<ul>
+  <li>How do we take advantage of relational structure for better prediction?</li>
+  <li>Modern deep learning is predicated on simple sequences and grids</li>
+  <li>Map nodes to d-dimensional embeddings such that similar nodes in the network
+are embedded close together</li>
+  <li>Common tasks:
+    <ul>
+      <li>node classification</li>
+      <li>link prediction</li>
+      <li>graph classification</li>
+      <li>clustering</li>
+      <li>graph generation</li>
+      <li>graph evolution</li>
+    </ul>
+  </li>
+  <li><strong>strongly connected</strong>: a path from every node to ever other ndoe</li>
+  <li><strong>weakly connected</strong>: connected if we disregard edge directions</li>
+</ul>
+
+<h1 id="lecture-2-feature-engineering-for-ml-in-graphs">Lecture 2: Feature Engineering for ML in Graphs</h1>
+
+<ul>
+  <li>Traditional features for ML in graphs with focus on undirected graphs</li>
+  <li>Node level features:
+    <ul>
+      <li><strong>Goal</strong>: characterize the structure and position of a node in the network</li>
+      <li><strong>importance-based features</strong>:
+        <ul>
+          <li>node degree: counts neighboring nodes without capturing their importance</li>
+          <li>node centrality: takes node importance in a graph into account
+            <ul>
+              <li>eigenvector centrality: a node is important if it is us surrounded by
+important neighboring nodes; the largest eigenvalue is always positive and
+unique</li>
+              <li>betweenness centrality: a node is important if it lies on many shortest
+paths between other nodes</li>
+              <li>closeness centrality: a node is important if it has small shortest path
+lengths to all other nodes</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><strong>structure-based features</strong>:
+        <ul>
+          <li>node degree</li>
+          <li>clustering coefficient: measures how connected neighboring nodes are
+(triangles)</li>
+          <li>graphlets: extends clustering coefficient to graph shapes beyond triangles;
+creates a graphlet degree vector (GDV); <strong>graphlets</strong> are rooted,
+connected, induced, non-isomorphic subgraphs</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>induced subgraph</strong>: another graph formed from a subset of vertices and all
+the edges connecting the vertices in the subset</li>
+  <li><strong>graph isomorphism</strong>: two graphs which contain the same number of nodes
+connected in the same way are said to be isomorphic</li>
+</ul>
+
+<h2 id="link-prediction">Link prediction</h2>
+
+<ul>
+  <li>For each pair of nodes, predict the score c(x,y) and sort
+by decreasing score, predict the top n pairs as new links, validate with true
+edges</li>
+  <li>Tasks:
+    <ul>
+      <li>Links missing at random: remove a random set of links and then aim to
+predict them</li>
+      <li>Links over time: predict links that will manifest at the next time step</li>
+    </ul>
+  </li>
+  <li>Methods:
+    <ul>
+      <li>distance-based features
+        <ul>
+          <li>shortest-path distance between two nodes</li>
+        </ul>
+      </li>
+      <li>local neighborhood overlap
+        <ul>
+          <li>common neighbors</li>
+          <li>Jaccard’s coefficient</li>
+          <li>Adamic-Adar index</li>
+        </ul>
+      </li>
+      <li>global neighborhood overlap
+        <ul>
+          <li>Katz index: count the number of walks of all lengths between a given pair
+of nodes; based on powers of adjacency matrix; if you used a discount
+factor, there is a closed form solution</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="graph-level-features">Graph level features</h2>
+
+<ul>
+  <li><strong>Goal</strong>: We want features that characterize the structure of an entire graph.</li>
+  <li>Kernel methods are widely-used for traditional ML for graph-level prediction
+    <ul>
+      <li>Design kernels instead of feature vectors?</li>
+    </ul>
+  </li>
+  <li>Kernel K(G, G’) in R measures the similarity between graphs
+    <ul>
+      <li><strong>Goal</strong>: design a graph feature vector $\phi(G)$</li>
+      <li>Kernel matrix <strong>K</strong>=(K(G, G’)) must always be positive semi-definite</li>
+      <li>There exists a feature representation such that
+$K(G,G’)=\phi(G)^\intercal\phi(G’)$</li>
+      <li>Once the kernel is defined, off-the-shelf ML models such as kernel SVM can
+be used to make predictions</li>
+      <li>Examples:
+        <ul>
+          <li>Graphlet kernel</li>
+          <li>Weisfeiler-Lehman kernel</li>
+          <li>Random-walk kernel</li>
+          <li>Shortest-path graph kernel</li>
+        </ul>
+      </li>
+      <li>Key idea: <strong>bag-of-words</strong> for a graph
+        <ul>
+          <li>BoW simply uses the word counts as feature for documents, without regard
+for order</li>
+          <li>A naive extension to graph: regard nodes as words</li>
+          <li>Bag of…
+            <ul>
+              <li>node colors (features)</li>
+              <li>node degrees</li>
+              <li>graphlet counts (<strong>graphlet-kernel</strong>); if a graph’s node degree is
+bounded by d, then there exists an $O(nd^{k-1})$ algorithm to count all
+graphlets of size k</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Subgraph isomorphism is NP-hard</li>
+  <li><strong>Goal</strong>: can we design an efficient graph feature descriptor $\phi(G)$?
+    <ul>
+      <li>Can we generalize bag-of-node-degrees? Yes, this is called <strong>color
+refinement</strong></li>
+      <li>Color refinement summarizes the structure of the K-hop neighborhood (uses a
+hash function for message passing aggregation)</li>
+      <li>After color refinement, Weisfeiler-Lehman (WL) kernel counts number of nodes with
+a given color.</li>
+      <li>WL kernel is the inner product of the color refinement count vectors
+        <ul>
+          <li>$O(\lvert E\rvert)$ running time</li>
+          <li>$O(\lvert V\rvert)$ number of colors in memory</li>
+          <li>counting colors takes linear time with respect to $\lvert V\rvert$</li>
+          <li>total runtime is linear in $\lvert E\rvert$</li>
+          <li>far more computationally efficient than graphlet kernel</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="lecture-3-node-embeddings">Lecture 3: Node Embeddings</h1>
+
+<ul>
+  <li>Graph representation learning eliminates the need to do feature engineering</li>
+  <li>Want to encode nodes so they have certain properties (proximities) in the
+embedding space</li>
+  <li>You train these embeddings with some measure of similarity, and a simple
+decoder would simply be the dot product of these embeddings, i.e. cosine
+similarity in the embedding space</li>
+  <li><strong>Shallow embeddings</strong> just lookup a node ID in a matrix and return the
+corresponding embedding, i.e. the encoder is just an embedding lookup
+    <ul>
+      <li>DeepWalk and node2vec are instances of this</li>
+    </ul>
+  </li>
+  <li>The following generates <strong>task independent</strong> embeddings that represent only
+their network structure; in particular, they are not using node labels for
+features</li>
+</ul>
+
+<h2 id="how-do-you-define-similarity">How do you define similarity?</h2>
+
+<ul>
+  <li>Random walks: initiate random walks from all nodes in the graph and then
+$\mathbf{z}_u^\intercal \mathbf{z}_v$ represents the likelihood that nodes u
+and v co-occur on a random walk over the graph
+    <ul>
+      <li>Steps:
+        <ol>
+          <li>Estimate the probability of visiting node v on a random walk starting from
+node u using some random walk strategy</li>
+          <li>Optimize embeddings to encode these random walk statistics</li>
+        </ol>
+      </li>
+      <li>Benefits:
+        <ul>
+          <li>Expressive: incorporates both local and higher order neighborhood information</li>
+          <li>Efficient: do not need to consider all node pairs when training, only node
+pairs that have co-occurred on random walks</li>
+        </ul>
+      </li>
+      <li>Objective: \(\mathcal{L}=\sum_{u\in V}\sum_{v\in N_R(u)}-\log\left(\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}\right)\)
+        <ul>
+          <li>$\max_f\sum_{u\in V}\log\Pr(N_R(u)\mid \mathbf{z}_u)$</li>
+          <li>$\mathcal{L}=\sum_{u\in V}\sum_{v\in N_R(u)}-\log\Pr(v\mid
+\mathbf{z}_u)$</li>
+          <li>
+\[\Pr(v\mid \mathbf{z}+u)=\frac{\exp(\mathbf{z}_u^\intercal\mathbf{z}_v)}{\sum_{n\in
+V}\exp(\mathbf{z}_u^\intercal\mathbf{z}_n)}\]
+          </li>
+          <li>The denominator is expensive, so it can be approximated with noise
+contrastive estimation (NCE), i.e. instead of normalizing with respect to
+all nodes, just normalize against $k$ random negative samples</li>
+          <li>
+\[\approx \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_v\right)\right)-\sum_{i=1}^k \log \left(\sigma\left(\mathbf{z}_u^{\mathrm{T}} \mathbf{z}_{n_i}\right)\right), n_i \sim P_V\]
+            <ul>
+              <li>k is often chosen to be 5-20 and technically nodes on the random walk
+shouldn’t be chosen</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Update with (stochastic) gradient descent: $\mathbf{z}_u\leftarrow
+\mathbf{z}_u-\eta\pdv{L}{\mathbf{z}_u}$</li>
+    </ul>
+  </li>
+  <li>DeepWalk: run fixed-length, unbiased random walks starting from each node
+    <ul>
+      <li>Problem: this notion of similarity is too constrained</li>
+    </ul>
+  </li>
+  <li>Node2Vec:
+    <ul>
+      <li>Goal: Embed nodes with similar network neighborhoods close in the feature
+space. Frame this as a maximum likelihood optimization problem.</li>
+      <li>Key observation: flexible notion of network neighborhood $N_R(u)$ of node u
+leads to rich node embeddings</li>
+      <li>Develop biased 2nd order random walk R to generate network neighborhood
+$N_R(u)$ of node u</li>
+      <li>Idea: use flexible, biased random walks that can trade off between local
+and global views of the network, i.e. <strong>use a mix of DFS (macro-view) and BFS (micro-view)</strong>
+        <ul>
+          <li>Instrument this with parameters p and q; p determines probability of
+returning to previous node and q is the ratio of BFS to DFS, i.e. moving
+outwards vs. inwards</li>
+          <li>This requires remembering where the walk came from (just the last step)</li>
+          <li>Lecture 3, slide 45 has an example of how p and q are used</li>
+        </ul>
+      </li>
+      <li>Steps:
+        <ol>
+          <li>Compute random walk probabilities</li>
+          <li>Simulate $r$ random walks of length $l$ starting from each node $u$</li>
+          <li>Optimize the node2vec objective using SGD</li>
+        </ol>
+      </li>
+      <li>Benefits:
+        <ul>
+          <li>Linear-time complexity</li>
+          <li>All 3 steps are individually parallelizable</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Other random walks (links to papers on Lecture 3, slide 47):
+    <ul>
+      <li>based on node attributes</li>
+      <li>based on learned weights</li>
+      <li>based on 1-hop and 2-hop random walk probabilities</li>
+      <li>random walks on modified version of original network, i.e. struct2vec, HARP</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="embedding-entire-graphs">Embedding Entire Graphs</h2>
+
+<ul>
+  <li>Examples:
+    <ul>
+      <li>Classifying toxic vs. non-toxic molecules</li>
+      <li>Identifying anomalous graphs</li>
+    </ul>
+  </li>
+  <li>Approaches:
+    <ul>
+      <li>Run graph embedding technique and sum or average embeddings</li>
+      <li>Introduce a virtual node to represent the subgraph (linked to the nodes in
+that subgraph) and run graph embedding
+technique</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="matrix-factorization-and-node-embeddings">Matrix Factorization and Node Embeddings</h2>
+
+<ul>
+  <li><strong>Inner product decoder with node similarity defined by edge connectivity is
+equivalent to matrix factorization of adjacency matrix $\mathbf{A}$</strong></li>
+  <li>Objective: extract a factorization $\mathbf{A}=\mathbf{Z}^\intercal\mathbf{Z}$
+where $\mathbf{A}$ is the adjacency matrix and $\mathbf{Z}$ is the embedding
+matrix
+    <ul>
+      <li>Generally, we can only learn $\mathbf{Z}$ approximately</li>
+    </ul>
+  </li>
+  <li>DeepWalk is equivalent of the matrix factorization of the following
+(explanation on Lecture 3, Slide 61):
+\(\log \left(\operatorname{vol}(G)\left(\frac{1}{T} \sum_{r=1}^T\left(D^{-1} A\right)^r\right) D^{-1}\right)-\log b\)</li>
+  <li>Node2vec can also be formulated as a more complex matrix factorization; paper
+links on Lecture 3, Slide 61</li>
+  <li>How do you use node embeddings?
+    <ul>
+      <li>Clustering/community detection</li>
+      <li>Node classification</li>
+      <li>Link prediction based on $f(\mathbf{z}_i,\mathbf{z}_j)$, where $f$ can be
+concatenate, Hardamard, sum/average, or distance</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="limitations">Limitations</h2>
+
+<ul>
+  <li><strong>Cannot obtain embeddings for nodes not in the training set</strong>, i.e. shallow
+embeddings are only transductive</li>
+  <li><strong>Cannot capture structural similarity</strong>: neither DeepWalk nor node2vec
+capture structural similarity in node embeddings; this can be remedied by methods like
+struct2vec</li>
+</ul>
+
+<h1 id="lecture-4-graph-neural-networks">Lecture 4: Graph Neural Networks</h1>
+
+<ul>
+  <li>Limitations of shallow embeddings:
+    <ul>
+      <li>$O(\lvert V\rvert d)$ parameters are required</li>
+      <li>No parameters are shared between nodes</li>
+      <li>Every node has its own unique embedding</li>
+      <li>Inherently transductive, i.e. can’t generate embeddings for nodes that are
+not seen during training</li>
+      <li>Does not incorporate node features</li>
+    </ul>
+  </li>
+  <li>GNNs are node encoders based on multiple layers of non-linear transformations
+based on graph structure; these deep encoders can be combined with node
+similarity functions</li>
+  <li>GNNs can embed nodes, graphs, and subgraphs</li>
+  <li>GNN tasks:
+    <ul>
+      <li>node classification</li>
+      <li>link prediction</li>
+      <li>community detection</li>
+      <li>network similarity</li>
+    </ul>
+  </li>
+  <li>Machine learning can be formulated as an optimization problem:
+\(\min_\theta\mathcal{L}(\mathbf{y},f(\mathbf{x}))\) where $\theta$ could be
+our shallow embeddings $\mathbf{Z}$ and the loss could be L2 loss:
+$\mathcal{L}(\mathbf{y},f(\mathbf{x}))=\lVert y-f(x)\rVert_2$
+    <ul>
+      <li>other loss functions include L1, Huber loss, max-margin (hinge) loss, cross
+entropy, etc.</li>
+      <li>$f$ could be a linear layer, MLP, or other NN like a GNN</li>
+    </ul>
+  </li>
+  <li>When there are no node features, you can do a one hot encoding of a nodes</li>
+  <li>Because graphs have no spatial or temporal assignment by default, we should
+constrain our efforts to methods that are permutation invariant, this means
+that two “order plans” should be the same for the same graphs with differently
+labeled nodes/edges</li>
+  <li>If $f(\mathbf{A}_i, \mathbf{X}_i)=f(\mathbf{A}_j, \mathbf{X}_j)$ for any order
+plan $i$ and $j$, we say that $f$ is a permutation invariant function</li>
+  <li><strong>Definition</strong>: For any graph function $f:\mathbb{R}^{\lvert V\rvert\times
+m}\times\mathbb{R}^{\lvert V\rvert \times\lvert V\rvert}\to\mathbb{R}^d$, $f$
+is <strong>permutation-invariant</strong> if $f(\mathbf{A}, \mathbf{X})=f(\mathbf{P}\mathbf{A}\mathbf{P}^\intercal, \mathbf{P}\mathbf{X})$ for any
+permutation $\mathbf{P}$, i.e. the value is the same regardless of whether you
+permute the adjacency matrix and features.</li>
+  <li>For node representation, we learn a function that maps ndoes of $G$ to a
+matrix $\mathbb{R}^{m\times d}$.</li>
+  <li>If we learn a function $f$ that maps a graph $G=(\mathbf{A},\mathbf{X})$ to a
+matrix $\mathbb{R}^{m\times d}$ and the output vector of a node at the same
+position in the graph remains unchanged for any order plan, then $f$ is
+<strong>permutation equivariant</strong></li>
+  <li><strong>Definition</strong>: for any node function $f:\mathbb{R}^{\lvert V\rvert\times
+m}\times \mathbb{R}^{\lvert V\rvert\times\lvert V\rvert}\to\mathbb{R}^{\lvert
+V\rvert\times m}$, $f$ is <strong>permutation-equivariant</strong> if
+$\mathbf{P}f(\mathbf{A},\mathbf{X})=f(\mathbf{PAP}^\intercal, \mathbf{PX})$
+for any permutation $\mathbf{P}$, i.e. when you shuffle the input the output
+is shuffled in the same fashion.</li>
+  <li><strong>Examples</strong>:
+    <ul>
+      <li>$f(\mathbf{A}, \mathbf{X})=\mathbf{1}^\intercal \mathbf{X}$ is
+permutation-invariant
+        <ul>
+          <li>$f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{1}^\intercal
+\mathbf{PX}=\mathbf{1}^\intercal \mathbf{X}=f(\mathbf{A}, \mathbf{X})$</li>
+        </ul>
+      </li>
+      <li>$f(\mathbf{A}, \mathbf{X})=\mathbf{X}$ is permutation-equivariant
+        <ul>
+          <li>$f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{PX}=\mathbf{P}f(\mathbf{A}, \mathbf{X})$</li>
+        </ul>
+      </li>
+      <li>$f(\mathbf{A}, \mathbf{X})=\mathbf{AX}$ is permutation-equivariant
+        <ul>
+          <li>$f(\mathbf{PAP}^\intercal, \mathbf{PX})=\mathbf{PAP}^\intercal\mathbf{PX}=\mathbf{PAX}=\mathbf{P}f(\mathbf{A}, \mathbf{X})$</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>GNNs consist of multiple permutation equivariant and invariant functions,
+unlike most deep ML, i.e. MLPs</li>
+  <li><strong>Idea</strong>: a node’s neighborhood defines a computation graph and the goal is to
+learn how to propagate information across the graph to compute node features</li>
+  <li><strong>Key idea</strong>: generate node embeddings based on local network neighborhoods,
+each network neighborhood defines a computation graph (imagine trees rooted at
+nodes, where the children are the neighbors of nodes)</li>
+  <li>Basic approach: average neighbor messages and apply a NN</li>
+  <li>Given <strong>a node</strong>, the GCN that computes its embedding is <strong>permutation
+invariant</strong></li>
+  <li>Considering <strong>all nodes</strong>, the GCN computation is permutation equivariant</li>
+  <li>$\mathbf{h}_v^{(0)}=\mathbf{x}_v$</li>
+  <li>
+\[\mathbf{h}_v^{(k+1)}=\sigma\left(\mathbf{W}_k \sum_{u \in \mathbf{N}(v)} \frac{\mathbf{h}_u^{(k)}}{|\mathbf{N}(v)|}+\mathbf{B}_k \mathbf{~h}_v^{(k)}\right), \forall k \in\{0 . . K-1\}\]
+    <ul>
+      <li>Train $\mathbf{W}_k$ and $\mathbf{B}_k$ using SGD</li>
+    </ul>
+  </li>
+  <li>$\mathbf{z}_v=\mathbf{h}_v^{(K)}$</li>
+  <li>The entire update in matrix form: \(H^{(k+1)}=\sigma\left(\tilde{A} H^{(k)} W_k^{\mathrm{T}}+H^{(k)} B_k^{\mathrm{T}}\right)\) where $\tilde{\mathbf{A}}=\mathbf{D}^{-1}\mathbf{A}$.
+    <ul>
+      <li>In practice, this implies that efficient sparse matrix multiplication can be
+used $\tilde{\mathbf{A}}$ is sparse.</li>
+      <li><strong>Not all GNNs can be expressed in matrix form when the aggregation function
+is complex.</strong></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="unsupervised-training">Unsupervised training</h2>
+
+<ul>
+  <li>When you don’t have labels, you can use the graph structure as supervision</li>
+  <li>If you say that “similar” nodes should have similar embeddings, then</li>
+  <li>
+\[\mathcal{L}=\sum_{z_u, z_v} \operatorname{CE}\left(y_{u, v}, \operatorname{DEC}\left(z_u, z_v\right)\right)\]
+    <ul>
+      <li>$y_{u,v}=1$ when node $u$ and $v$ are similar</li>
+      <li>$\operatorname{CE}$ is the cross entropy loss</li>
+      <li>$\operatorname{DEC}$ is a decoder, such as inner product</li>
+      <li>node similarity can be based on:
+        <ul>
+          <li>Random walks (node2vec, DeepWalk, struct2vec)</li>
+          <li>Matrix factorization</li>
+          <li>Node proximity in the graph</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="supervised-training">Supervised Training</h2>
+
+<ul>
+  <li>Directly train for a supervised task like node classification, e.g. is a drug
+safe or toxic?</li>
+  <li>
+\[\mathcal{L}=-\sum_{v \in V} y_v \log \left(\sigma\left(\mathrm{z}_v^{\mathrm{T}} \theta\right)\right)+\left(1-y_v\right) \log \left(1-\sigma\left(\mathrm{z}_v^{\mathrm{T}} \theta\right)\right)\]
+    <ul>
+      <li>$y_v$ are labels</li>
+      <li>$\theta$ are classification weights</li>
+      <li>$\mathbf{z}_v$ is a node embedding</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="model-design">Model Design</h2>
+
+<ol>
+  <li>Define a neighborhood aggregation function.</li>
+  <li>Define a loss function on the embeddings.</li>
+  <li>Train on a set of nodes, i.e. a batch of compute graphs.</li>
+  <li>Generate embeddings for nodes as needed (even those we never trained on!)</li>
+</ol>
+
+<h2 id="inductive-capability">Inductive Capability</h2>
+
+<ul>
+  <li>The model is capable of induction when the same aggregation parameters are
+shared for all nodes (GraphSAGE), an added benefit is that the number of
+parameters is sublinear in $\lvert V\rvert$ and we can generalize to unseen
+nodes.</li>
+  <li>A example is when you train on a protein interaction graph from model organism
+A and generate embeddings on a newly collected data about organism B</li>
+</ul>
+
+<h2 id="gnns-vs-cnns">GNNs vs CNNs</h2>
+
+<ul>
+  <li>The key difference is that we can learn an different weight function for each
+pixel surrounding the target node</li>
+  <li>GNN formulation: \(\mathbf{h}_v^{(l+1)}=\sigma\left(\underbrace{\mathbf{W}_l}_{\text{node agnostic}} \sum_{u \in \mathbf{N}(v)} \frac{\mathbf{h}_u^{(l)}}{\lvert\mathbf{N}(v)\rvert}+\mathbf{B}_l \mathbf{h}_v^{(l)}\right), \forall l \in\{0, \ldots, L-1\}\)</li>
+  <li>CNN formulation: \(\mathbf{h}_v^{(l+1)}=\sigma\left(\sum_{u \in \mathbf{N}(v)} \underbrace{\mathbf{W}_l^u}_{\text{pixel specific}} \mathbf{~h}_u^{(l)}+\mathbf{B}_l \mathbf{~h}_v^{(l)}\right), \forall l \in\{0, \ldots, L-1\}\)</li>
+  <li>A CNN can be seen as a special GNN with fixed neighbor size and ordering
+    <ul>
+      <li>The size of the filter is pre-defined for a CNN</li>
+      <li>The advantage of GNN is it postprocesses arbitrary graphs with different
+degrees for each node</li>
+    </ul>
+  </li>
+  <li>CNN is not permutation invariant/equivariant, i.e. switching the order of
+pixels will lead to different outputs</li>
+</ul>
+
+<h2 id="summary">Summary:</h2>
+
+<ul>
+  <li>Use multiple layers for embedding nodes, propagating the previous hidden state
+to the next layer</li>
+  <li>Mean aggregation for a GCN can be expressed in matrix form</li>
+  <li>GNN is a general architecture of which CNN is a special case</li>
+</ul>
+
+<h1 id="lecture-5-a-general-perspective-on-gnns">Lecture 5: A General Perspective on GNNs</h1>
+
+<h1 id="lecture-6-gnn-augmentation-and-training">Lecture 6: GNN Augmentation and Training</h1>
+
+<h1 id="lecture-7-theory-of-graph-neural-networks">Lecture 7: Theory of Graph Neural Networks</h1>
+
+<h1 id="lecture-8-label-propagation-on-graphs">Lecture 8: Label Propagation on Graphs</h1>
+
+<h1 id="lecture-9-machine-learning-with-heterogeneous-graphs">Lecture 9: Machine Learning with Heterogeneous Graphs</h1>
+
+<h1 id="lecture-10-knowledge-graph-embeddings">Lecture 10: Knowledge Graph Embeddings</h1>
+
+<ul>
+  <li>Heterogeneous graphs are graphs with multiple relation types, each of which
+gets different network weights</li>
+  <li>Nodes are labeled with types and edges capture relationships</li>
+  <li>Examples:
+    <ul>
+      <li>Nodes: drug, disease, event, protein pathways</li>
+      <li>Relation types: has_func, causes, assoc, treats, is_a</li>
+    </ul>
+  </li>
+  <li><strong>Problem</strong>: knowledge graphs are often incomplete and many true edges are
+missing; enumerating all relationships and/or facts may also be intractable</li>
+  <li><strong>Task</strong>: given an enormous KG, can we complete the KG, i.e. for a given
+(head, relation), can we predict the tail?</li>
+  <li><strong>Key ideas</strong>:
+    <ul>
+      <li>model entities and relations in an embedding/vector space</li>
+      <li>associate entities and relations with shallow embeddings</li>
+      <li>no GNN is learned here</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>Models</strong>:</p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>model</th>
+          <th>score</th>
+          <th>embedding</th>
+          <th>sym</th>
+          <th>antisym.</th>
+          <th>inv.</th>
+          <th>compos.</th>
+          <th>1:N</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>TransE</td>
+          <td>$-\lVert\mathbf{h} + \mathbf{r}-\mathbf{t}\rVert$</td>
+          <td>$\mathbf{h},\mathbf{r},\mathbf{t}\in \mathbb{R}^k$</td>
+          <td>x</td>
+          <td>o</td>
+          <td>o</td>
+          <td>o</td>
+          <td>x</td>
+        </tr>
+        <tr>
+          <td>TransR</td>
+          <td>$-\lVert\mathbf{M}_r\mathbf{h} + \mathbf{r} - \mathbf{M}_r\mathbf{t}\rVert$</td>
+          <td>$\mathbf{h},\mathbf{r},\mathbf{t}\in \mathbb{R}^k,\mathbf{M}_r\in \mathbb{R}^{d\times k}$</td>
+          <td>o</td>
+          <td>o</td>
+          <td>o</td>
+          <td>o</td>
+          <td>o</td>
+        </tr>
+        <tr>
+          <td>DistMult</td>
+          <td>$&lt;\mathbf{h},\mathbf{r},\mathbf{t}&gt;$</td>
+          <td>$\mathbf{h},\mathbf{r},\mathbf{t}\in \mathbb{R}^k$</td>
+          <td>o</td>
+          <td>x</td>
+          <td>x</td>
+          <td>x</td>
+          <td>o</td>
+        </tr>
+        <tr>
+          <td>ComplEx</td>
+          <td>$Re(&lt;\mathbf{h},\mathbf{r},\overline{\mathbf{t}}&gt;)$</td>
+          <td>$\mathbf{h},\mathbf{r},\mathbf{t}\in \mathbb{C}^k$</td>
+          <td>o</td>
+          <td>o</td>
+          <td>o</td>
+          <td>x</td>
+          <td>o</td>
+        </tr>
+      </tbody>
+    </table>
+  </li>
+  <li>
+    <p>Relationships:</p>
+
+    <ul>
+      <li>Symmetric:
+        <ul>
+          <li>$r(h,t)\implies r(t,h)\quad\forall h,t$</li>
+          <li>mother $\xrightarrow[\text{spouse}]{}$ father, father $\xrightarrow[\text{spouse}]{}$ mother</li>
+        </ul>
+      </li>
+      <li>Antisymmetric:
+        <ul>
+          <li>$r(h,t)\implies \lnot r(t,h)\quad\forall h,t$</li>
+          <li>father $\xrightarrow[\text{child}]{}$ son, then <strong>not</strong> son $\xrightarrow[\text{child}]{}$ father</li>
+        </ul>
+      </li>
+      <li>Inverse:
+        <ul>
+          <li>$r_2(h,t)\implies r_1(t,h)$</li>
+          <li>professor $\xrightarrow[\text{advisor}]{}$ student $\implies$ student $\xrightarrow[\text{advisee}]{}$ professor</li>
+        </ul>
+      </li>
+      <li>Composable:
+        <ul>
+          <li>$r_1(x,y)\land r_2(y,z)\implies r_3(x,z)\quad\forall x,y,z$</li>
+          <li>father$\xrightarrow[\text{wife}]{}$mother$\xrightarrow[\text{mother}]{}$mother-in-law</li>
+        </ul>
+      </li>
+      <li>1:N:
+        <ul>
+          <li>$r(h,t_1),r(h,t_2),\ldots, r(h,t_n)$ are all true.</li>
+          <li>father $\xrightarrow[\text{child}]{}$ son <strong>and</strong> father $\xrightarrow[\text{chld}]{}$ daughter</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>TransE</strong>: models translation of any relation in the <strong>same</strong> embedding space
+    <ul>
+      <li>cannot model symmetry, i.e. family, roommate, unless $h=t$ or $r=0$</li>
+      <li>cannot model 1:N relations, $t_1=h+r=t_2$ when $t_1\ne t_2$</li>
+      <li>can model antisymmetric: $h + r = t$, but $t + r \ne h$</li>
+      <li>can model inverse relationships by flipping sign of $r$</li>
+      <li>can model composition</li>
+    </ul>
+  </li>
+  <li><strong>TransR</strong>: model entities as vectors in the entity space $\mathbb{R}^d$ and
+model each relation as a vector in relation space $\mathbf{r}\in \mathbb{R}^k$
+with $\mathbf{M}_r\in \mathbb{R}^{k\times d}$ as the projection matrix.
+    <ul>
+      <li>can model symmetric relations by projecting head and tail to same location
+in relation space (note that different symmetric relationships may have
+different $\mathbf{M}_r$)</li>
+      <li>can model antisymmetric relations the same as TransE, but in the relation space</li>
+      <li>can model 1:N by projecting all tails to the same location in the relation
+space</li>
+      <li>can model inverse relations the same as TransE, but in the relation space</li>
+      <li>can model composition relations; TransR models a triple with linear
+functions and they are chainable, proof on slide 37 of 10-kg.pdf</li>
+    </ul>
+  </li>
+  <li><strong>DistMult</strong>:
+    <ul>
+      <li>TransE and TransR use negative of L1/L2 distance</li>
+      <li>Another strategy is to adopt <strong>bilinear</strong> modeling, making the score
+function a 3-way dot product
+        <ul>
+          <li><strong>Intuition</strong>: can be viewed as a cosine similarity between $h\cdot r$ and
+$t$ where $h\cdot r$ is defined as $h_i\cdot r_i$</li>
+        </ul>
+      </li>
+      <li>This defines half spaces, where if you are on the same side of the half
+space as $h\cdot r$ you are positive, otherwise negative</li>
+      <li>cannot model antisymmetric relations</li>
+      <li>cannot model inverse relations (i.e. advisor, advisee would be the same
+relation)</li>
+      <li>cannot model composition relations
+        <ul>
+          <li><strong>intuition</strong>: DistMult defines a hyperplane for each (head, relation),
+and the union of the hyperplane induced by multi-hops of relations, e.g.
+($r_1,r_2$) cannot be expressed using a single hyperplane, i.e. the union
+of hyperplanes cannot be captured as a hyperplane that captures the
+desired half-space</li>
+        </ul>
+      </li>
+      <li>can model 1:N relations</li>
+      <li>can model symmetric relations</li>
+    </ul>
+  </li>
+  <li><strong>ComplEx</strong>: models entities and relations in $\mathbb{C}^k$
+    <ul>
+      <li>score function is $f_r(h,t)=Re(\sum_i \mathbf{h}_i\cdot \mathbf{r}_i\cdot
+\overline{\mathbf{t}}_i)$</li>
+      <li>similar to DistMult, ComplEx cannot model compositions</li>
+      <li>can learn antisymmetric relations due to complex conjugate
+        <ul>
+          <li>high: $f_r(h,t)=f_r(h,t)=Re(\sum_i \mathbf{h}_i\cdot \mathbf{r}_i\cdot \overline{\mathbf{t}}_i)$</li>
+          <li>low: $f_r(h,t)=f_r(h,t)=Re(\sum_i \mathbf{t}_i\cdot \mathbf{r}_i\cdot \overline{\mathbf{h}}_i)$</li>
+        </ul>
+      </li>
+      <li>can learn symmetric relations - when $Im(\mathbf{r})=0$:
+\(\begin{aligned}
+f_r(\mathbf{h}, \mathbf{t})
+&amp;=\operatorname{Re}\left(\sum_i \mathbf{h}_i \cdot \mathbf{r}_i \cdot \overline{\mathbf{t}}_i\right) \\
+&amp;=\sum_i \operatorname{Re}\left(\mathbf{r}_i \cdot \mathbf{h}_i \cdot \overline{\mathbf{t}}_i\right) \\
+&amp;=\sum_i \mathbf{r}_i \cdot \operatorname{Re}\left(\mathbf{h}_i \cdot \overline{\mathbf{t}}_i\right) \\
+&amp;=\sum_i \mathbf{r}_i \cdot \operatorname{Re}\left(\overline{\mathbf{h}}_i \cdot \mathbf{t}_i\right) \\
+&amp;=\sum_i \operatorname{Re}\left(\mathbf{r}_i \cdot \overline{\mathbf{h}}_i\cdot \mathbf{t}_i\right)=f_r(t, h)
+\end{aligned}\)</li>
+      <li>can model inverse relations with $\mathbf{r}_1=\overline{\mathbf{r}}_2$
+        <ul>
+          <li>
+\[\mathbf{r}_2 = \arg\max_\mathbf{r} Re(&lt;\mathbf{h},\mathbf{r},\overline{\mathbf{t}}&gt;)\]
+          </li>
+          <li>
+\[\mathbf{r}_1 = \arg\max_\mathbf{r} Re(&lt;\mathbf{t},\mathbf{r},\overline{\mathbf{h}}&gt;)\]
+          </li>
+        </ul>
+      </li>
+      <li>can model 1:N relations like DistMult</li>
+    </ul>
+  </li>
+  <li>
+    <p><strong>RotatE</strong>: TransE in Complex space</p>
+  </li>
+  <li>General rules:
+    <ul>
+      <li>Use TransE if the KG does not have many symmetric relationships</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="lecture-11-knowledge-graphs">Lecture 11: Knowledge Graphs</h1>
+
+<h1 id="lecture-12-fast-neural-subgraph-matching-and-counting">Lecture 12: Fast Neural Subgraph Matching and Counting</h1>
+
+</article>
+    <span class="print-footer"
+  >CS 224W: Machine Learning with Graphs - Daniel Jenson
+</span>
+ <footer>
+  <hr class="slender">
+  <ul class="footer-links">
+    <li><a href="daniel.a.jenson@gmail.com"><span class="icon-mail3"></span></a></li>    
+    
+      <li>
+        <a href="https://www.linkedin.com/in/daniel-jenson-7a002a30/"><span class="icon-linkedin"></span></a>
+      </li>
+    
+      <li>
+        <a href="https://github.com/danjenson"><span class="icon-github"></span></a>
+      </li>
+      
+  </ul>
+<div class="credits">
+<span>&copy; 2023 &nbsp;&nbsp;DANIEL JENSON</span></br> <br>
+<span>This site created with the <a href="//github.com/danjenson/et">Edward Tufte theme for Daniel Jenson </a> in <a href="//jekyllrb.com">Jekyll</a>.</span> 
+</div>  
+</footer>
+
+  </body>
+</html>
