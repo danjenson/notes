@@ -362,6 +362,52 @@ title: "CS 224W: Machine Learning with Graphs"
 
 # Lecture 5: A General Perspective on GNNs
 
+- General GNN Framework
+  1. Message
+  2. Aggregation
+  3. Layer connectivity
+  4. Graph augmentation
+  5. Learning objective
+- GNN Layer: compresses a set of vectors into a single vector
+  - Message: $\mathbf{m}_u^{(l)}=\mathrm{MSG}^{(l)}\left(\mathbf{h}_u^{(l-1)}\right), u \in\{N(v) \cup v\}$, where the message could be a simple linear layer: $\mathbf{m}_u^{(l)}=\mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}$
+  - Aggregation: $$\mathbf{h}_v^{(l)}=\operatorname{AGG}^{(l)}\left(\left\{\mathbf{m}_u^{(l)}, u \in N(v)\right\}\right)$$, where the aggregation function could be any permutation invariant operator like sum, mean, min, or max
+    - Note you must first aggregate neighbors then aggregate that representation
+      with the original node representation
+  - One issue is that information about the source (locally rooted) node could
+    get lost if it doesn't depend on its own embedding, so you should include it
+    when computing the message
+    - Usually different weights will be applied to the neighbors' messages and
+      the source weights message/state
+    - You can combine these using either concatenation or summation: $$\mathbf{h}_v^{(l)}=\operatorname{AGG}\left(\operatorname{AGG}\left(\left\{\mathbf{m}_u^{(l)}, u \in N(v)\right\}\right), \mathbf{m}_v^{(l)}\right)$$
+  - Add non-linearity (activation) expressiveness, i.e. sigmoid, ReLU, or
+    Sigmoid
+- **Graph Convolutional Networks (GCN)**: $$\mathbf{h}_v^{(l)}=\sigma\left(\underbrace{\sum_{u \in N(v)}}_\text{aggregation} \underbrace{\mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{\lvert N(v)\rvert}}_\text{message}\right)$$
+  - Note this is normalized by node degree
+  - GCN is also assumed to have self-edges
+- **GraphSAGE**: $$\mathbf{h}_v^{(l)}=\sigma\left(\mathbf{W}^{(l)} \cdot \operatorname{CONCAT}\left(\mathbf{h}_v^{(l-1)}, \mathrm{AGG}\left(\left\{\mathbf{h}_u^{(l-1)}, \forall u \in N(v)\right\}\right)\right)\right)$$
+  - Note that neighbors are typically sampled
+  - 3 types of neighborhood aggregation:
+    - **Mean**: $\operatorname{AGG}=\sum\_{u\in \lvert
+      N(v)\rvert}\frac{\mathbf{h}\_u^{l-1}}{\lvert N(v)\rvert}$
+    - **Pool**: $$\operatorname{AGG}=\operatorname{Mean/Max}\left(\left\{\operatorname{MLP}\left(\mathbf{h}_u^{(l-1)}\right), \forall u \in N(v)\right\}\right)$$
+    - **LSTM**: $$\mathrm{AGG}=\operatorname{LSTM}\left(\left[\mathbf{h}_u^{(l-1)}, \forall u \in \pi(N(v))\right]\right) $$
+  - L2 normalization is applied at every layer:$$\mathbf{h}_v^{(l)} \leftarrow \frac{\mathbf{h}_v^{(l)}}{\left\|\mathbf{h}_v^{(l)}\right\|_2} \forall v \in V \text { where }\|u\|_2=\sqrt{\sum_i u_i^2}$$
+    - Without this, the embedding vectors would have different scales
+- **Graph Attention Networks**: $$\mathbf{h}_v^{(l)}=\sigma\left(\sum_{u \in N(v)} \underbrace{\alpha_{v u}}_\text{attention weights} \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right)$$
+  - In GCN/GraphSage, $\alpha_{v u}=\frac{1}{\lvert N(v)\rvert}$ is the
+    weighting factor of node $u$'s message to node $v$, which implies that all
+    neighbors are equally important
+  - The idea with attention is that only a small portion of input maters and the
+    rest should not affect the decision/calculation
+  - **Goal**: specify arbitrary importance to different neighbors of each node
+    in the graph
+  - **Idea**: Compute the embedding $\mathbf{h}_v^{(l)}$ of each node in the
+    graph following an attention strategy
+    - Nodes attend to their neighborhoods' messages
+    - Implicitly specifying different weights to different nodes from a
+      neighborhood
+- Slide 28
+
 # Lecture 6: GNN Augmentation and Training
 
 # Lecture 7: Theory of Graph Neural Networks

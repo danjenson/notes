@@ -613,6 +613,84 @@ to the next layer</li>
 
 <h1 id="lecture-5-a-general-perspective-on-gnns">Lecture 5: A General Perspective on GNNs</h1>
 
+<ul>
+  <li>General GNN Framework
+    <ol>
+      <li>Message</li>
+      <li>Aggregation</li>
+      <li>Layer connectivity</li>
+      <li>Graph augmentation</li>
+      <li>Learning objective</li>
+    </ol>
+  </li>
+  <li>GNN Layer: compresses a set of vectors into a single vector
+    <ul>
+      <li>Message: $\mathbf{m}_u^{(l)}=\mathrm{MSG}^{(l)}\left(\mathbf{h}_u^{(l-1)}\right), u \in{N(v) \cup v}$, where the message could be a simple linear layer: $\mathbf{m}_u^{(l)}=\mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}$</li>
+      <li>Aggregation: \(\mathbf{h}_v^{(l)}=\operatorname{AGG}^{(l)}\left(\left\{\mathbf{m}_u^{(l)}, u \in N(v)\right\}\right)\), where the aggregation function could be any permutation invariant operator like sum, mean, min, or max
+        <ul>
+          <li>Note you must first aggregate neighbors then aggregate that representation
+with the original node representation</li>
+        </ul>
+      </li>
+      <li>One issue is that information about the source (locally rooted) node could
+get lost if it doesn’t depend on its own embedding, so you should include it
+when computing the message
+        <ul>
+          <li>Usually different weights will be applied to the neighbors’ messages and
+the source weights message/state</li>
+          <li>You can combine these using either concatenation or summation: \(\mathbf{h}_v^{(l)}=\operatorname{AGG}\left(\operatorname{AGG}\left(\left\{\mathbf{m}_u^{(l)}, u \in N(v)\right\}\right), \mathbf{m}_v^{(l)}\right)\)</li>
+        </ul>
+      </li>
+      <li>Add non-linearity (activation) expressiveness, i.e. sigmoid, ReLU, or
+Sigmoid</li>
+    </ul>
+  </li>
+  <li><strong>Graph Convolutional Networks (GCN)</strong>: \(\mathbf{h}_v^{(l)}=\sigma\left(\underbrace{\sum_{u \in N(v)}}_\text{aggregation} \underbrace{\mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{\lvert N(v)\rvert}}_\text{message}\right)\)
+    <ul>
+      <li>Note this is normalized by node degree</li>
+      <li>GCN is also assumed to have self-edges</li>
+    </ul>
+  </li>
+  <li><strong>GraphSAGE</strong>: \(\mathbf{h}_v^{(l)}=\sigma\left(\mathbf{W}^{(l)} \cdot \operatorname{CONCAT}\left(\mathbf{h}_v^{(l-1)}, \mathrm{AGG}\left(\left\{\mathbf{h}_u^{(l-1)}, \forall u \in N(v)\right\}\right)\right)\right)\)
+    <ul>
+      <li>Note that neighbors are typically sampled</li>
+      <li>3 types of neighborhood aggregation:
+        <ul>
+          <li><strong>Mean</strong>: $\operatorname{AGG}=\sum_{u\in \lvert
+N(v)\rvert}\frac{\mathbf{h}_u^{l-1}}{\lvert N(v)\rvert}$</li>
+          <li><strong>Pool</strong>: \(\operatorname{AGG}=\operatorname{Mean/Max}\left(\left\{\operatorname{MLP}\left(\mathbf{h}_u^{(l-1)}\right), \forall u \in N(v)\right\}\right)\)</li>
+          <li><strong>LSTM</strong>: \(\mathrm{AGG}=\operatorname{LSTM}\left(\left[\mathbf{h}_u^{(l-1)}, \forall u \in \pi(N(v))\right]\right)\)</li>
+        </ul>
+      </li>
+      <li>L2 normalization is applied at every layer:\(\mathbf{h}_v^{(l)} \leftarrow \frac{\mathbf{h}_v^{(l)}}{\left\|\mathbf{h}_v^{(l)}\right\|_2} \forall v \in V \text { where }\|u\|_2=\sqrt{\sum_i u_i^2}\)
+        <ul>
+          <li>Without this, the embedding vectors would have different scales</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Graph Attention Networks</strong>: \(\mathbf{h}_v^{(l)}=\sigma\left(\sum_{u \in N(v)} \underbrace{\alpha_{v u}}_\text{attention weights} \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right)\)
+    <ul>
+      <li>In GCN/GraphSage, $\alpha_{v u}=\frac{1}{\lvert N(v)\rvert}$ is the
+weighting factor of node $u$’s message to node $v$, which implies that all
+neighbors are equally important</li>
+      <li>The idea with attention is that only a small portion of input maters and the
+rest should not affect the decision/calculation</li>
+      <li><strong>Goal</strong>: specify arbitrary importance to different neighbors of each node
+in the graph</li>
+      <li><strong>Idea</strong>: Compute the embedding $\mathbf{h}_v^{(l)}$ of each node in the
+graph following an attention strategy
+        <ul>
+          <li>Nodes attend to their neighborhoods’ messages</li>
+          <li>Implicitly specifying different weights to different nodes from a
+neighborhood</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Slide 28</li>
+</ul>
+
 <h1 id="lecture-6-gnn-augmentation-and-training">Lecture 6: GNN Augmentation and Training</h1>
 
 <h1 id="lecture-7-theory-of-graph-neural-networks">Lecture 7: Theory of Graph Neural Networks</h1>
