@@ -613,16 +613,17 @@ to the next layer</li>
 
 <h1 id="lecture-5-a-general-perspective-on-gnns">Lecture 5: A General Perspective on GNNs</h1>
 
+<h2 id="general-gnn-framework">General GNN Framework</h2>
+
+<ol>
+  <li>Message</li>
+  <li>Aggregation</li>
+  <li>Layer connectivity</li>
+  <li>Graph augmentation</li>
+  <li>Learning objective</li>
+</ol>
+
 <ul>
-  <li>General GNN Framework
-    <ol>
-      <li>Message</li>
-      <li>Aggregation</li>
-      <li>Layer connectivity</li>
-      <li>Graph augmentation</li>
-      <li>Learning objective</li>
-    </ol>
-  </li>
   <li>GNN Layer: compresses a set of vectors into a single vector
     <ul>
       <li>Message: $\mathbf{m}_u^{(l)}=\mathrm{MSG}^{(l)}\left(\mathbf{h}_u^{(l-1)}\right), u \in{N(v) \cup v}$, where the message could be a simple linear layer: $\mathbf{m}_u^{(l)}=\mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}$</li>
@@ -680,18 +681,260 @@ rest should not affect the decision/calculation</li>
 in the graph</li>
       <li><strong>Idea</strong>: Compute the embedding $\mathbf{h}_v^{(l)}$ of each node in the
 graph following an attention strategy
+        <ol>
+          <li>Let $a_{vu}$ be computed as a byproduct of the attention mechanism:
+            <ul>
+              <li>$e_{vu}$ indicates the importance of $u$’s message to $v$: \(e_{v u}=a\left(\mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}, \mathbf{W}^{(l)} \boldsymbol{h}_v^{(l-1)}\right)\)</li>
+              <li>
+\[e_{A B}=a\left(\mathbf{W}^{(l)} \mathbf{h}_A^{(l-1)}, \mathbf{W}^{(l)} \mathbf{h}_B^{(l-1)}\right)\]
+              </li>
+            </ul>
+          </li>
+          <li>Normalize $e_{uv}$ into the final attention weights $\mathbf{\alpha}<em>{vu}$
+using the softmax: $\alpha</em>{uv}=\frac{\exp\left(e_{vu}\right)}{\sum_{k\in N(v)}\exp\left(e_{vk}\right)}$</li>
+          <li>Calculated the weighted sum of neighbors: \(\mathbf{h}_v^{(l)}=\sigma\left(\sum_{u \in N(v)} \alpha_{v u} \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right)\)</li>
+        </ol>
+      </li>
+      <li>This approach is agnostic to the form of attention mechanism, $a$ - Could use a simple single-layer neural network, i.e. concatenate hidden
+state for target and neighbor node, run it through a linear layer to produce
+scalar $e$: \(\begin{aligned}
+&amp; e\_{A B}=a\left(\mathbf{W}^{(l)} \mathbf{h}\_A^{(l-1)}, \mathbf{W}^{(l)} \mathbf{h}\_B^{(l-1)}\right) \\
+&amp; =\operatorname{Linear}\left(\operatorname{Concat}\left(\mathbf{W}^{(l)} \mathbf{h}\_A^{(l-1)}, \mathbf{W}^{(l)} \mathbf{h}\_B^{(l-1)}\right)\right)
+\end{aligned}\)
         <ul>
-          <li>Nodes attend to their neighborhoods’ messages</li>
-          <li>Implicitly specifying different weights to different nodes from a
-neighborhood</li>
+          <li><strong>Multi-head attention</strong> stabilizes the learning process of the attention
+mechanism
+            <ul>
+              <li>Create multiple attention scores (each replica with different parameters):
+\(\begin{aligned}
+&amp; \mathbf{h}_v^{(l)}[1]=\sigma\left(\sum_{u \in N(v)} \alpha_{v u}^1 \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right) \\
+&amp; \mathbf{h}_v^{(l)}[2]=\sigma\left(\sum_{u \in N(v)} \alpha_{v u}^2 \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right) \\
+&amp; \mathbf{h}_v^{(l)}[3]=\sigma\left(\sum_{u \in N(v)} \alpha_{v u}^3 \mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\right) \\
+\end{aligned}\)</li>
+              <li>Aggregate the output by concatenation or summation: $\mathbf{h}_v^{(l)}=\mathrm{AGG}\left(\mathbf{h}_v^{(l)}[1], \mathbf{h}_v^{(l)}[2], \mathbf{h}_v^{(l)}[3]\right)$</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Benefits:
+        <ul>
+          <li>Allows for implicitly specifying different importance to different
+neighbors</li>
+          <li>Computationally efficient: the computation can be parallelized across all
+edges, and the same with aggregation</li>
+          <li>Storage efficient: sparse matrix operations do not require more than
+$O(V+E)$ entries to be stored</li>
+          <li><strong>Fixed</strong> number of parameters, irrespective of graph size</li>
+          <li>Localized: only attends over local network neighborhoods</li>
+          <li>Inductive: it is a shared edge-wise mechanism and does not depend on
+global graph structure</li>
         </ul>
       </li>
     </ul>
   </li>
-  <li>Slide 28</li>
+</ul>
+
+<h2 id="gnn-layer-in-practice">GNN Layer in Practice</h2>
+
+<ul>
+  <li>IN practice the following classic GNN layers are a great starting point
+    <ul>
+      <li>linear</li>
+      <li>batch norm: stabilizes training</li>
+      <li>dropout: prevents overfitting</li>
+      <li>activation: more expressive</li>
+      <li>attention: control relative importances</li>
+      <li>aggregation</li>
+    </ul>
+  </li>
+  <li><strong>Batch Normalization</strong>: feature-wise normalization using mean and standard
+deviation by batch</li>
+  <li><strong>Dropout</strong>: regularizes network to prevent overfitting; during training,
+randomly drop neurons with probability $p$, at testing time, multiply all
+outputs by $p$
+    <ul>
+      <li><strong>In GNNs, dropout is applied to the linear layer in the message function</strong>: \(\mathbf{m}_u^{(l)}=\mathbf{W}^{(l)} \mathbf{h}_u^{(l-1)}\)</li>
+    </ul>
+  </li>
+  <li><strong>Non-linear Acviation</strong>:
+    <ul>
+      <li>ReLU: $\max(x, 0)$</li>
+      <li>Sigmoid: $\sigma(x)=\frac{1}{1+e^{-x}}$</li>
+      <li>Parametric ReLU (PReLU): $\max(x, 0)+a\cdot\min(x, 0)$ where $a$ is a
+trainable parameter
+        <ul>
+          <li>Performs better than ReLU</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Summary: modern deep learning modules can be included in GNN layer for better
+performance</li>
+</ul>
+
+<h2 id="stacking-gnn-layers">Stacking GNN Layers</h2>
+
+<ul>
+  <li>The standard way: stack GNN layers sequentially</li>
+  <li>The issue: <strong>GNNs suffer from over-smoothing problem where all the node
+embeddings converge to the same value</strong></li>
+  <li><strong>Receptive field</strong>: the set of nodes that determine the embedding of a node
+of interest
+    <ul>
+      <li>In a $K$-layer GNN, each node has a receptive field of $K$-hop neighborhood</li>
+      <li>The number of shared neighbors increases when you increase $K$</li>
+      <li>When the receptive field of two nodes have high-overlap, they are likely to
+have highly similar embeddings</li>
+      <li>Many GNN layers -&gt; increase in receptive fields of nodes -&gt; embeddings
+become highly similar -&gt; over-smoothing</li>
+      <li>Lessons: be cautions when adding GNN layers; adding more does not always
+help
+        <ol>
+          <li>Analyze the necessary receptive field to solve your problem</li>
+          <li>Set the number of GNN layers $L$ to be a bit more than the receptive
+field we like, but not much larger</li>
+        </ol>
+      </li>
+      <li>Question: how do we enhance the expressive power of a GNN if the number of
+layers is small, i.e. how to make a shallow GNN more expressive?
+        <ol>
+          <li>Increase the expressive power within each layer by making transformation
+and aggregation a deep neural network, i.e. multi-layer MLP</li>
+          <li>Add layers that do not pass messages, i.e. pre and post-processing
+layers, which work very well in practice
+            <ul>
+              <li><strong>pre-processing layers</strong>: important when encoding node features like
+text/image</li>
+              <li><strong>post-processing layers</strong>: important when reasoning/transformation over
+node embeddings are needed, e.g. graph classification, knowledge graphs</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+      <li>Question: what if my problem still requires many GNN layers?
+        <ul>
+          <li>Add skip connections in GNNs</li>
+          <li>Node embeddings in earlier GNN layers can sometimes better differentiate
+nodes</li>
+          <li>Increase the impact of earlier layers in the final node embeddings by
+adding shortcuts in the GNN,i.e. $F(x) + x$ instead of just $F(x)$</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>Skip connections</strong>: intuitively, these create a mixture of models
+    <ul>
+      <li>$N$ skip connections implies $2^N$ possible paths</li>
+      <li>Each path could have up to $N$ modules</li>
+      <li>We automatically get a mixture of shallow and deep GNNs</li>
+      <li>
+        <table>
+          <tbody>
+            <tr>
+              <td>GCN layer with a skip connection: $$\mathbf{h}<em>v^{(l)}=\sigma\left(\underbrace{\sum</em>{u \in N(v)} \mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{</td>
+              <td>N(v)</td>
+              <td>}}<em>{F(x)}+\underbrace{\mathbf{h}_v^{(l-1)}}</em>{x}\right)$$</td>
+            </tr>
+          </tbody>
+        </table>
+      </li>
+    </ul>
+  </li>
+  <li>Another option is to directly skip to the last layer where the final layer aggregates from all
+the node embeddings from previous layers</li>
+</ul>
+
+<h2 id="graph-manipulation-in-gnns">Graph Manipulation in GNNs</h2>
+
+<ul>
+  <li>Graph feature augmentation</li>
+  <li>Graph structure manipulation</li>
+  <li>Reasons for breaking the equality between the raw input graph and the
+computational graph
+    <ul>
+      <li>Feature level:
+        <ul>
+          <li>Input lacks features -&gt; feature augmentation
+            <ul>
+              <li>Standard approaches:
+                <ul>
+                  <li>Assign constant values to nodes</li>
+                  <li>Assign unique IDs (one hot encodings) to nodes</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Structure level:
+        <ul>
+          <li>Graph is too sparse -&gt; inefficient message passing
+            <ul>
+              <li>Add virtual nodes / edges</li>
+              <li>Connect 2-hop neighbors via virtual edges
+                <ul>
+                  <li>Intuition: instead of just using $A$, use $A+A^2$</li>
+                  <li>Works well on bipartite graphs, e.g. authors-papers</li>
+                </ul>
+              </li>
+              <li>Connect all nodes to a virtual node, after which all nodes will be a
+2-hop distance from one another (greatly improves message passing)</li>
+            </ul>
+          </li>
+          <li>Graph is too dense -&gt; message passing is too costly
+            <ul>
+              <li>Sample neighbors when doing message passing</li>
+              <li>Reduces computational cost and works well</li>
+            </ul>
+          </li>
+          <li>Graph is too large -&gt; cannot fit the computational graph into a GPU
+            <ul>
+              <li>Sample subgraphs to compute embeddings</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>It’s unlikely that the input graph happens to be the optimal computation graph
+for embeddings</li>
+  <li>Constant node features:
+    <ul>
+      <li>Expressive power: medium. All nodes are identical but GNN can lear from
+graph structure.</li>
+      <li>Inductive learning: High. Simply assign constant to new nodes and run GNN.</li>
+      <li>Computational cost: Low. Only a 1 dimensional feature.</li>
+      <li>Use cases: any graph, inductive settings.</li>
+    </ul>
+  </li>
+  <li>One-hot node features:
+    <ul>
+      <li>Expressive power: High. Each node has a unique ID, so node specific
+information can be stored.</li>
+      <li>Inductive learning: Low. Cannot generalize to new nodes - new nodes
+introduce new IDs and GNN does’t know how to embed unseen IDs.</li>
+      <li>Use cases: small graphs, transductive settings.</li>
+    </ul>
+  </li>
+  <li>Certain structures are hard to learn by GNN
+    <ul>
+      <li>Example: cycle counts
+        <ul>
+          <li>Can a GNN learn the length of a cycle that $v_1$ resides in?
+Unfortunately, no</li>
+          <li>Regardless of whether $v_1$ is in a tree, square, or infinite length
+(line) cycle, the computation graph (edges to two neighbors) is the same</li>
+          <li><strong>Could augment nodes with cycle counts</strong></li>
+          <li>Could also augment with clustering coefficient, PageRank, Centrality, etc</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
 </ul>
 
 <h1 id="lecture-6-gnn-augmentation-and-training">Lecture 6: GNN Augmentation and Training</h1>
+
+<p>-</p>
 
 <h1 id="lecture-7-theory-of-graph-neural-networks">Lecture 7: Theory of Graph Neural Networks</h1>
 
