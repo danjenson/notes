@@ -827,17 +827,7 @@ adding shortcuts in the GNN,i.e. $F(x) + x$ instead of just $F(x)$</li>
       <li>$N$ skip connections implies $2^N$ possible paths</li>
       <li>Each path could have up to $N$ modules</li>
       <li>We automatically get a mixture of shallow and deep GNNs</li>
-      <li>
-        <table>
-          <tbody>
-            <tr>
-              <td>GCN layer with a skip connection: $$\mathbf{h}<em>v^{(l)}=\sigma\left(\underbrace{\sum</em>{u \in N(v)} \mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{</td>
-              <td>N(v)</td>
-              <td>}}<em>{F(x)}+\underbrace{\mathbf{h}_v^{(l-1)}}</em>{x}\right)$$</td>
-            </tr>
-          </tbody>
-        </table>
-      </li>
+      <li>GCN layer with a skip connection: \(\mathbf{h}_v^{(l)}=\sigma\left(\underbrace{\sum_{u \in N(v)} \mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{\lvert N(v)\rvert}}_{F(x)}+\underbrace{\mathbf{h}_v^{(l-1)}}_{x}\right)\)</li>
     </ul>
   </li>
   <li>Another option is to directly skip to the last layer where the final layer aggregates from all
@@ -925,7 +915,7 @@ Unfortunately, no</li>
           <li>Regardless of whether $v_1$ is in a tree, square, or infinite length
 (line) cycle, the computation graph (edges to two neighbors) is the same</li>
           <li><strong>Could augment nodes with cycle counts</strong></li>
-          <li>Could also augment with clustering coefficient, PageRank, Centrality, etc</li>
+          <li><strong>Could also augment with degree distribution clustering coefficient, PageRank, Centrality, etc</strong></li>
         </ul>
       </li>
     </ul>
@@ -934,7 +924,243 @@ Unfortunately, no</li>
 
 <h1 id="lecture-6-gnn-augmentation-and-training">Lecture 6: GNN Augmentation and Training</h1>
 
-<p>-</p>
+<h2 id="gnn-prediction">GNN Prediction</h2>
+
+<ul>
+  <li>Add a prediction head to node embeddings output
+    <ul>
+      <li>Different tasks require different prediction heads</li>
+    </ul>
+  </li>
+  <li>Suppose we wan to make a $k$-way prediction
+    <ul>
+      <li>Classification: classify among $k$ categories</li>
+      <li>Regression: regression $k$ targets</li>
+    </ul>
+  </li>
+  <li>Node-level prediction: \(\hat{\mathbf{y}}_v=\operatorname{Head}_\text{node}(\mathbf{h}_v^{(L)})=\mathbf{W}^{(H)}\mathbf{h}_v^{(L)}\)
+    <ul>
+      <li>$\mathbf{W}^{(H)}\in \mathbb{R}^{k\times d}$: maps node embeddings from
+$\mathbf{h}_v^{(L)}\in \mathbb{R}^d$ to $\hat{\mathbf{y}}_v\in \mathbb{R}^k$
+so that we can compute loss</li>
+    </ul>
+  </li>
+  <li>Edge-level prediction: \(\widehat{\boldsymbol{y}}_{u v}=\operatorname{Head}_{\text {edge } e}\left(\mathbf{h}_u^{(L)}, \mathbf{h}_v^{(L)}\right)\)
+    <ul>
+      <li>Options for HEAD:
+        <ol>
+          <li>Concatenation + Linear: \(\widehat{\boldsymbol{y}}_{u v}=\operatorname{Linear}\left(\operatorname{Concat}\left(\mathbf{h}_u^{(L)}, \mathbf{h}_v^{(L)}\right)\right)\)</li>
+          <li>Dot product:
+            <ul>
+              <li>One-way: $\hat{\mathbf{y}}_{uv}=\left(\mathbf{h}_u^{(L)}\right)^\intercal \mathbf{h}_v^{(L)}$</li>
+              <li>$k$-way: similar to multi-head attention, we use different $\mathbf{W}^{(i)}$: \(\begin{gathered}
+   \widehat{\boldsymbol{y}}_{u v}^{(1)}=\left(\mathbf{h}_u^{(L)}\right)^T \mathbf{W}^{(1)} \mathbf{h}_v^{(L)} \\
+   \widehat{\boldsymbol{y}}_{u v}^{(k)}=\left(\mathbf{h}_u^{(L)}\right)^T \mathbf{W}^{(k)} \mathbf{h}_v^{(L)} \\
+   \widehat{\boldsymbol{y}}_{u v}=\operatorname{Concat}\left(\widehat{\boldsymbol{y}}_{u v}^{(1)}, \ldots, \widehat{\boldsymbol{y}}_{u v}^{(k)}\right) \in \mathbb{R}^k
+   \end{gathered}\)</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p>Graph-level prediction:</p>
+
+    <ul>
+      <li>Make predictions using all the node embeddings in our graph: \(\widehat{\boldsymbol{y}}_G=\operatorname{Head}_{\text {graph }}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)\)</li>
+      <li>
+        <p>The HEAD for graph prediction is similar to the AGG operation in a GNN layer</p>
+
+        <ol>
+          <li>Global mean pooling: \(\widehat{\boldsymbol{y}}_G=\operatorname{Mean}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)\)</li>
+          <li>
+            <p>Global max pooling: \(\widehat{\boldsymbol{y}}_G=\operatorname{Max}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)\)</p>
+          </li>
+          <li>Global sum pooling: \(\widehat{\boldsymbol{y}}_G=\operatorname{Max}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)\)</li>
+        </ol>
+      </li>
+      <li>Issues:
+        <ul>
+          <li>Global pooling over large graphs will lose information</li>
+          <li>Example pathology with sum aggregation:
+            <ul>
+              <li>
+\[G_1=\{-1, -2, 0, 1, 2\}\implies \hat{y}_G=\operatorname{Sum}(\{-1,-2,0,1,2\})=0\]
+              </li>
+              <li>
+\[G_2=\{-10, -20, 0, 10, 20\}\implies \hat{y}_G=\operatorname{Sum}(\{-1,-2,0,1,2\})=0\]
+              </li>
+              <li>Cannot differentiate $G_1$ and $G_2$</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li>Solution:
+        <ul>
+          <li>Aggregate all node embeddings hierarchically</li>
+          <li>For instance, above, if you partition the graphs into the first two and
+last three values and apply sum and ReLU to that, you get 3 for the first
+graph and 30 for the second (Lecture 6, Slide 35)</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>DiffPool</strong>: hierarchically pool node embeddings
+    <ul>
+      <li>GNN A: computes node embeddings</li>
+      <li>GNN B: computes the cluster that a node belongs to (based on current layer
+embeddings)</li>
+      <li>These GNNs can be executed in parallel</li>
+      <li>Use clustering assignments from GNN B to aggregate node embeddings generated
+by GNN A</li>
+      <li>Create a single new node for each cluster, maintaining edges between
+clusters to generate a new pooled network</li>
+      <li>Jointly train GNN A and GNN B</li>
+    </ul>
+  </li>
+  <li>Supervised learning: external labels</li>
+  <li>Unsupervised or self-supervised learning: labels come from graph itself, i.e.
+links</li>
+  <li>Sometimes supervision is still used in unsupervised learning, e.g. train a GNN
+to predict node clustering coefficients</li>
+  <li><strong>Examples of supervision signals</strong>:
+    <ul>
+      <li>Node labels: which subject a citation belongs to</li>
+      <li>Edge labels: whether an edge is fraudulent</li>
+      <li>Graph labels: among molecular graphs, the drug likeness of graphs</li>
+    </ul>
+  </li>
+  <li><strong>Examples of unsupervised signals</strong>:
+    <ul>
+      <li>Node level: node statistics such as clustering coefficient, PageRank, etc</li>
+      <li>Edge level: link prediction, i.e. hide edges and predict if it should be
+there</li>
+      <li>Graph level: graph statistics like whether two graphs are isomorphic</li>
+    </ul>
+  </li>
+  <li><strong>Advice</strong>: Reduce your task to node/edge/graph labels, since they are easy to
+work with; e.g. we know some nodes form a cluster, we can treat the cluster
+that a node belongs to as a node label</li>
+  <li>How to compute loss?
+    <ul>
+      <li>Classification loss, e.g. cross-entropy loss</li>
+      <li>Regression loss, e.g. MSE</li>
+    </ul>
+  </li>
+  <li>How to evaluate or measure success?
+    <ul>
+      <li>Accuracy</li>
+      <li>ROC AUC</li>
+      <li>Root mean squared error (RMSE)</li>
+      <li>Mean absolute error (MAE)</li>
+    </ul>
+  </li>
+  <li>Evaluating classification tasks:
+    <ul>
+      <li>Multi-class classification: accuracy \(\frac{1\left[\operatorname{argmax}\left(\widehat{\boldsymbol{y}}^{(i)}\right)=\boldsymbol{y}^{(i)}\right]}{N}\)</li>
+      <li>Binary classification:
+        <ul>
+          <li>Accuracy: (TP + TN) / (TP + TN + FP + FN) = (TP + TN) /
+$\lvert\text{Dataset}\rvert$</li>
+          <li>Precision (P): TP / (TP + FP)</li>
+          <li>Recall (R): TP / (TP + FN)</li>
+          <li>F1-Score: 2P * R / (P + R)</li>
+          <li>Metric agnostic classification threshold: ROC AUC, which captures the
+TPR/FPR tradeoff
+            <ul>
+              <li>Intuition: The probability that a classifier will rank a randomly
+chosen positive instance higher than a randomly chosen negative one</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="dataset-splitting">Dataset Splitting</h2>
+
+<ul>
+  <li>Fixed split:
+    <ul>
+      <li>Training used for optimizing GNN parameters</li>
+      <li>Validation used to evaluate model/tune hyper-parameters</li>
+      <li>Test used to report final performance
+        <ul>
+          <li>Sometimes, we cannot guarantee that the test set will really be held out</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Random split:
+    <ul>
+      <li>Split $k$ times randomly into training, validation, test and report average
+performance using random seeds for each</li>
+    </ul>
+  </li>
+  <li><strong>Problem</strong>: nodes/edges in a graph are not independent, unlike sentences,
+images, etc</li>
+  <li><strong>Solutions</strong>:
+    <ul>
+      <li><strong>Transductive setting</strong>:
+The input graph can be observed in all dataset splits, but we split on node
+labels
+        <ul>
+          <li>At training time, compute embeddings using the entire graph and train
+using the training set’s node labels</li>
+          <li>At validation time, we compute embeddings using the entire graph and
+evaluate on a different subset of node labels</li>
+          <li>Only applicable to node/edge prediction tasks</li>
+        </ul>
+      </li>
+      <li><strong>Inductive setting</strong>: We create multiple graphs by breaking edges
+        <ul>
+          <li>Now we have 3 independent graphs</li>
+          <li>At training time, we compute embeddings using the graph over the
+training graph, using only those labels</li>
+          <li>At validation time, we compute embeddings using only the validation
+graph and evaluate performance on those labels</li>
+          <li>Applicable to node, edge, and graph tasks; works for graph tests because
+we have to test on unseen graphs</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li>Example: Link Prediction
+    <ul>
+      <li>Setting up link prediction requires hiding some edges and letting the GNN
+predict if the edges exist</li>
+      <li>Technique:
+        <ol>
+          <li>Assign 2 types of edges in the original graph:
+            <ul>
+              <li>Message edges: used for GNN message passing</li>
+              <li>Supervision edges: used for computing objectives and not fed into GNN</li>
+              <li>After this step, only message edges will remain in the graph</li>
+            </ul>
+          </li>
+          <li>Split edges into train, validation, and test
+            <ul>
+              <li>Option 1: inductive link prediction split, i.e. 3 independent graphs, each
+of which will have supervision and message edges and the objective is to
+predict supervision edges with the respective subgraph</li>
+              <li>Option 2: transductive link prediction split (default setting), i.e.
+graph is visible in all splits, but you hold out various supervision
+edges for each data split</li>
+            </ul>
+          </li>
+          <li>At training time, use training message edges to predict training
+supervision edges</li>
+          <li>At validation time, use training messages <strong>and</strong> training
+supervision edges to predict validation edges</li>
+          <li>At test time, use training message edges, training supervision edges,
+and validation edges to predict test edges</li>
+        </ol>
+      </li>
+    </ul>
+  </li>
+</ul>
 
 <h1 id="lecture-7-theory-of-graph-neural-networks">Lecture 7: Theory of Graph Neural Networks</h1>
 

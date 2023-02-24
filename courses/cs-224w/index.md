@@ -502,7 +502,7 @@ title: "CS 224W: Machine Learning with Graphs"
   - $N$ skip connections implies $2^N$ possible paths
   - Each path could have up to $N$ modules
   - We automatically get a mixture of shallow and deep GNNs
-  - GCN layer with a skip connection: $$\mathbf{h}_v^{(l)}=\sigma\left(\underbrace{\sum_{u \in N(v)} \mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{|N(v)|}}_{F(x)}+\underbrace{\mathbf{h}_v^{(l-1)}}_{x}\right)$$
+  - GCN layer with a skip connection: $$\mathbf{h}_v^{(l)}=\sigma\left(\underbrace{\sum_{u \in N(v)} \mathbf{W}^{(l)} \frac{\mathbf{h}_u^{(l-1)}}{\lvert N(v)\rvert}}_{F(x)}+\underbrace{\mathbf{h}_v^{(l-1)}}_{x}\right)$$
 - Another option is to directly skip to the last layer where the final layer aggregates from all
   the node embeddings from previous layers
 
@@ -551,11 +551,151 @@ title: "CS 224W: Machine Learning with Graphs"
     - Regardless of whether $v_1$ is in a tree, square, or infinite length
       (line) cycle, the computation graph (edges to two neighbors) is the same
     - **Could augment nodes with cycle counts**
-    - Could also augment with clustering coefficient, PageRank, Centrality, etc
+    - **Could also augment with degree distribution clustering coefficient, PageRank, Centrality, etc**
 
 # Lecture 6: GNN Augmentation and Training
 
--
+## GNN Prediction
+
+- Add a prediction head to node embeddings output
+  - Different tasks require different prediction heads
+- Suppose we wan to make a $k$-way prediction
+  - Classification: classify among $k$ categories
+  - Regression: regression $k$ targets
+- Node-level prediction: $$\hat{\mathbf{y}}_v=\operatorname{Head}_\text{node}(\mathbf{h}_v^{(L)})=\mathbf{W}^{(H)}\mathbf{h}_v^{(L)}$$
+  - $\mathbf{W}^{(H)}\in \mathbb{R}^{k\times d}$: maps node embeddings from
+    $\mathbf{h}_v^{(L)}\in \mathbb{R}^d$ to $\hat{\mathbf{y}}_v\in \mathbb{R}^k$
+    so that we can compute loss
+- Edge-level prediction: $$\widehat{\boldsymbol{y}}_{u v}=\operatorname{Head}_{\text {edge } e}\left(\mathbf{h}_u^{(L)}, \mathbf{h}_v^{(L)}\right)$$
+  - Options for HEAD:
+    1. Concatenation + Linear: $$\widehat{\boldsymbol{y}}_{u v}=\operatorname{Linear}\left(\operatorname{Concat}\left(\mathbf{h}_u^{(L)}, \mathbf{h}_v^{(L)}\right)\right)$$
+    2. Dot product:
+       - One-way: $\hat{\mathbf{y}}_{uv}=\left(\mathbf{h}_u^{(L)}\right)^\intercal \mathbf{h}_v^{(L)}$
+       - $k$-way: similar to multi-head attention, we use different $\mathbf{W}^{(i)}$: $$\begin{gathered}
+            \widehat{\boldsymbol{y}}_{u v}^{(1)}=\left(\mathbf{h}_u^{(L)}\right)^T \mathbf{W}^{(1)} \mathbf{h}_v^{(L)} \\
+            \widehat{\boldsymbol{y}}_{u v}^{(k)}=\left(\mathbf{h}_u^{(L)}\right)^T \mathbf{W}^{(k)} \mathbf{h}_v^{(L)} \\
+            \widehat{\boldsymbol{y}}_{u v}=\operatorname{Concat}\left(\widehat{\boldsymbol{y}}_{u v}^{(1)}, \ldots, \widehat{\boldsymbol{y}}_{u v}^{(k)}\right) \in \mathbb{R}^k
+            \end{gathered}$$
+- Graph-level prediction:
+
+  - Make predictions using all the node embeddings in our graph: $$\widehat{\boldsymbol{y}}_G=\operatorname{Head}_{\text {graph }}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)$$
+  - The HEAD for graph prediction is similar to the AGG operation in a GNN layer
+
+    1. Global mean pooling: $$\widehat{\boldsymbol{y}}_G=\operatorname{Mean}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)$$
+    2. Global max pooling: $$\widehat{\boldsymbol{y}}_G=\operatorname{Max}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)$$
+
+    3. Global sum pooling: $$\widehat{\boldsymbol{y}}_G=\operatorname{Max}\left(\left\{\mathbf{h}_v^{(L)} \in \mathbb{R}^d, \forall v \in G\right\}\right)$$
+
+  - Issues:
+    - Global pooling over large graphs will lose information
+    - Example pathology with sum aggregation:
+      - $$G_1=\{-1, -2, 0, 1, 2\}\implies \hat{y}_G=\operatorname{Sum}(\{-1,-2,0,1,2\})=0$$
+      - $$G_2=\{-10, -20, 0, 10, 20\}\implies \hat{y}_G=\operatorname{Sum}(\{-1,-2,0,1,2\})=0$$
+      - Cannot differentiate $G_1$ and $G_2$
+  - Solution:
+    - Aggregate all node embeddings hierarchically
+    - For instance, above, if you partition the graphs into the first two and
+      last three values and apply sum and ReLU to that, you get 3 for the first
+      graph and 30 for the second (Lecture 6, Slide 35)
+
+- **DiffPool**: hierarchically pool node embeddings
+  - GNN A: computes node embeddings
+  - GNN B: computes the cluster that a node belongs to (based on current layer
+    embeddings)
+  - These GNNs can be executed in parallel
+  - Use clustering assignments from GNN B to aggregate node embeddings generated
+    by GNN A
+  - Create a single new node for each cluster, maintaining edges between
+    clusters to generate a new pooled network
+  - Jointly train GNN A and GNN B
+- Supervised learning: external labels
+- Unsupervised or self-supervised learning: labels come from graph itself, i.e.
+  links
+- Sometimes supervision is still used in unsupervised learning, e.g. train a GNN
+  to predict node clustering coefficients
+- **Examples of supervision signals**:
+  - Node labels: which subject a citation belongs to
+  - Edge labels: whether an edge is fraudulent
+  - Graph labels: among molecular graphs, the drug likeness of graphs
+- **Examples of unsupervised signals**:
+  - Node level: node statistics such as clustering coefficient, PageRank, etc
+  - Edge level: link prediction, i.e. hide edges and predict if it should be
+    there
+  - Graph level: graph statistics like whether two graphs are isomorphic
+- **Advice**: Reduce your task to node/edge/graph labels, since they are easy to
+  work with; e.g. we know some nodes form a cluster, we can treat the cluster
+  that a node belongs to as a node label
+- How to compute loss?
+  - Classification loss, e.g. cross-entropy loss
+  - Regression loss, e.g. MSE
+- How to evaluate or measure success?
+  - Accuracy
+  - ROC AUC
+  - Root mean squared error (RMSE)
+  - Mean absolute error (MAE)
+- Evaluating classification tasks:
+  - Multi-class classification: accuracy $$\frac{1\left[\operatorname{argmax}\left(\widehat{\boldsymbol{y}}^{(i)}\right)=\boldsymbol{y}^{(i)}\right]}{N}$$
+  - Binary classification:
+    - Accuracy: (TP + TN) / (TP + TN + FP + FN) = (TP + TN) /
+      $\lvert\text{Dataset}\rvert$
+    - Precision (P): TP / (TP + FP)
+    - Recall (R): TP / (TP + FN)
+    - F1-Score: 2P \* R / (P + R)
+    - Metric agnostic classification threshold: ROC AUC, which captures the
+      TPR/FPR tradeoff
+      - Intuition: The probability that a classifier will rank a randomly
+        chosen positive instance higher than a randomly chosen negative one
+
+## Dataset Splitting
+
+- Fixed split:
+  - Training used for optimizing GNN parameters
+  - Validation used to evaluate model/tune hyper-parameters
+  - Test used to report final performance
+    - Sometimes, we cannot guarantee that the test set will really be held out
+- Random split:
+  - Split $k$ times randomly into training, validation, test and report average
+    performance using random seeds for each
+- **Problem**: nodes/edges in a graph are not independent, unlike sentences,
+  images, etc
+- **Solutions**:
+  - **Transductive setting**:
+    The input graph can be observed in all dataset splits, but we split on node
+    labels
+    - At training time, compute embeddings using the entire graph and train
+      using the training set's node labels
+    - At validation time, we compute embeddings using the entire graph and
+      evaluate on a different subset of node labels
+    - Only applicable to node/edge prediction tasks
+  - **Inductive setting**: We create multiple graphs by breaking edges
+    - Now we have 3 independent graphs
+    - At training time, we compute embeddings using the graph over the
+      training graph, using only those labels
+    - At validation time, we compute embeddings using only the validation
+      graph and evaluate performance on those labels
+    - Applicable to node, edge, and graph tasks; works for graph tests because
+      we have to test on unseen graphs
+- Example: Link Prediction
+  - Setting up link prediction requires hiding some edges and letting the GNN
+    predict if the edges exist
+  - Technique:
+    1. Assign 2 types of edges in the original graph:
+    - Message edges: used for GNN message passing
+    - Supervision edges: used for computing objectives and not fed into GNN
+    - After this step, only message edges will remain in the graph
+    2. Split edges into train, validation, and test
+    - Option 1: inductive link prediction split, i.e. 3 independent graphs, each
+      of which will have supervision and message edges and the objective is to
+      predict supervision edges with the respective subgraph
+    - Option 2: transductive link prediction split (default setting), i.e.
+      graph is visible in all splits, but you hold out various supervision
+      edges for each data split
+      1. At training time, use training message edges to predict training
+         supervision edges
+      2. At validation time, use training messages **and** training
+         supervision edges to predict validation edges
+      3. At test time, use training message edges, training supervision edges,
+         and validation edges to predict test edges
 
 # Lecture 7: Theory of Graph Neural Networks
 
