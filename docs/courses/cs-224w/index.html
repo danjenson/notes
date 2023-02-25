@@ -1164,6 +1164,204 @@ and validation edges to predict test edges</li>
 
 <h1 id="lecture-7-theory-of-graph-neural-networks">Lecture 7: Theory of Graph Neural Networks</h1>
 
+<h2 id="understanding-expressiveness-and-limitations">Understanding Expressiveness and Limitations</h2>
+
+<ul>
+  <li>How do we measure and maximize the expressive power of GNNs?</li>
+  <li><strong>Key questions</strong>:
+    <ul>
+      <li>How well can a GNN distinguish different graph structures?</li>
+      <li>How well can GNN node embeddings distinguish different node’s local
+neighborhood structures?</li>
+    </ul>
+  </li>
+  <li>Fundamentally, a GNN generates node embeddings through a computational graph
+defined by the neighborhood (picture on Slide 19, Lecture 7)
+    <ul>
+      <li>Typical GNNs only see node features, not IDs</li>
+      <li>GNNs will generate the same embeddings for nodes whose computation graphs
+are identical even if the nodes are not</li>
+    </ul>
+  </li>
+  <li>Computational graphs are identical to rooted subtree structures around each
+node</li>
+  <li>Most expressive GNNs map different rooted subtrees to different node
+embeddings (image on Slide 21, Lecture 7)</li>
+  <li><strong>Key concept</strong>: a function $f$ is injective if it maps different elements to
+different outputs, i.e. is 1:1; in this case, $f$ retains all the information
+about the input</li>
+  <li>A maximally expressive GNN should map subtrees to node embeddings injectively</li>
+  <li><strong>Key observation</strong>: Subtrees of the same depth can be recursively
+characterized from the leaf nodes to the root nodes, e.g. (left: (2 neighbors),
+right: (3 neighbors)) and so on up the tree
+    <ul>
+      <li>If each step of the GNN’s aggregation can fully retain the neighboring
+information, the generated node embeddings can distinguish different rooted
+subtrees, i.e. if each aggregation step of neighbors is injective, then the embedding
+process is injective</li>
+    </ul>
+  </li>
+  <li><strong>Key observation</strong>: The expressive power of GNNs can be characterized by
+that of neighborhood aggregation functions and injective aggregation functions
+lead to the most expressive GNNs</li>
+  <li>A neighbor aggregation can be abstracted as a function over a multi-set</li>
+  <li>Analysis:
+    <ul>
+      <li>GCN uses element-wise mean-pooling, i.e. element-wise mean, linear layer,
+ReLU activation
+        <ul>
+          <li>Failure case is when it collapses distributions (example on Slide 32-34,
+Lecture 7)</li>
+        </ul>
+      </li>
+      <li>GraphSAGE uses element-wise max-pooling
+        <ul>
+          <li>Failure case is when multi-sets contain the same base set of colors, i.e.
+it ignores the distribution of colors and collapses to just the minimal set
+of colors (image on Slide 36, Lecture 7)</li>
+        </ul>
+      </li>
+      <li><strong>mean and max pooling are not injective</strong> and hence any model based on them
+is not maximally expressive</li>
+    </ul>
+  </li>
+  <li><strong>Solution</strong>: design a NN that can model injective multi-set functions
+    <ul>
+      <li>Any injective multi-set function can be expressed as
+\(\underbrace{\phi}_\text{non-linear function}\left(\underbrace{\sum_{x\in S}}_\text{sum over multi-set}\underbrace{f(x)}_\text{some non-linear function}\right)\)</li>
+      <li>Proof intuition: $f$ produces one-hot encodings of colors, and summation of
+one-hot encodings retains all the information about the input multi-set.</li>
+    </ul>
+  </li>
+  <li><strong>Universal approximation theorem</strong>: 1-hidden-layer MLP with
+sufficiently-large hidden dimensionality and appropriate non-linearity
+$\sigma(\cdot)$ including ReLU and sigmoid can approximate any continuous
+function to an arbitrary accuracy.
+    <ul>
+      <li>We can use this to model the injective multi-set function:
+$\operatorname{MLP}<em>\phi\left(\sum</em>{x\in S}\operatorname{MLP}_f(x)\right)$</li>
+      <li>In practice, 100-500 hidden dimensions are sufficient</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="graph-isomorphism-network-gin-the-most-expressive-gnn">Graph Isomorphism Network (GIN): The most expressive GNN</h2>
+
+<ul>
+  <li>Uses the results above to define the following injective aggregation function: $\operatorname{MLP}<em>\phi\left(\sum</em>{x\in S}\operatorname{MLP}_f(x)\right)$</li>
+  <li>No failure cases!</li>
+  <li>GIN is THE most expressive GNN in the class of message-passing GNNs we have
+introduced</li>
+</ul>
+
+<h2 id="relationship-of-expressiveness-to-wl-graph-kernel">Relationship of Expressiveness to WL Graph Kernel</h2>
+
+<ul>
+  <li>tl;dr: GIN is a neural network version of the WL graph kernel</li>
+  <li><strong>Color refinement algorithm in WL Kernel</strong>:
+    <ul>
+      <li>Given a graph $G$ with a set of nodes $V$:
+        <ul>
+          <li>Assign an initial color $c^{(0)}(v)$ to each node $v$.</li>
+          <li>Iteratively refine node colors: \(c^{(k+1)}(v)=\operatorname{HASH}\left(c^{(k)}(v),\left\{c^{(k)}(u)\right\}_{u \in N(v)}\right)\) where HASH is a perfect has injectively mapping different inputs to different colors</li>
+          <li>After $K$ steps of color refinement, $c^{(K)}(v)$ summarizes the structure
+of the $K$-hop neighborhood.</li>
+        </ul>
+      </li>
+      <li>Process continues until a stable coloring is reached</li>
+      <li>Two graphs are considered isomorphic if they have the same set of colors</li>
+      <li>Illustration on Slides 46-48, Lecture 7</li>
+    </ul>
+  </li>
+  <li><strong>GIN uses a neural network to model the injective HASH function</strong>;
+specifically, it models the injective function over the tuple \((\underbrace{c^{(k)}(v)}_\text{root colors},
+\underbrace{\{c^{(k)}(u)\}_{u\in N(v)}}_\text{neighbor colors})\)
+    <ul>
+      <li>All together, the model is:
+\(\operatorname{GINConv}\left(c^{(k)}(v),\{c^{(k)}(u)\}_{u\in N(v)}\right)=\underbrace{\operatorname{MLP}_{\Phi}}_\text{provides one-hot input for next layer}\left((1+\epsilon) \cdot \operatorname{MLP}_f\left(c^{(k)}(v)\right)+\sum_{u \in N(v)} \operatorname{MLP}_f\left(c^{(k)}(u)\right)\right)\)
+        <ul>
+          <li>Here, $\epsilon$ is a learnable scalar</li>
+        </ul>
+      </li>
+      <li>The full algorithm is, given a graph $G$ with a set of nodes $V$:
+        <ul>
+          <li>Assign an initial vector $c^{(0)}(v)$ to each node $v$.</li>
+          <li>Iteratively update node vectors with \(c^{(k+1)}(v)=\operatorname{GINConv}\left(\left\{c^{(k)}(v),\left\{c^{(k)}(u)\right\}_{u \in N(v)}\right\}\right)\)
+            <ul>
+              <li>Where GINConv maps different inputs to different embeddings, i.e. it is
+a differentiable color HASH function</li>
+            </ul>
+          </li>
+          <li>After $K$ steps of GIN iterations, $c^{(K)}(v)$ summarizes the structure
+of the $K$-hop neighborhood.</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+  <li><strong>GIN can be understood as a differentiable neural version of the WL graph
+kernel</strong>:</li>
+</ul>
+
+<table>
+  <thead>
+    <tr>
+      <th>model</th>
+      <th>update target</th>
+      <th>update function</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>WL Graph Kernel</td>
+      <td>Node colors (one-hot)</td>
+      <td>HASH</td>
+    </tr>
+    <tr>
+      <td>GIN</td>
+      <td>Node embeddings (low-dim vectors)</td>
+      <td>GINConv</td>
+    </tr>
+  </tbody>
+</table>
+
+<ul>
+  <li>Advantages of GIN over WL graph kernel are:
+    <ul>
+      <li>Node embeddings are <strong>low-dimensional</strong> hence than can capture fine-grained
+similarity of different nodes.</li>
+      <li>Parameters of the update function can be learned for the downstream tasks.</li>
+    </ul>
+  </li>
+  <li>Because of the relationship between GIN and the WL graph kernel, their
+expressivity is exactly the same; namely, if two graphs can be distinguished
+by GIN, then they can be by the WL Kernel and vice versa</li>
+  <li>How powerful is this? Why is this important?
+    <ul>
+      <li>WL kernel has been both theoretically and empirically shown to distinguish
+most real-world graphs</li>
+      <li>Hence, GIN is also power enough to distinguish most real-world graphs</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="looking-forward">Looking forward</h2>
+
+<ul>
+  <li>Can the expressive power of GNNs be further improved? Some basic graph
+structures like difference in cycles cannot be distinguished by current GNNs
+(will address in Lecture 15)</li>
+</ul>
+
+<h2 id="summary-1">Summary</h2>
+
+<ul>
+  <li>GIN designs a NN that can model an injective multi-set function</li>
+  <li>GIN is the most expressive GNN model</li>
+  <li>The key is to use element-wise sum pooling instead of mean/max-pooling</li>
+  <li>GIN is closely related to the WL kernel</li>
+  <li>Both GIN and WL graph kernels can distinguish most real-world graphs</li>
+</ul>
+
 <h1 id="lecture-8-label-propagation-on-graphs">Lecture 8: Label Propagation on Graphs</h1>
 
 <h1 id="lecture-9-machine-learning-with-heterogeneous-graphs">Lecture 9: Machine Learning with Heterogeneous Graphs</h1>
