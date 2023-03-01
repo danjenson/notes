@@ -1364,6 +1364,28 @@ structures like difference in cycles cannot be distinguished by current GNNs
 
 <h1 id="lecture-8-label-propagation-on-graphs">Lecture 8: Label Propagation on Graphs</h1>
 
+<ul>
+  <li><strong>Question</strong>: Given a network with labels on some nodes, how do we assign
+labels to all other nodes in the network, e.g. fraudsters in a social network?</li>
+  <li>Node embeddings is one method to solve this problem; can we further use
+network topology?</li>
+  <li>Given the labels of some nodes, let’s predict the labels of unlabelled nodes
+    <ul>
+      <li>Transductive node classification (also called semi-supervised) node
+classification</li>
+    </ul>
+  </li>
+  <li><strong>Intuition</strong>: correlations exist in networks, i.e. connected nodes tend to
+share the same label.</li>
+  <li>3 Techniques:
+    <ul>
+      <li>Label propagation</li>
+      <li>Correct &amp; Smooth</li>
+      <li>Masked label prediction</li>
+    </ul>
+  </li>
+</ul>
+
 <h1 id="lecture-9-machine-learning-with-heterogeneous-graphs">Lecture 9: Machine Learning with Heterogeneous Graphs</h1>
 
 <h1 id="lecture-10-knowledge-graph-embeddings">Lecture 10: Knowledge Graph Embeddings</h1>
@@ -1583,6 +1605,242 @@ f_r(\mathbf{h}, \mathbf{t})
 <h1 id="lecture-11-knowledge-graphs">Lecture 11: Knowledge Graphs</h1>
 
 <h1 id="lecture-12-fast-neural-subgraph-matching-and-counting">Lecture 12: Fast Neural Subgraph Matching and Counting</h1>
+
+<h1 id="lecture-13-gnns-for-recommender-systems">Lecture 13: GNNs for Recommender Systems</h1>
+
+<h1 id="lecture-14-deep-generative-models-for-graphs">Lecture 14: Deep Generative Models for Graphs</h1>
+
+<h2 id="overview">Overview</h2>
+
+<ul>
+  <li><strong>Question</strong>: How do we generate realistic graphs?</li>
+  <li>Applications: drug discovery, material design, social network modeling
+    <ul>
+      <li>Insights, predictions, simulations, anomaly detection</li>
+    </ul>
+  </li>
+  <li><strong>Goal 1</strong>: Realistic graph generation; generate graphs that are similar to a
+set of graphs</li>
+  <li><strong>Goal 2</strong>: Goal-directed graph generation; generate graphs that optimize
+given objectives/constraints</li>
+  <li>$p_\text{data}(x)$ is the (unknown) data distribution</li>
+  <li>$p_\text{model}(x;\theta)$ is the model, parameterized by $\theta$, that we
+use to approximate $p_\text{data}(x)$</li>
+  <li>The objective is to make $p_\text{model}(x;\theta)$ as close to $p_\text{data}(x)$ as
+possible</li>
+  <li>One possible way to do this is maximum likelihood: \(\boldsymbol{\theta}^*=\underset{\boldsymbol{\theta}}{\arg \max } \mathbb{E}_{x \sim p_{\text {data }}} \log p_{\text {model }}(\boldsymbol{x} \mid \boldsymbol{\theta})\)</li>
+  <li>How do we sample from $p_\text{model}(x;\theta)$, i.e. a complex distribution?
+    <ol>
+      <li>Sample form a simple noise distribution $\mathbf{z}_i\sim \operatorname{Normal}\left(0,1\right)$</li>
+      <li>Transform the noise $\mathbf{z}_i$ via $f(\cdot)$ so $x$ follows the
+complex distribution</li>
+      <li>Use Deep NN to train $f(\cdot)$</li>
+    </ol>
+  </li>
+  <li><strong>Auto-regressive models</strong>: $p_\text{model}(x; theta)$ is used for both density estimation and sampling
+    <ul>
+      <li>Includes models like Variational Auto Encoders (VAEs) and Generative
+Adversarial Nets (GANs)</li>
+      <li>Idea: Chain rule: the joint distribution is a product of conditional
+distributions: \(p_{\text {model }}(\boldsymbol{x} ; \theta)=\prod_{t=1}^n p_{\text {model }}\left(x_t \mid x_1, \ldots, x_{t-1} ; \theta\right)\)</li>
+      <li>In our case $x_t$ will be the $t$-th action, i.e. add node or edge</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="graph-rnn">Graph RNN</h2>
+
+<ul>
+  <li>Two RNNs, one for generating nodes, the other for edges for each node,
+connecting to previous nodes in the graph, illustration on Slide 26, Lecture
+14</li>
+  <li>At each node-level step, a node is added to the graph until the stop token is
+received by the RNN</li>
+  <li>At each edge-level step, the edge RNN decides whether to connect the current
+node to a previously seen node</li>
+  <li>Together, this can be seen as a sequence (nodes) of sequences (edges)</li>
+  <li>This can also be imagined as creating the adjacency matrix</li>
+  <li>Basic RNN cell:
+    <ul>
+      <li>$s_t = \sigma(W\cdot x_t + U\cdot s_{t-1})$</li>
+      <li>$y_t = V\cdot s_t$</li>
+      <li>LSTM and GRU are more advanced RNN cells</li>
+    </ul>
+  </li>
+  <li>How to use an RNN on graphs?
+    <ul>
+      <li>Let input be the previous steps output</li>
+      <li>Initialize the sequence with the start of sequence (SOS) token</li>
+      <li>Use end of sequence token (EOS) as an extra RNN output
+        <ul>
+          <li>If EOS=0, continue generation</li>
+          <li>If EOS=1, stop generation</li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="edge-level-rnn">Edge-level RNN</h3>
+
+<ul>
+  <li><strong>Goal</strong>: Model \(p_{\text {model }}(\boldsymbol{x} ; \theta)=\prod_{t=1}^n p_{\text {model }}\left(x_t \mid x_1, \ldots, x_{t-1} ; \theta\right)\)</li>
+  <li>Let $y_t=p_\text{model}(x_t\mid x_1,\ldots,x_{t-1};\theta)$</li>
+  <li>Then we need to sample $x_{t+1}$ from $y_t: x_{t+1}\sim y_t$</li>
+  <li><strong>Each step outputs the probability of a single edge</strong></li>
+  <li>Then we sample from that distribution and feed the sample to the next step;
+illustration on Slide 31, Lecture 14</li>
+  <li>To train the model, use teacher forcing, i.e. correct the output $\hat{y}$
+with the true $y$ and correct the next step’s input to be correct as well,
+i.e. if $y_t=0$, then $x_{t+1}=0$</li>
+  <li>Use binary cross entropy loss to train RNN: \(L=-\left[y_1^* \log \left(y_1\right)+\left(1-y_1^*\right) \log \left(1-y_1\right)\right]\)</li>
+  <li>If $y_1^*=1$, we minimize $-\log(y_1)$ by making $y_1$ larger</li>
+  <li>If $y_1^*=-$, we minimize $-\log(1-y_1)$ by making $y_1$ smaller</li>
+  <li>This fits the RNNs predictions to the true data (edges)</li>
+</ul>
+
+<h3 id="process">Process</h3>
+
+<ol>
+  <li>Add a new node: run node RNN for a step and use its output to initialize an
+edge RNN.</li>
+  <li>Add new edges for the new node: run edge RNN to predict if the new node will
+connect to each of the previous nodes.</li>
+  <li>Add a new node: we use the last hidden state of the edge RNN to run the node
+RNN for another step.</li>
+  <li>Stop graph generation: if the edge RNN outputs EOS at step 1, we know no
+edges are connected to the new node. We stop the graph generation.</li>
+</ol>
+
+<ul>
+  <li>Illustrated on slides 35-42, Lecture 14</li>
+  <li>At test time, replace input with GNN’s own sampled predictions (Slide 43,
+Lecture 14)</li>
+</ul>
+
+<h3 id="tractability">Tractability</h3>
+
+<ul>
+  <li>If any newly added node can connect to <em>any</em> previous node, this quickly makes
+generation intractable; you need to generate a full adjacency matrix and the
+dependencies are long and complex</li>
+  <li><strong>Solution</strong>: use BFS node ordering, which reduces the number of possible node
+orderings from $O(n!)$ to the number of distinct BFS orderings
+    <ul>
+      <li>Only requires memory of last two steps instead of $n-1$ steps</li>
+      <li>In other words, you only consider connecting to nodes on the BFS frontier;
+the nodes that are not connected to nodes on the frontier are not considered</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="evaluation">Evaluation</h3>
+
+<ul>
+  <li><strong>Goal</strong>: Define similarity metrics for graphs</li>
+  <li><strong>Solution</strong>:
+    <ul>
+      <li>Visual similarity</li>
+      <li>Graph statistics similarity</li>
+    </ul>
+  </li>
+  <li>GraphRNN is able to train grids, unlike Kronecker, MMSB, and B-A methods, and
+also does well on other graphs</li>
+</ul>
+
+<h3 id="applications-drug-discovery">Applications: Drug Discovery</h3>
+
+<ul>
+  <li><strong>Question</strong>: Can we learn a model that can generate valid and realistic
+molecules with optimized property scores?</li>
+  <li><strong>Goal directed graph generation</strong>:
+    <ul>
+      <li>Optimize a given objective (high scores), e.g. drug-likeness</li>
+      <li>Obey underlying rules (valid), e.g. chemical validity rules</li>
+      <li>Are learned from examples (realistic), e.g. imitating a molecule graph
+dataset</li>
+    </ul>
+  </li>
+  <li>The hard part: objectives like drug-likeness are governed by physical laws
+which are assumed to be unknown to us</li>
+  <li><strong>Idea</strong>: Reinforcement learning
+    <ul>
+      <li>An ML agent observes the environment, takes an action to interact with the
+environment, and receives positive or negative reward</li>
+      <li>The agent learns from this loop</li>
+      <li><strong>Key idea</strong>: the agent can directly learn from the environment, which is a
+blackbox to the agent</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="solution-graph-convolutional-policy-network-gcpn">Solution: Graph Convolutional Policy Network (GCPN)</h3>
+
+<ul>
+  <li>GNN captures graph structural information</li>
+  <li>RL guides generation toward the desired objectives</li>
+  <li>Supervised training imitates examples in given datasets</li>
+  <li>GCPN vs GraphRNN:
+    <ul>
+      <li>Both generate graphs sequentially</li>
+      <li>Both imitate a given graph dataset</li>
+      <li>GCPN uses GNN to predict the generation action
+        <ul>
+          <li>Pros: GNN is more expressive than RNN</li>
+          <li>Cons: GNN takes longer time to compute than RNN</li>
+        </ul>
+      </li>
+      <li>GCPN further uses RL to direct graph generation to our goals, which enables
+goal-directed graph generation</li>
+      <li>Illustration on Slide 67, Lecture 14</li>
+    </ul>
+  </li>
+  <li>GCPN process:
+    <ol>
+      <li>Insert nodes</li>
+      <li>Use GNN to predict which nodes to connect</li>
+      <li>Take an action (check chemical validity)</li>
+      <li>Compute reward</li>
+    </ol>
+  </li>
+  <li>GCPN rewards = final reward + step rewards
+    <ul>
+      <li>At each step, assign a small positive reward for valid actions, which trains
+it to take valid actions</li>
+      <li>At the end, assign positive rewards for highly desired properties</li>
+    </ul>
+  </li>
+  <li>GCPN training (illustration on Slide 71, Lecture 14):
+    <ol>
+      <li>Supervised training: train the policy by imitating the action given by
+real, observed graphs and use the gradient (similar to GNN)</li>
+      <li>RL Training: train the policy to optimize rewards, using the standard
+policy gradient algorithm.</li>
+    </ol>
+  </li>
+  <li>Constrained optimization: edit a given molecule for a few steps to achieve
+higher property score</li>
+</ul>
+
+<h2 id="summary-2">Summary</h2>
+
+<ul>
+  <li>Complex graphs can be generated using sequential generation with deep RL</li>
+  <li>Each step a decision is made based on hidden state, which can be
+    <ul>
+      <li>Implicit: vector representation, decode with RNN</li>
+      <li>Explicit: intermediate generated graphs, decode with GCN</li>
+    </ul>
+  </li>
+  <li>Possible tasks:
+    <ul>
+      <li>Imitating a set of given graphs</li>
+      <li>Optimizing graphs towards given goals</li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="lecture-15-advanced-topics-in-gnns">Lecture 15: Advanced Topics in GNNs</h1>
 
 </article>
     <span class="print-footer"
