@@ -840,6 +840,8 @@ title: "CS 224W: Machine Learning with Graphs"
   - Correct & Smooth
   - Masked label prediction
 
+## TODO: continue
+
 # Lecture 9: Machine Learning with Heterogeneous Graphs
 
 # Lecture 10: Knowledge Graph Embeddings
@@ -952,6 +954,389 @@ title: "CS 224W: Machine Learning with Graphs"
 # Lecture 11: Knowledge Graphs
 
 # Lecture 12: Fast Neural Subgraph Matching and Counting
+
+- Subgraphs are the building blocks of networks and have the power to
+  characterize and discriminate networks
+- In many domains, recurring structural components determine the function or
+  behavior of the graph
+
+## Subgraphs and Motifs
+
+- Given graph $G=(V,E)$
+- **Definition 1: Node-induced subgraph**: Take a subset of the ndoes and all
+  edges induced by the nodes
+  - $G'=(V',E')$ is a node induced subgraph iff
+    - $V'\subseteq V$
+    - $$E'=\{(u,v)\in E\mid u,v\in V'\}$$
+    - $G'$ is the subgraph of $G$ induced by $V'$
+  - Alternate terminology: "induced subgraph"
+- **Definition 2: Edge-induced subgraph**: Take a subset of the edges and all
+  corresponding ndoes
+  - $G'=(V',E')$ is an edge induced subgraph iff
+    - $E'\subseteq E$
+    - $$V'=\{v\in V\mid (v,u)\in E'\text{ for some }u\}$$
+  - Alternate terminology: "non-induced subgraph" or just "subgraph"
+- There are two ways to formalize "network building blocks"
+- The best definition depends on the domain
+  - Chemistry: node-induced (functional groups)
+  - Knowledge graphs: often edge-induced (focus is on edges representing logical
+    relations)
+- The preceding definitions define subgraphs when $V'\subseteq V$ and
+  $E'\subseteq E$, i.e. nodes and edges are taken from the original graph $G$.
+  - What if $V'$ and $E'$ come from a totally different graph?
+  - What if we would like to say $G_1$ is "contained in" $G_2$ (illustration on
+    Slide 10, Lecture 12)
+
+### Graph Isomorphism
+
+- **Graph isomorphism problem**: Check whether two graphs are identical
+  - $G_1=(V_1,E_1)$ and $G_2=(V_2,E_2)$ are isomorphic if there exists a
+    bijection $f: V_1\to V_2$ such that $(u,v)\in E_1$ iff $(f(u), f(v))\in E_2$
+  - $f$ is called the **isomorphism**
+  - Illustration on Slide 11, Lecture 12
+- **We do not know if graph isomorphism is NP-hard, nor is any polynomial
+  algorithm found for solving graph isomorphism**
+- $G_2$ is **subgraph-isomorphic** to $G_1$ if some subgraph of $G_2$ is
+  isomorphic to $G_1$
+  - We also commonly say that $G_1$ is a subgraph of $G_2$
+  - We can use either the node-induced or edge-induced definition of a subgraph
+  - **Subgraph-isomorphism is NP-hard**
+  - Illustrations of subgraphs on Slides 12-13, Lecture 12
+
+### Network Motifs
+
+- **Network motifs**: recurring, significant patterns of interconnections
+- How to define a network motif:
+  - Pattern: small (node-induced) subgraph
+  - Recurring: found many times, i.e. high frequency (relative to?)
+  - Significant: More frequent than expected, i.e. in randomly generated graphs?
+- Motifs
+  - Help us understand how graphs work
+  - Help us make predictions based on presence or lack of presence in a graph
+    dataset
+- Examples
+  - Feed-forward loops: found in networks of neurons, where they neutralize
+    "biological noise"
+- Parallel loops: found in food webs
+- Single-input modules: found in gene control networks
+
+### Subgraph Frequency
+
+- Let $G_Q$ be a small graph and $G_T$ be a target graph dataset
+- **Graph-level Subgraph Frequency Definition**: frequency of $G_Q$ in $G_T$:
+  the number of unique subsets of nodes $V_T$ of $G_T$ for which the subgraph of
+  $G_T$ induced by the nodes $V_T$ is isomorphic to $G_Q$
+  - Illustrations on Slide 18, Lecture 12
+  - Star graph -> choose(100, n edges)
+- **Node-level Subgraph Frequency Definition**: The number of nodes $u$ in $G_T$
+  for which some subgraph of $G_T$ is isomorphic to $G_Q$ and the isomorphism
+  maps node $u$ to node $v$
+- Let $(G_Q, v)$ be called a node-anchored subgraph
+- Robust to outliers
+  - Star graph -> frequency 1 in same $G_T$ if anchor node is the central node
+- What if the dataset contains multiple graphs and we wan to compute the
+  frequency of subgraphs in the dataset?
+- **Solution**: Treat the dataset as a giant graph $G_T$ with disconnected
+  components corresponding to individual graphs
+
+### Defining Motif Significance
+
+- To define significance, we need to have a null-model, i.e. a point of
+  comparison
+- **Key idea**: subgraphs that occur in a real network much more often than in a
+  random network have functional significance
+- **Erdős–Rényi (ER) random graphs**:
+  - $G_{n,p}$: undirected graph on $n$ nodes where each edge $(u,v)$ appears
+    i.i.d. with probability $p$
+    - How to generate the graph: create $n$ ndoes, for each pair of nodes
+      $(u,v)$ flip a biased coin with bias $p$
+  - Generated graph is a result of a random process
+  - Examples on Slide 22, Lecture 12
+
+### Configuration Model
+
+- **Goal**: Generate a random graph with a given degree sequence
+  $k_1,k_2,...,k_n$
+- Useful as a "null" model of networks
+- We can compare the real network $G_\text{real}$ and a random graph
+  $G_\text{random}$ which has the same degree sequence as $G_\text{real}$
+- Idea: randomly pair nodes with spokes, ignoring self loops
+- Alternative to spokes: Switching
+  - Start from a given graph G
+  - Repeat the switching step $Q\cdot\lvert E\rvert$ times
+    - Select a pair of edges $A\to B$, $C\to D$ at random
+    - Exchange the endpoints to give $A\to D$, $D\to B$
+    - Exchange edges only if no multiple edges or self-edges are generated
+  - Result: a randomly rewired graph with the same node degrees
+  - $Q$ is chosen large enough, e.g. 100, for the process to converge
+
+### Motif Significance Overview
+
+- **Intuition**: Motifs are overrepresented in a network when compared to random
+  graphs
+  1. Count motifs in the given graph $G_\text{real}$
+  2. Generate random graphs with similar statistics (e.g. number of nodes,
+     edges, degree sequence), and count motifs in the random graphs
+  3. Use statistical measures, e.g. Z-score, to evaluate how significant each motif is
+- **Z-score**: $Z_i$ captures the statistical significance of motif $i$
+  - $Z_i=(N_i^\text{real}-\bar{N}_i^\text{rand})/\operatorname{std}(N_i^\text{rand})$
+  - $N_i^\text{real}$ is the number of motif $i$ in graph $G^\text{real}$
+  - $N _i^\text{rand}$ is average number of motif $I$ in random graph instances
+- **Network Significance Profile (SP)**: $$SP_i=\frac{Z_i}{\sqrt{\sum_j
+  Z_j^2}}$$
+  - SP is a vector of normalized Z-scores
+  - SP emphasizes relative significance of subgraphs
+    - Important for comparison of networks of different sizes
+    - Generally, larger graphs display higher Z-scores
+  - For each subgraph:
+    - z-score metric is capable of classifying the subgraph "significance"
+      - Negative values indicate **under-representation**
+      - Positive values indicate **over-representation**
+  - We create a network significance profile, which is a feature vector with
+    values for all subgraph types
+  - Image comparing profiles of different graphs on Slide 28, Lecture 12
+    - Regulatory network (gene regulation)
+    - Neuronal network (synaptic connections)
+    - World Wide Web (hyperlinks between pages)
+    - Social network (friendships)
+    - Language networks (word adjacency)
+  - Networks from the same domain have similar significance profiles
+
+## Summary: Detecting motifs
+
+- Count subgraphs $i$ in $G^\text{real}$
+- Count subgraphs $i$ in random graphs $G^\text{rand}$
+  - Null model: each $G^\text{rand}$ has the same number of nodes and edges and
+    degree distribution as $G^\text{real}$
+- Assign $Z-score$ to motif $i$
+  - $Z_i=(N_i^\text{real}-\bar{N}_i^\text{rand})/\operatorname{std}(N_i^\text{rand})$
+  - High Z-score: subgraph $i$ is a network motif of $G$
+- Extensions:
+  - Directed and undirected
+  - Colored and uncolored
+  - Temporal and static motifs
+- Variations on the concept:
+  - Different frequency concepts
+  - Different significance metrics
+  - Under-representation (anti-motifs)
+  - Different null models
+
+## Summary: Motifs
+
+- Subgraphs and motifs are the building blocks of graphs
+  - Subgraph isomorphism and counting are NP-hard
+- Understanding which motifs are frequent or significant in a dataset gives
+  insight into the unique characteristics of that domain
+- Use random graphs as null model to evaluate the significance of motif via
+  Z-score
+
+## Neural Subgraph Representations
+
+- Given:
+  - Large target graph (can be disconnected)
+  - Query graph (connected)
+- Decide:
+  - Is a query graph a subgraph in the target graph?
+  - Illustration on Slide 34, Lecture 12
+
+### Isomorphism as an ML Task
+
+- **Intuition**: exploit the geometric shape of the embedding space to capture
+  the properties of subgraph isomorphism
+- Consider a binary prediction: return true if the query is isomorphic to a
+  subgraph of the target graph, otherwise return false (note that this is
+  irrespective of the isomorphism function $f$)
+- Illustration on Slide 37, Lecture 12
+
+### Neural Architecture for Subgraphs
+
+1. Use node-anchored definitions (image Slide 38, Lecture 12)
+2. Calculated node-anchored neighborhoods
+3. Use a GNN to obtain representations of $u$ and $v$ and predict if node $u$'s
+   neighborhood is isomorphic to node $v$'s neighborhood
+
+- Why anchors? Recall the node-level frequency definition:
+  - The number of nodes $u$ in $G_T$ for which some subgraph of $G_T$ is
+    isomorphic to $G_Q$ and the isomorphism maps $u$ to $v$
+- We can compute embeddings for $u$ and $v$ using GNN
+- Use the embeddings to decide if neighborhood of $u$ is isomorphic to subgraph
+  of neighborhood of $v$
+- We not only predict if there exists a mapping, but also identify corresponding
+  nodes ($u$ and $v$)
+
+### Decomposing $G_T$ into Neighborhoods
+
+- Obtain a k-hop neighborhood around anchor
+- Can be performed using BFS
+- The depth $k$ is a hyper-parameter, e.g. 3
+  - Larger depth results in a more expensive model
+- Same procedure applies to $G_Q$ to obtain the neighborhoods
+- We embed the neighborhoods using a GNN
+  - By computing the embeddings for the anchor nodes in their respective
+    neighborhoods
+
+### Order Embedding Space
+
+- Map graph A to a point $z_A$ into a high-dimensional, e.g. 64-dim, embedding
+  space, such that $z_A$ is non-negative in all dimensions
+- Capture partial ordering (transitivity)
+  - Use $a \preceq b$ to denote that embedding $a$ is less than or equal to $b$
+    **in all of its coordinates**
+  - if $ a\preceq b$ and $b \preceq c$, then $a\preceq b \preceq c$
+- **Intuition**: subgraph is to the lower-left of its supergraph (in 2D)
+  - Illustrations on Slides 43-44, Lecture 12
+- Subgraph isomorphism relationship can be nicely encoded in order embedding
+  space
+  - **Transitivity**: if $G_1$ is a subgraph of $G_2$, $G_2$ is a subgraph of
+    $G_3$, then $G_1$ is a subgraph of $G_3$
+  - **Anti-symmetry**: If $G_1$ is a subgraph of $G_2$, and $G_2$ is a subgraph
+    of $G_1$, then $G_1$ is isomorphic to $G_2$
+  - **Closure under intersection**: The trivial graph of 1 node is a subgraph of
+    any graph
+- All properties have their counter-parts in the order embedding space
+  - Images on Slide 46, Lecture 12
+- The loss function is based on the order constraint, which expresses the ideal
+  order embedding property of subgraph relationships
+  - Trained with max-margin loss: $$E\left(G_q, G_t\right)=\sum_{i=1}^D\left(\max \left(0, z_q[i]-z_t[i]\right)\right)^2$$
+    - E=0 when $G_Q$ is a subgraph of $G_T$
+    - E>0 when $G_Q$ is not a subgraph of $G_T$
+  - $$\forall_{i=1}^D \underbrace{z_q[i]}_\text{query} \le \underbrace{z_t[i]}_\text{target}\text{ iff }\underbrace{G_Q\subseteq G_T}_\text{subgraph}$$
+
+### Training Neural Subgraph Matching
+
+- To learn such embeddings, construct training examples $(G_Q, G_T)$ where half
+  the time $G_Q$ is a subgraph of $G_T$ and the other half, it is not
+- Train on examples using max-margin loss:
+  - For positive examples: Minimize $E(G_Q, G_T)$ when $G_Q$ is a subgraph of
+    $G_T$
+  - For negative examples: Minimize $\max(0, \alpha-E(G_Q,G_T))$
+    - Max-margin loss prevents the model from learning the degenerate strategy
+      of moving embeddings further and further apart, i.e. after $\alpha$
+      distance, no improvement in error
+- Training example construction:
+  - Need to generate training queries $G_Q$ and targets $G_T$ from the dataset
+    $G$
+  - Get $G_T$ by choosing a random anchor $v$ and taking all nodes in $G$ within
+    distance $K$ from $v$ to be in $G_T$
+  - Positive examples: Sample induced subgraph $G_Q$ of $G_T$. Use BFS sampling:
+    - Initialize $$S=\{v\}, V=\emptyset$$
+    - Let $N(S)$ be all neighbors of nodes in $S$. At every step, sample 10% of
+      the nodes in $N(S)\setminus V$, put them in $S$. Put the remaining nodes
+      of $N(S)$ in $V$.
+    - After $K$ steps, take the subgraph of $G$ induced by $S$ anchored at $q$
+  - Negative examples: ($G_Q$ not subgraph of $G_T$) corrupt $G_Q$ by
+    adding/removing nodes/edges so it's no longer a subgraph
+- How many training examples to sample?
+  - At every iteration, sample new training pairs
+  - Benefit: Every iteration, the model sees different subgraph examples
+  - Improves performacne and avoids overfitting, since there are an exponential
+    number of possible subgraphs to sample from
+- How deep is BFS sampling?
+  - A hyper-parameter that trades off runtime and performance
+  - Usually 3-5, depending on the size of the dataset
+
+### Subgraph Predictions on New Graphs
+
+- Given: a query graph $G_q$ anchored at node $q$, target graph $G_t$ anchored
+  at node $t$
+- Goal: output whether the query is a node-anchored subgraph of the target
+- Procedure:
+  - If $E(G_q,G_t)<\epsilon$ predict True, else False
+  - $\epsilon$ is a hyper-parameter
+- To check if $G_Q$ is isomorphic to a subgraph of $G_T$, repreat this procedure
+  for all $q\in G_Q$, $t\in G_T$. Here $G_q$ is the neighborhood around node
+  $q\in G_Q$.
+
+### Summary: Neural Subgraph Matching
+
+- Neural subgraph matching based approach to learn the NP-hard problem of
+  subgraph isomorphism
+  - Given a query and target graph, it embeds both graphs into an order
+    embedding space
+  - Using these embeddings, it then computes $E(G_q, G_t)$ to determine whether
+    a query is a subgraph of the target
+- Embedding graphs within an order embedding space allows subgraph isomorphism
+  to be efficiently represented and tested by the relative position of graph
+  embeddings
+
+## Mining Frequent Motifs
+
+- Generally, finding the most frequent size-$k$ motifs requires solving two
+  challenges:
+  1. Enumerating all size-$k$ connected subgraphs
+  2. Counting number of occurrences of each subgraph type
+- Just knowing if a certain subgraph exists in a graph is a hard computational
+  problem; in fact, subgraph isomorphism is NP-complete
+- Computation time grows exponentially as the size of the subgraph increases
+  - Feasible motif size for traditional methods is relatively small (3-7)
+  - Counting subgraph frequency is NP-hard
+- Representation can tackle these challenges:
+  - Combinatorial explosion -> organize the search space
+  - Subgraph isomorphism -> prediction using GNN
+  - Solutions:
+    1. Counting number of occurences of each subgraph type: use GNN to predict
+       the frequency of the subgraph
+    2. Enumerating all size-k connected subgraphs: don't enumerate subgraphs but
+       construct a size-k subgraph incrementally
+       - Note: we are only interested in high frequency subgraphs
+
+### Problem Setup: Frequent Motif Mining
+
+- Target graph (dataset) $G_T$, size parameter $k$
+- Desired number of results, $r$
+- **Goal**: Identify, among all possible graphs of $k$ nodes, the $r$ graphs
+  with the highest frequency in $G_T$.
+- Use the node-level definition: the number of nodes $u$ in $G_T$ for which some
+  subgraph of $G_T$ is isomorphic to $G_Q$ and the isomorphism maps $u$ to $v$
+
+### SPMiner
+
+1. Decompose: overlapping node-anchored neighborhoods
+2. Encoder: embed subgraphs into order embedding space
+3. Search Procedure: find frequent subsequent graphs by growing patterns
+
+- The decomposition and encoding above are the same as neural subgraph matching
+- Illustration on Slide 63, Lecture 12
+- **Key Idea**:
+  - Decompose input graph $G_T$ into neighborhoods
+  - Embed neighborhoods into an order embedding space
+  - Key benefit of order embedding: we can quickly predict the frequency of a
+    given subgraph $G_Q$
+- Motif Frequency Estimation
+  - Given a set of node-anchored neighborhoods $G_{N_i}$ of $G_T$ (sampled
+    randomly), estimate the frequency of $G_Q$ by counting the number of $G_{N_i}$
+    such that their embeddings $z_{N_i}$ satisfy $z_Q\le z_{N_i}$.
+    - This is a consequence of the order embedding space property
+  - Excellent illustration of "super-graph" region on Slides 65-67, Lecture 12
+- Search procedure:
+  - Start by randomly picking a starting node $u$ in the target graph $G_T$, set
+    $$S=\{u\}$$.
+  - Iteratively grow a motif by choosing a neighbor in $G_T$ of a node in $S$
+    and add that node to $S$. Grow the motif to find larger frequent motifs!
+  - Terminate upon reaching a desired motif size, taking the subgraph of the
+    target graph induced by $S$.
+    - For instance, can identify a frequent motif of size 12: it has the largest
+      number of supergraph points among all embeddings of possible subgraphs of
+      size 12 (illustration on Slide 68, Lecture 12)
+- How to pick which node to add at each step?
+  - **Definition: Total violation** of a subgraph G: the number of neighborhoods
+    that do not contain $G$.
+    - The number of neighborhoods $G_{N_i}$ that do not satisfy $z_Q\preceq
+      z_{N_i}$
+    - Minimizing violation = maximizing frequency
+    - Greedy strategy (heuristic): at every step, add the node that results in
+      the smallest total violation.
+- Results on Slide 70, Lecture 12 (SPMiner does quite well)
+  - Identifies motifs that appears 10-100x more frequently than the baselines
+
+## Summary
+
+- Subgraphs and motifs provide insight into the structure of graphs and their
+  frequencies can be used as features for nodes/graphs
+- Order embeddings have desirable properties and can be used to encode subgraph
+  relations
+- Neural embedded-guided search in order embedding space can enable ML to
+  identify motifs better than existing methods
 
 # Lecture 13: GNNs for Recommender Systems
 
